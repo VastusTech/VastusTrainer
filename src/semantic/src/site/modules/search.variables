@@ -1,0 +1,8 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+
+@resultsBackground: @lightBlack;
+@resultsBorder: none;
+@resultTitleColor: @white;

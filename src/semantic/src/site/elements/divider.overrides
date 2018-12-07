@@ -1,0 +1,7 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.ui.divider:not(.vertical):not(.horizontal) {
+  border-bottom: none;
+}

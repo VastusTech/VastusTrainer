@@ -1,0 +1,8 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.ui.negative.buttons .button,
+.ui.negative.button {
+  background-image: none;
+}

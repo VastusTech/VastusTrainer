@@ -1,0 +1,8 @@
+/*******************************
+        User Overrides
+*******************************/
+
+.ui.tab.segment {
+  margin-top: 72px; // Temp fix for top nav
+  margin-bottom: 60px; // Temp fix for bottom nav
+}

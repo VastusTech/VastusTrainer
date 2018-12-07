@@ -1,0 +1,21 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+/*--------------
+     Active
+---------------*/
+
+.ui.menu .active.item,
+.ui.menu a.item:hover,
+.ui.menu .active.item:hover  {
+  color: @primaryColor;
+}
+
+.ui.menu.fixed.top {
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+
+.ui.menu.fixed.bottom {
+  box-shadow: 0 -1px 4px rgba(0,0,0,.1);
+}

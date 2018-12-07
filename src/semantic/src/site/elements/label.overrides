@@ -1,0 +1,13 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+.u-avatar {
+  position: relative;
+}
+
+.u-avatar .label {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}

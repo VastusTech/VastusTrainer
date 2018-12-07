@@ -1,0 +1,12 @@
+/*******************************
+         Site Overrides
+*******************************/
+
+// Semantic UI React does not have the ability to make a search bar fill its container at the moment
+.ui.search.fluid .input {
+  width: 100%;
+}
+
+.ui .search.icon {
+  color: @white;
+}
