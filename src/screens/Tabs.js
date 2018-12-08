@@ -10,6 +10,40 @@ import NextWorkoutProp from "../components/NextWorkout";
 import LeaderBoard from "./Leaderboard";
 import CommentScreen from "./CommentScreen";
 
+/*
+So the trainer app will have a bunch of different aspects to it, as described by Billy
+    * Must be able to give the trainer more exposure (Posting content)
+    * Must be able to let the trainer develop their brand (Portal)
+    * Providing useful information regarding diets/helpful workouts/...
+    * Building rapport with users
+        * By creating challenges (Challenge Manager)
+        * By conversating with them (Forums and/or direct chat?)
+        *
+    * Facilitator of knowledge through group chat style forums (Content + Forums)
+    * Giving out free info and guidance is the biggest barrier for trainers atm
+    * Trainers will have public portal and private portal for $X a month.
+        * I'm not a fan of the pay wall, but this could be do-able
+        * Do the trainers decide their own monthly prices? (Marketplace-style)
+        * The services that will be for pay:
+            * Private group/individual chats
+            * Premium Challenges
+            * Workout Templates!
+            * Personal Workout Plans
+            * Personal Diets
+            * Day-in-the-life
+            * Videos
+            * Personal Training(?) Maybe this could be discounted for premium members!
+
+    BASED ON THESE USE CASES, here's how I think we should structure our app should be in these Tabs
+
+    - NEWS
+    - PROFILE/PORTAL
+    - CALENDAR VIEW
+    - FORUMS/GROUP CHATS/CHATS
+    - NOTIFICATIONS
+
+ */
+
 /**
 * Tabs TODO Potentially clean this up
 *
@@ -18,7 +52,7 @@ import CommentScreen from "./CommentScreen";
 export default () => (
     <Tab menu={{fixed: "bottom", widths: 5, size: "small", inverted: true}} panes={
         [
-            {
+            {   /* THIS WILL LEAD TO ALL THE EVENTS (But this should be substantially less prevalent) */
                 menuItem:
                     (<Menu.Item key={0}>
                         <Icon name='home' size='large' />
@@ -30,7 +64,7 @@ export default () => (
                         <EventFeed/>
                     </Tab.Pane>
             },
-            {
+            {   /* THIS IS THE TRAINER PROFILE and PORTAL */
                 menuItem: (
                     <Menu.Item key={1}>
                         <Icon name='user circle outline' size='large' />
@@ -39,7 +73,7 @@ export default () => (
                     <ProfileProp/>
                 </Tab.Pane>
             },
-            {
+            {   /* VIEW THE STATISTICS / LEADERBOARD? */
                 menuItem: (
                     <Menu.Item key={2}>
                         <Icon name='winner' size='large' />
@@ -48,7 +82,7 @@ export default () => (
                     <LeaderBoard />
                 </Tab.Pane>
             },
-            {
+            {   /* HERE WILL BE THE FORUM FOR DISCUSSION (Reddit AMA style?) */
                 menuItem: (
                     <Menu.Item key={2}>
                         <Icon name='comment' size='large' />
@@ -57,7 +91,7 @@ export default () => (
                     <CommentScreen/>
                 </Tab.Pane>
             },
-            {
+            {   /* NOTIFICATIONS (necessary, duh) */
                 menuItem: (
                     <Menu.Item key={3}>
                         <Icon name='bell outline' size='large' />
