@@ -83,7 +83,8 @@ class App extends Component {
     }
 
     render() {
-        if (this.props.auth.loggedIn) {
+        // if (this.props.auth.loggedIn) {
+        if (true) {
             // The actual App
             return (
                 <div>

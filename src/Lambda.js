@@ -109,23 +109,32 @@ class Lambda {
     }
     // Create Functions
     // These may serve a bigger purpose than just creating something. Often times, they will send as well as create!
-    static createClient(fromID, name, gender, birthday, email, username, successHandler, failureHandler) {
-        this.create(fromID, "Client", {
+    // static createClient(fromID, name, gender, birthday, email, username, successHandler, failureHandler) {
+    //     this.create(fromID, "Client", {
+    //         name,
+    //         gender,
+    //         birthday,
+    //         email,
+    //         username,
+    //     }, successHandler, failureHandler);
+    // }
+    // static createClientOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
+    //     this.create(fromID, "Client", {
+    //         name,
+    //         gender,
+    //         birthday,
+    //         email,
+    //         username,
+    //         bio,
+    //     }, successHandler, failureHandler);
+    // }
+    static createTrainer(fromID, name, gender, birthday, email, username, successHandler, failureHandler) {
+        this.create(fromID, "Trainer", {
             name,
             gender,
             birthday,
             email,
             username,
-        }, successHandler, failureHandler);
-    }
-    static createClientOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        this.create(fromID, "Client", {
-            name,
-            gender,
-            birthday,
-            email,
-            username,
-            bio,
         }, successHandler, failureHandler);
     }
     // TODO createTrainer, createGym, createWorkout, and createReview

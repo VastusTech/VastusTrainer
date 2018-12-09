@@ -7,7 +7,8 @@ import React from "react";
 import CreateEventProp from "./CreateEvent";
 import NextWorkoutProp from "../components/NextWorkout";
 // import ScheduledEventsList from "./ScheduledEventList";
-import LeaderBoard from "./Leaderboard";
+// import LeaderBoard from "./Leaderboard";
+import CalendarScreen from "./CalendarScreen";
 import CommentScreen from "./CommentScreen";
 
 /*
@@ -59,9 +60,9 @@ export default () => (
                     </Menu.Item>),
                 render: () =>
                     <Tab.Pane basic attached={false}>
-                        <CreateEventProp/>
-                        <NextWorkoutProp/>
-                        <EventFeed/>
+                        {/*<CreateEventProp/>*/}
+                        {/*<NextWorkoutProp/>*/}
+                        {/*<EventFeed/>*/}
                     </Tab.Pane>
             },
             {   /* THIS IS THE TRAINER PROFILE and PORTAL */
@@ -70,16 +71,16 @@ export default () => (
                         <Icon name='user circle outline' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <ProfileProp/>
+                    {/*<ProfileProp/>*/}
                 </Tab.Pane>
             },
-            {   /* VIEW THE STATISTICS / LEADERBOARD? */
+            {   /* VIEW THE CALENDAR / TIME-INTENSIVE STUFFS? */
                 menuItem: (
                     <Menu.Item key={2}>
-                        <Icon name='winner' size='large' />
+                        <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <LeaderBoard />
+                    <CalendarScreen />
                 </Tab.Pane>
             },
             {   /* HERE WILL BE THE FORUM FOR DISCUSSION (Reddit AMA style?) */
@@ -88,7 +89,7 @@ export default () => (
                         <Icon name='comment' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <CommentScreen/>
+                    {/*<CommentScreen/>*/}
                 </Tab.Pane>
             },
             {   /* NOTIFICATIONS (necessary, duh) */
@@ -98,8 +99,8 @@ export default () => (
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
                     <Fragment>
-                        <Header inverted textAlign={'center'}>Notification Feed</Header>
-                        <NotificationFeed/>
+                        {/*<Header inverted textAlign={'center'}>Notification Feed</Header>*/}
+                        {/*<NotificationFeed/>*/}
                     </Fragment>
                 </Tab.Pane>
             },

@@ -13,13 +13,13 @@ export function updateAuth() {
         // Auth.currentUserInfo();
         // Auth.currentUserPoolUser();
         Auth.currentAuthenticatedUser().then((user) => {
-            QL.getClientByUsername(user.username, ["id", "username"], (user) => {
+            QL.getTrainerByUsername(user.username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully updated the authentication credentials");
                 dispatch(setUser(user));
                 dispatch(authLogIn());
                 dispatch(setIsNotLoading());
             }, (error) => {
-                console.log("REDUX: Could not fetch the client");
+                console.log("REDUX: Could not fetch the trainer");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
@@ -33,7 +33,7 @@ export function logIn(username, password) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         Auth.signIn(username, password).then(() => {
-            QL.getClientByUsername(username, ["id", "username"], (user) => {
+            QL.getTrainerByUsername(username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully logged in!");
                 dispatch(authLogIn());
                 if (getStore().user.id !== user.id) {
@@ -44,7 +44,7 @@ export function logIn(username, password) {
                 }
                 dispatch(setIsNotLoading());
             }, (error) => {
-                console.log("REDUX: Could not fetch the client");
+                console.log("REDUX: Could not fetch the trainer");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
@@ -84,7 +84,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 email: email
             }
         };
-        Lambda.createClient("admin", name, gender, birthday, email, username, (clientID) => {
+        Lambda.createTrainer("admin", name, gender, birthday, email, username, (clientID) => {
             Auth.signUp(params).then((data) => {
                 console.log("REDUX: Successfully signed up!");
                 dispatch(authSignUp());
