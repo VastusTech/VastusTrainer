@@ -118,7 +118,7 @@ class SignInPage extends Component {
                             <Segment basic>
                                 <Image src={Logo} size="tiny" centered />
                                 <Header as='h2' inverted textAlign='center'>
-									Vastus Trainer
+									Join Below                               
                                 </Header>
                             </Segment>
                             <Form size='large'>

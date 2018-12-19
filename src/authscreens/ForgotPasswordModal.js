@@ -90,7 +90,7 @@ class ForgotPasswordModal extends Component {
             console.log("Passwords did not match");
             this.props.setError(new Error("Password and confirm password do not match!"));
         }
-        else if (this.authState.username && this.authState.confirmationCode && this.authState.newPassword) {
+        else if (!(this.authState.username && this.authState.confirmationCode && this.authState.newPassword && this.authState.confirmNewPassword)) {
             this.props.setError(new Error("All fields need to be filled in!"));
         }
         else {
@@ -107,11 +107,14 @@ class ForgotPasswordModal extends Component {
     render() {
         function errorMessage(error) {
             if (error) {
+                // if (error.errorMessage) {
+                //     error = error.errorMessage;
+                // }
                 return (
                     <Modal.Description>
                         <Message color='red'>
                             <h1>Error!</h1>
-                            <p>{error}</p>
+                            <p>{JSON.stringify(error)}</p>
                         </Message>
                     </Modal.Description>
                 );
@@ -137,30 +140,15 @@ class ForgotPasswordModal extends Component {
                     <Modal.Content>
                         <p>Enter your username to retrieve your information</p>
                     </Modal.Content>
-                    <Modal.Actions>
+                    <Modal.Actions style={{borderTop: 'none'}}>
                         <Form>
-                            <div className="field">
-                                <label>Confirmation Code from your Email</label>
-                                <Form.Input type="text" name="confirmationCode" placeholder="XXXXXX" onChange={value => this.changeStateText("confirmationCode", value)}/>
+                            <Form.Input type="text" label="Confirmation Code from your Email" name="confirmationCode" placeholder="XXXXXX" onChange={value => this.changeStateText("confirmationCode", value)}/>
+                            <Form.Input type="password" label="New Password" name="newPassword" placeholder="new password" onChange={value => this.changeStateText("newPassword", value)}/>
+                            <Form.Input type="password" name="confirmNewPassword" placeholder="confirm new password" onChange={value => this.changeStateText("confirmNewPassword", value)}/>
+                            <div className="u-flex u-flex-justify--space-between u-padding-y--2 u-margin-top--2">
+                                <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
+                                <Button positive color='green' onClick={this.handleConfirmButton.bind(this)}>Confirm</Button>
                             </div>
-                            <div className="field">
-                                <label>New Password</label>
-                                <Form.Input type="password" name="newPassword" placeholder="new password" onChange={value => this.changeStateText("newPassword", value)}/>
-                            </div>
-                            <div className="field">
-                                <label>Confirm New Password</label>
-                                <Form.Input type="password" name="confirmNewPassword" placeholder="confirm new password" onChange={value => this.changeStateText("confirmNewPassword", value)}/>
-                            </div>
-                            <Grid relaxed columns={4}>
-                                <Grid.Column>
-                                    <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
-                                </Grid.Column>
-                                <Grid.Column/>
-                                <Grid.Column/>
-                                <Grid.Column>
-                                    <Button positive color='green' onClick={this.handleConfirmButton.bind(this)}>Confirm</Button>
-                                </Grid.Column>
-                            </Grid>
                         </Form>
                     </Modal.Actions>
                 </Modal>
@@ -169,27 +157,18 @@ class ForgotPasswordModal extends Component {
         return(
             <Modal open={this.props.auth.forgotPasswordModalOpen} onClose={() => (false)} trigger={<Button size="large" fluid inverted onClick={this.props.openForgotPasswordModal.bind(this)}>Forgot Password?</Button>}size='tiny'>
                 {loadingProp(this.props.info.isLoading)}
-                <Modal.Header>Forgot Password?</Modal.Header>
+                <Modal.Header style={{borderBottom: 'none'}}>Forgot Password?</Modal.Header>
                 {errorMessage(this.props.info.error)}
                 <Modal.Content>
                     <p>Enter your username to retrieve your information</p>
                 </Modal.Content>
-                <Modal.Actions>
+                <Modal.Actions style={{borderTop: 'none'}}>
                     <Form>
-                        <div className="field">
-                            <label>Username</label>
-                            <Form.Input type="text" name="username" placeholder="username" onChange={value => this.changeStateText("username", value)}/>
+                        <Form.Input type="text" name="username" placeholder="username" onChange={value => this.changeStateText("username", value)}/>
+                        <div className="u-flex u-flex-justify--space-between u-padding-y--2 u-margin-top--2">
+                            <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
+                            <Button positive color='green' onClick={this.handleSubmitButton.bind(this)}>Submit</Button>
                         </div>
-                        <Grid relaxed columns={4}>
-                            <Grid.Column>
-                                <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
-                            </Grid.Column>
-                            <Grid.Column/>
-                            <Grid.Column/>
-                            <Grid.Column>
-                                <Button positive color='green' onClick={this.handleSubmitButton.bind(this)}>Submit</Button>
-                            </Grid.Column>
-                        </Grid>
                     </Form>
                 </Modal.Actions>
             </Modal>

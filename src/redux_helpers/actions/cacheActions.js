@@ -2,20 +2,30 @@ import { setIsNotLoading, setError, setIsLoading } from "./infoActions";
 import QL from "../../GraphQL";
 import { Storage } from "aws-amplify";
 import defaultProfilePicture from "../../img/roundProfile.png";
+import {switchReturnItemType} from "../../logic/ItemType";
 
-function addProfilePictureToData(data, imageKey, callback) {
-    if (imageKey) {
-        Storage.get(imageKey).then((url) => {
+function addProfilePictureToData(data, callback) {
+    if (data && data.hasOwnProperty("profileImagePath")) {
+        const imageKey = data.profileImagePath;
+        if (imageKey) {
+            Storage.get(imageKey).then((url) => {
+                callback({
+                    ...data,
+                    profilePicture: url
+                });
+            }).catch((error) => {
+                console.error("ERROR IN GETTING PROFILE IMAGE FOR USER");
+                console.log("ERROR IN GETTING PROFILE IMAGE FOR USER");
+                console.log(error);
+                callback(data);
+            });
+        }
+        else {
             callback({
                 ...data,
-                profilePicture: url
+                profilePicture: defaultProfilePicture
             });
-        }).catch((error) => {
-            alert("ERROR IN GETTING PROFILE IMAGE FOR USER");
-            console.log("ERROR IN GETTING PROFILE IMAGE FOR USER");
-            console.log(error);
-            callback(data);
-        });
+        }
     }
     else {
         callback({
@@ -31,7 +41,7 @@ function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, d
         if (currentObject) {
             const objectKeyList = Object.keys(currentObject);
             variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
-            // alert("Final filtered list is = " + JSON.stringify(variablesList));
+            // console.log("Final filtered list is = " + JSON.stringify(variablesList));
         }
         overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore);
     };
@@ -45,11 +55,11 @@ function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchTy
 function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore) {
     const profilePictureIndex = variablesList.indexOf("profilePicture");
     if (profilePictureIndex !== -1) {
-        // alert("The variable list is requesting the profilePicture to be uploaded as well.");
+        // console.log("The variable list is requesting the profilePicture to be uploaded as well.");
         variablesList.splice(profilePictureIndex, 1);
         // Add
         if (!variablesList.includes("profileImagePath")) {
-            alert("lmao you forgot to include the profile image path, I'll include it tho, no worries");
+            console.error("lmao you forgot to include the profile image path, I'll include it tho, no worries");
             variablesList = [
                 ...variablesList,
                 "profileImagePath"
@@ -60,31 +70,40 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
         if (!variablesList.includes("id")) {
             variablesList = [...variablesList, "id"];
         }
+        if (!variablesList.includes("item_type")) {
+            variablesList = [...variablesList, "item_type"];
+        }
         QL[QLFunctionName](id, variablesList, (data) => {
-            // alert("Successfully retrieved the QL info");
+            // console.log("Successfully retrieved the QL info");
             if (profilePictureIndex !== -1) {
-                // alert("Adding profile image to the data");
-                addProfilePictureToData(data, data.profileImagePath, (updatedData) => {
-                    // alert("Dispatching the profile image + data");
+                // console.log("Adding profile image to the data");
+                addProfilePictureToData(data, (updatedData) => {
+                    // console.log("Dispatching the profile image + data");
                     dispatch({
                         type: fetchDispatchType,
-                        payload: updatedData
+                        payload: {
+                            id,
+                            data: updatedData
+                        }
                     });
                     dispatch(setIsNotLoading());
                     if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
                 });
             }
             else {
-                // alert("Just dispatching the normal data");
+                // console.log("Just dispatching the normal data");
                 dispatch({
                     type: fetchDispatchType,
-                    payload: data
+                    payload: {
+                        id,
+                        data
+                    }
                 });
                 dispatch(setIsNotLoading());
                 if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
             }
         }, (error) => {
-            alert("Error in retrieval");
+            console.error("Error in retrieval");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
@@ -92,12 +111,16 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
     else {
         dispatch({
             type: fetchDispatchType,
-            payload: {id}
+            payload: {
+                id,
+                data: null
+            }
         });
         dispatch(setIsNotLoading());
         if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
     }
 }
+// TODO THIS'LL BEE SUPER COOL TO DO IN THE FUTURE
 // TODO DON'T OPTIMIZE UNLESS THERE'S AN ACTUAL PROBLEM YOU GOBLIN
 function batchFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType) {
     // TODO Check to see if this has already been fulfilled
@@ -113,11 +136,11 @@ function batchForceFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDisp
 function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dispatch) {
     const profilePictureIndex = variablesList.indexOf("profilePicture");
     if (profilePictureIndex !== -1) {
-        // alert("The variable list is requesting the profilePicture to be uploaded as well.");
+        // console.log("The variable list is requesting the profilePicture to be uploaded as well.");
         variablesList.splice(profilePictureIndex, 1);
         // Add
         if (!variablesList.includes("profileImagePath")) {
-            alert("lmao you forgot to include the profile image path, I'll include it tho, no worries");
+            console.error("lmao you forgot to include the profile image path, I'll include it tho, no worries");
             variablesList = [
                 ...variablesList,
                 "profileImagePath"
@@ -129,7 +152,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
             if (profilePictureIndex !== -1) {
                 for (let i = 0; i < data.items.length; i++) {
                     const item = data.items[i];
-                    addProfilePictureToData(item, item.profileImagePath, (updatedData) => {
+                    addProfilePictureToData(item, (updatedData) => {
                         dispatch({
                             type: fetchDispatchType,
                             payload: updatedData
@@ -150,7 +173,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
         }
         if (data.hasOwnProperty("unprocessedItems") && data.unprocessedItems) {
             // TODO Load it in again until you get the whole thing? Might be dangerous with large lists though...
-            alert("We have unprocessed items in the batch get!");
+            console.error("We have unprocessed items in the batch get!");
         }
     }, (error) => {
         dispatch(setError(error));
@@ -175,8 +198,14 @@ export function fetchReview(id, variablesList, dataHandler) {
 export function fetchEvent(id, variablesList, dataHandler) {
     return fetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler);
 }
+export function fetchChallenge(id, variablesList, dataHandler) {
+    return fetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler);
+}
 export function fetchInvite(id, variablesList, dataHandler) {
     return fetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler);
+}
+export function fetchPost(id, variablesList, dataHandler) {
+    return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler);
 }
 export function forceFetchClient(id, variablesList, dataHandler) {
     return forceFetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler);
@@ -196,8 +225,14 @@ export function forceFetchReview(id, variablesList, dataHandler) {
 export function forceFetchEvent(id, variablesList, dataHandler) {
     return forceFetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler);
 }
+export function forceFetchChallenge(id, variablesList, dataHandler) {
+    return forceFetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler);
+}
 export function forceFetchInvite(id, variablesList, dataHandler) {
     return forceFetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler);
+}
+export function forceFetchPost(id, variablesList, dataHandler) {
+    return forceFetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler);
 }
 export function fetchClients(ids, variablesList) {
 
@@ -255,6 +290,15 @@ export function putEventQuery(queryString, queryResult) {
         }
     };
 }
+export function putChallengeQuery(queryString, queryResult) {
+    return {
+        type: "FETCH_CHALLENGE_QUERY",
+        payload: {
+            queryString,
+            queryResult
+        }
+    };
+}
 export function putInviteQuery(queryString, queryResult) {
     return {
         type: "FETCH_INVITE_QUERY",
@@ -262,6 +306,60 @@ export function putInviteQuery(queryString, queryResult) {
             queryString,
             queryResult
         }
+    };
+}
+export function putPostQuery(queryString, queryResult) {
+    return {
+        type: "FETCH_POST_QUERY",
+        payload: {
+            queryString,
+            queryResult
+        }
+    };
+}
+export function clearClientQuery() {
+    return {
+        type: "CLEAR_CLIENT_QUERY",
+    };
+}
+export function clearTrainerQuery() {
+    return {
+        type: "CLEAR_TRAINER_QUERY",
+    };
+}
+export function clearGymQuery() {
+    return {
+        type: "CLEAR_GYM_QUERY",
+    };
+}
+export function clearWorkoutQuery() {
+    return {
+        type: "CLEAR_WORKOUT_QUERY",
+    };
+}
+export function clearReviewQuery() {
+    return {
+        type: "CLEAR_REVIEW_QUERY",
+    };
+}
+export function clearEventQuery() {
+    return {
+        type: "CLEAR_EVENT_QUERY",
+    };
+}
+export function clearChallengeQuery() {
+    return {
+        type: "CLEAR_CHALLENGE_QUERY",
+    };
+}
+export function clearInviteQuery() {
+    return {
+        type: "CLEAR_INVITE_QUERY",
+    };
+}
+export function clearPostQuery() {
+    return {
+        type: "CLEAR_POST_QUERY",
     };
 }
 function putQuery(queryString, queryResult, actionType) {
@@ -274,44 +372,133 @@ function putQuery(queryString, queryResult, actionType) {
     };
 }
 export function putClient(client) {
-    return {
-        type: "FETCH_CLIENT",
-        payload: client
-    };
+    if (client && client.id) {
+        return {
+            type: "FETCH_CLIENT",
+            payload: {
+                id: client.id,
+                data: client
+            }
+        };
+    }
+    return null;
 }
 export function putTrainer(trainer) {
-    return {
-        type: "FETCH_TRAINER",
-        payload: trainer
-    };
+    if (trainer && trainer.id) {
+        return {
+            type: "FETCH_TRAINER",
+            payload: {
+                id: trainer.id,
+                data: trainer
+            }
+        };
+    }
+    return null;
 }
 export function putGym(gym) {
-    return {
-        type: "FETCH_GYM",
-        payload: gym
-    };
+    if (gym && gym.id) {
+        return {
+            type: "FETCH_GYM",
+            payload: {
+                id: gym.id,
+                data: gym
+            }
+        };
+    }
+    return null;
 }
 export function putWorkout(workout) {
-    return {
-        type: "FETCH_WORKOUT",
-        payload: workout
-    };
+    if (workout && workout.id) {
+        return {
+            type: "FETCH_WORKOUT",
+            payload: {
+                id: workout.id,
+                data: workout
+            }
+        };
+    }
+    return null;
 }
 export function putReview(review) {
-    return {
-        type: "FETCH_REVIEW",
-        payload: review
-    };
+    if (review && review.id) {
+        return {
+            type: "FETCH_REVIEW",
+            payload: {
+                id: review.id,
+                data: review
+            }
+        };
+    }
+    return null;
 }
 export function putEvent(event) {
-    return {
-        type: "FETCH_EVENT",
-        payload: event
-    };
+    if (event && event.id) {
+        return {
+            type: "FETCH_EVENT",
+            payload: {
+                id: event.id,
+                data: event
+            }
+        };
+    }
+    return null;
+}
+export function putChallenge(challenge) {
+    if (challenge && challenge.id) {
+        return {
+            type: "FETCH_CHALLENGE",
+            payload: {
+                id: challenge.id,
+                data: challenge
+            }
+        };
+    }
+    return null;
 }
 export function putInvite(invite) {
-    return {
-        type: "FETCH_INVITE",
-        payload: invite
-    };
+    if (invite && invite.id) {
+        return {
+            type: "FETCH_INVITE",
+            payload: {
+                id: invite.id,
+                data: invite
+            }
+        };
+    }
+    return null;
+}
+export function putPost(post) {
+    if (post && post.id) {
+        return {
+            type: "FETCH_POST",
+            payload: {
+                id: post.id,
+                data: post
+            }
+        };
+    }
+    return null;
+}
+export function getCache(itemType, getStore) {
+    const cache = getStore().cache;
+    return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
+        cache.events, cache.challenges, cache.invites, cache.posts, "Retrieve cache not implemented");
+}
+export function getQueryCache(itemType, getStore) {
+    const cache = getStore().cache;
+    return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries, cache.workoutQueries,
+        cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries, cache.postQueries,
+        "Retrieve query cache not implemented");
+}
+export function getPutItemFunction(itemType) {
+    return switchReturnItemType(itemType, putClient, putTrainer, putGym, putWorkout, putReview, putEvent, putChallenge,
+        putPost, "Retrieve put item function item type not implemented");
+}
+export function getPutQueryFunction(itemType) {
+    return switchReturnItemType(itemType, putClientQuery, putTrainerQuery, putGymQuery, putWorkoutQuery, putReviewQuery,
+        putEventQuery, putChallengeQuery, putInviteQuery, putPostQuery, "Retrieve Put Query Function not implemented");
+}
+export function getClearQueryFunction(itemType) {
+    return switchReturnItemType(itemType, clearClientQuery, clearTrainerQuery, clearGymQuery, clearWorkoutQuery, clearReviewQuery,
+        clearEventQuery, clearChallengeQuery, clearInviteQuery, clearPostQuery, "Retrieve Clear Query Function not implemented");
 }

@@ -1,6 +1,6 @@
 /* Octicons */
 
-.icon.alert:before { content: '\f02d'} /*  */
+.icon.console.log:before { content: '\f02d'} /*  */
 .icon.alignment.align:before { content: '\f08a'} /*  */
 .icon.alignment.aligned.to:before { content: '\f08e'} /*  */
 .icon.alignment.unalign:before { content: '\f08b'} /*  */

@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import {Grid, Message, Button, Header, Modal} from 'semantic-ui-react';
+import React, { Component, Fragment } from 'react'
+import {Message, Button, Modal, Card} from 'semantic-ui-react';
 import EventCard from "../components/EventCard";
 // import QL from "../GraphQL";
 import { connect } from "react-redux";
@@ -7,6 +7,7 @@ import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 // import { inspect } from 'util';
 import Lambda from "../Lambda";
 import {fetchEvent} from "../redux_helpers/actions/cacheActions";
+import InviteFunctions from "../databaseFunctions/InviteFunctions";
 
 class InviteToScheduledEventsModalProp extends Component {
     state = {
@@ -25,9 +26,9 @@ class InviteToScheduledEventsModalProp extends Component {
     update() {
         // TODO Change this if we want to actually be able to do something while it's loading
         const user = this.props.user;
-        //alert("Updating Scheduled Events");
+        //console.log("Updating Scheduled Events");
         if (!user.id) {
-            alert("Pretty bad error");
+            console.error("Pretty bad error");
             this.setState({isLoading: true});
             this.setState({isInviteLoading: false});
         }
@@ -48,11 +49,11 @@ class InviteToScheduledEventsModalProp extends Component {
     }
 
     handleInviteToEvent(eventID) {
-        Lambda.sendEventInvite(this.props.user.id, this.props.user.id, this.props.friendID, eventID,
+        InviteFunctions.createEventInvite(this.props.user.id, this.props.user.id, this.props.friendID, eventID,
             (data) => {
                 this.handleClose();
             }, (error) => {
-                alert(JSON.stringify(error));
+                console.log(JSON.stringify(error));
             });
     }
 
@@ -78,15 +79,14 @@ class InviteToScheduledEventsModalProp extends Component {
             for (let i = 0; i < events.length; i++) {
                 if (events.hasOwnProperty(i) === true) {
                     rowProps.push(
-                        <Grid.Row key={i} className="ui one column stackable center aligned page grid">
-                            <Grid.Column>
+                        <Fragment>
+                            <Card fluid raised>
+                                <Card.Content>
                                     <EventCard eventID={events[i]}/>
-                            </Grid.Column>
-                            <Grid.Column/>
-                            <Grid.Column>
-                                <Button loading={isInviteLoading} basic color='purple' onClick={() => {eventInviteHandler(events[i])}}>Invite to Challenge</Button>
-                            </Grid.Column>
-                        </Grid.Row>
+                                    <Button loading={isInviteLoading} primary fluid onClick={() => {eventInviteHandler(events[i])}}>Invite to Challenge</Button>
+                                </Card.Content>
+                            </Card>
+                        </Fragment>
                     );
                 }
             }
@@ -94,7 +94,7 @@ class InviteToScheduledEventsModalProp extends Component {
             return rowProps;
         }
         if (this.props.info.isLoading) {
-            //alert("loading: " + JSON.stringify(this.state));
+            //console.log("loading: " + JSON.stringify(this.state));
             return(
                 <Modal dimmer='blurring' open={this.props.open} onClose={this.props.onClose.bind(this)}>
                     <Message>Loading...</Message>
@@ -103,13 +103,11 @@ class InviteToScheduledEventsModalProp extends Component {
         }
         if (this.props.user.scheduledEvents && this.props.user.scheduledEvents.length && this.props.user.scheduledEvents.length > 0) {
             return(
-                <Modal dimmer='blurring' size='large' open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
-                    <Modal.Header>Select Challenge</Modal.Header>
-                    <Modal.Content>
-                        <Grid columns={4}>
-                            {rows(this.props.user.id, this.props.friendID, this.props.user.scheduledEvents, this.sendInvite.bind(this),
+                <Modal centered dimmer='blurring' size='large' open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
+                    <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
+                    <Modal.Content className="u-bg--bg">
+                        {rows(this.props.user.id, this.props.friendID, this.props.user.scheduledEvents, this.sendInvite.bind(this),
                             this.state.isInviteLoading)}
-                        </Grid>
                     </Modal.Content>
                 </Modal>
             );

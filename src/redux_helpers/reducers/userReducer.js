@@ -10,12 +10,12 @@ export default (state = initialState, action) => {
     switch (action.type) {
         // For the user, we want to be able to store all the pertinent information
         case SET_USER:
-            // alert("REDUX SET USER, INIT STATE = " + JSON.stringify(state) + ", ACTION PAYLOAD = " + JSON.stringify(action.payload));
+            // console.log("REDUX SET USER, INIT STATE = " + JSON.stringify(state) + ", ACTION PAYLOAD = " + JSON.stringify(action.payload));
             state = {
                 ...state,
                 ...action.payload
             };
-            // alert("STATE AFTER SET USER = " + JSON.stringify(state));
+            // console.log("STATE AFTER SET USER = " + JSON.stringify(state));
             break;
         case FORCE_SET_USER:
             state = {
@@ -34,6 +34,6 @@ export default (state = initialState, action) => {
             };
             break;
     }
-    // alert("USER: Did " + action.type + " and now state is = " + JSON.stringify(state));
+    // console.log("USER: Did " + action.type + " and now state is = " + JSON.stringify(state));
     return state;
 };

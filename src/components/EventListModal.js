@@ -1,3 +1,0 @@
-// TODO I really want to put OwnedEventList, ScheduledEventList, and CompletedEventList all into this file, but
-// TODO because of the way we are fetching the data, I can't see a good way of doing that off the top of my head...
-// TODO I'll look into it chef

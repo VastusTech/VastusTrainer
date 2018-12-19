@@ -6,6 +6,7 @@ import { Auth } from 'aws-amplify';
 import SearchBarProp from "./components/SearchBar";
 import { connect } from "react-redux";
 import {logOut} from "./redux_helpers/actions/authActions";
+import QL from "./GraphQL";
 // import {  } from "./redux_helpers/actions/userActions";
 
 /**
@@ -14,39 +15,7 @@ import {logOut} from "./redux_helpers/actions/authActions";
 * This file contains the general outline of the app in a grid based format.
  */
 class AuthApp extends Component {
-    // state = {
-    //     error: null,
-    //     isLoading: false
-    // };
-
-    constructor(props) {
-        super(props);
-    }
-
-    handleLogOut() {
-        this.props.logOut();
-        // this.setState({isLoading: true});
-        // Auth.signOut(/*{global: false}*/).then((data) => {
-        //     console.log("Successfully signed out!");
-        //     console.log(data);
-        //     this.setState({isLoading: false, username: null});
-        //     this.props.signOut();
-        // }).catch((error) => {
-        //     console.log("Sign out has failed :(");
-        //     console.log(error);
-        //     this.setState({error: error, isLoading: false});
-        // });
-    }
-
-    handleStickyRef = stickyRef => this.setState({ stickyRef })
-
-    componentDidMount() {
-        // Analytics.record('Amplify_CLI');
-    }
-
-    componentWillReceiveProps(newProps) {
-        // alert("NEW PROPS: " + JSON.stringify(newProps));
-    }
+    // handleStickyRef = stickyRef => this.setState({ stickyRef })
 
     //This displays the search bar, log out button, and tab system inside of the grid.
     render() {

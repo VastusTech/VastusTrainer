@@ -15,7 +15,7 @@ class UnauthApp extends Component {
     // async componentDidMount() {
     //     // StatusBar.setHidden(true);
     //     try {
-    //         //alert(JSON.stringify(this.props));
+    //         //console.log(JSON.stringify(this.props));
     //         const user = await Auth.currentAuthenticatedUser();
     //         this.setState({ user, isLoading: false })
     //     } catch (err) {
@@ -25,8 +25,8 @@ class UnauthApp extends Component {
 
     // async componentWillReceiveProps(nextProps) {
     //     //try {
-    //         //alert(JSON.stringify(nextProps));
-    //         //alert(JSON.stringify(this.props));
+    //         //console.log(JSON.stringify(nextProps));
+    //         //console.log(JSON.stringify(this.props));
     //         //const user = await Auth.currentAuthenticatedUser();
     //         //this.setState({ user })
     //     // } catch (err) {

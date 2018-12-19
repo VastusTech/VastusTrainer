@@ -2,7 +2,8 @@ import { Auth } from "aws-amplify";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {fetchUser, clearUser, setUser, forceSetUser} from "./userActions";
 import QL from "../../GraphQL";
-import Lambda from "../../Lambda";
+// import Lambda from "../../Lambda";
+import ClientFunctions from "../../databaseFunctions/ClientFunctions";
 
 export function updateAuth() {
     return (dispatch) => {
@@ -13,13 +14,13 @@ export function updateAuth() {
         // Auth.currentUserInfo();
         // Auth.currentUserPoolUser();
         Auth.currentAuthenticatedUser().then((user) => {
-            QL.getTrainerByUsername(user.username, ["id", "username"], (user) => {
+            QL.getClientByUsername(user.username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully updated the authentication credentials");
                 dispatch(setUser(user));
                 dispatch(authLogIn());
                 dispatch(setIsNotLoading());
             }, (error) => {
-                console.log("REDUX: Could not fetch the trainer");
+                console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
@@ -33,7 +34,7 @@ export function logIn(username, password) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         Auth.signIn(username, password).then(() => {
-            QL.getTrainerByUsername(username, ["id", "username"], (user) => {
+            QL.getClientByUsername(username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully logged in!");
                 dispatch(authLogIn());
                 if (getStore().user.id !== user.id) {
@@ -44,7 +45,7 @@ export function logIn(username, password) {
                 }
                 dispatch(setIsNotLoading());
             }, (error) => {
-                console.log("REDUX: Could not fetch the trainer");
+                console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
@@ -84,7 +85,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 email: email
             }
         };
-        Lambda.createTrainer("admin", name, gender, birthday, email, username, (clientID) => {
+        ClientFunctions.createClient("admin", name, gender, birthday, email, username, (clientID) => {
             Auth.signUp(params).then((data) => {
                 console.log("REDUX: Successfully signed up!");
                 dispatch(authSignUp());
@@ -94,7 +95,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
                 // TODO DELETE CLIENT THAT WAS CREATED!!!!
-                Lambda.deleteClient("admin", clientID);
+                ClientFunctions.delete("admin", clientID);
             });
         }, (error) => {
             console.log("REDUX: Creating new client failed...");
@@ -136,8 +137,8 @@ export function confirmForgotPassword(username, confirmationCode, newPassword) {
         dispatch(setIsLoading());
         Auth.forgotPasswordSubmit(username, confirmationCode, newPassword).then(() => {
             console.log("REDUX: Successfully submitted forgot password!");
-            dispatch(authConfirmSignUp());
-            dispatch(closeForgotPasswordModal());
+            dispatch(authConfirmForgotPassword());
+            // dispatch(closeForgotPasswordModal());
             dispatch(setIsNotLoading());
         }).catch((error) => {
             console.log("REDUX: Failed submitting forgot password...");

@@ -1,3 +1,13 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+.ui.cards > .card,
+.ui.card {
+    background: @black;
+}
+
+.ui.card .ui.card .extra {
+    padding-left: .25em;
+    padding-right: .25em;
+}

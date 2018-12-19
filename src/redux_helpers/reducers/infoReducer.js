@@ -3,14 +3,14 @@ const CLEAR_ERROR = 'CLEAR_ERROR';
 const SET_IS_LOADING = 'SET_IS_LOADING';
 const SET_IS_NOT_LOADING = 'SET_IS_NOT_LOADING';
 const TOGGLE_IS_LOADING = 'TOGGLE_IS_LOADING';
-
-export const infoFunctions = {
-    SET_ERROR,
-    CLEAR_ERROR,
-    SET_IS_LOADING,
-    SET_IS_NOT_LOADING,
-    TOGGLE_IS_LOADING
-};
+//
+// export const infoFunctions = {
+//     SET_ERROR,
+//     CLEAR_ERROR,
+//     SET_IS_LOADING,
+//     SET_IS_NOT_LOADING,
+//     TOGGLE_IS_LOADING
+// };
 
 const initialState = {
     isLoading: false,
@@ -56,7 +56,7 @@ export default (state = initialState, action) => {
             };
             break;
     }
-    // alert("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
+    // console.log("INFO: Did " + action.type + " and now state is = " + JSON.stringify(state));
     return state;
 }
 
