@@ -1,17 +1,14 @@
 import { Fragment } from 'react';
 import {Tab, Menu, Icon, Header, Feed } from "semantic-ui-react";
-// import EventFeed from "./EventFeed";
 import NotificationFeed from "./NotificationBellFeed";
 import ProfileProp from "./Profile";
 import React from "react";
-// import CreateEventProp from "./CreateEvent";
-// import NextEventProp from "../components/NextWorkout";
 import LeaderBoard from "./Leaderboard";
-// import VideoUploadScreen from "./VideoUploadScreen";
-// import PaymentScreen from "./PaymentScreen";
 import NotificationBellProp from "../components/NotificationBell";
-import ChallengeFeed from "./ChallengeFeed";
-import SearchScreen from "./SearchScreen";
+// import ChallengeFeed from "./ChallengeFeed";
+import PostFeed from "./PostFeed";
+import OrganizationalScreen from "./OrganizationalScreen";
+// import SearchScreen from "./SearchScreen";
 
 /**
 * Tabs TODO Potentially clean this up
@@ -28,7 +25,7 @@ export default () => (
                     </Menu.Item>),
                 render: () =>
                     <Tab.Pane basic attached={false}>
-                        <ChallengeFeed/>
+                        <PostFeed/>
                     </Tab.Pane>
             },
             {
@@ -43,24 +40,15 @@ export default () => (
             {
                 menuItem: (
                     <Menu.Item key={2}>
-                        <Icon name='winner' size='large' />
+                        <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <LeaderBoard />
+                    <OrganizationalScreen />
                 </Tab.Pane>
             },
             {
                 menuItem: (
                     <Menu.Item key={3}>
-                        <Icon name='search' size='large' />
-                    </Menu.Item>),
-                render: () => <Tab.Pane basic attached={false}>
-                    <SearchScreen />
-                </Tab.Pane>
-            },
-            {
-                menuItem: (
-                    <Menu.Item key={4}>
                         <NotificationBellProp/>
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
