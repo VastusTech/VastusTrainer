@@ -7,15 +7,27 @@ class TrainerFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     // Create Functions ============================================================
+    static createTrainer(fromID, name, gender, birthday, email, username, successHandler, failureHandler) {
+        this.create(fromID, name, gender, birthday, email, username, null, successHandler, failureHandler);
+    }
+    static createTrainerOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
+        this.create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler);
+    }
 
     // Update Functions ============================================================
 
 
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
-    static create() {
-        // TODO Implement
-        console.log("Not implemented...");
+    static create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
+        Lambda.create(fromID, itemType, {
+            name,
+            gender,
+            birthday,
+            email,
+            username,
+            bio
+        }, successHandler, failureHandler);
     }
     static updateAdd(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
         super.updateAdd(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);

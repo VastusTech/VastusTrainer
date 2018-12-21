@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
 import {fetchPost, putClientQuery, putPost, putPostQuery} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
+import CreatePostProp from "./CreatePost";
 // import CreateEventProp from "./CreateEvent";
 // import WorkoutSelectionList from "./WorkoutSelectionList";
 // import CreateChallengeProp from "./CreateChallenge"
@@ -221,11 +222,9 @@ class PostFeed extends Component {
         //is hit by the user.
         return (
             <Visibility onUpdate={this.handleUpdate}>
-                <CreateChallengeProp queryEvents={this.queryEvents}/>
-                <Header sub>Your Next Challenge:</Header>
-                <NextEventProp/>
-                <Header sub>Upcoming Challenges:</Header>
-                {rows(this.state.events)}
+                <CreatePostProp queryPosts={this.queryPosts}/>
+                <Header sub>Recent Posts:</Header>
+                {rows(this.state.posts)}
             </Visibility>
         );
     }

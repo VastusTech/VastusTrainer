@@ -3,7 +3,7 @@ import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {fetchUser, clearUser, setUser, forceSetUser} from "./userActions";
 import QL from "../../GraphQL";
 // import Lambda from "../../Lambda";
-import ClientFunctions from "../../databaseFunctions/ClientFunctions";
+import TrainerFunctions from "../../databaseFunctions/TrainerFunctions";
 
 export function updateAuth() {
     return (dispatch) => {
@@ -14,7 +14,7 @@ export function updateAuth() {
         // Auth.currentUserInfo();
         // Auth.currentUserPoolUser();
         Auth.currentAuthenticatedUser().then((user) => {
-            QL.getClientByUsername(user.username, ["id", "username"], (user) => {
+            QL.getTrainerByUsername(user.username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully updated the authentication credentials");
                 dispatch(setUser(user));
                 dispatch(authLogIn());
@@ -34,7 +34,7 @@ export function logIn(username, password) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         Auth.signIn(username, password).then(() => {
-            QL.getClientByUsername(username, ["id", "username"], (user) => {
+            QL.getTrainerByUsername(username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully logged in!");
                 dispatch(authLogIn());
                 if (getStore().user.id !== user.id) {
@@ -85,7 +85,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 email: email
             }
         };
-        ClientFunctions.createClient("admin", name, gender, birthday, email, username, (clientID) => {
+        TrainerFunctions.createTrainer("admin", name, gender, birthday, email, username, (trainerID) => {
             Auth.signUp(params).then((data) => {
                 console.log("REDUX: Successfully signed up!");
                 dispatch(authSignUp());
@@ -95,7 +95,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
                 // TODO DELETE CLIENT THAT WAS CREATED!!!!
-                ClientFunctions.delete("admin", clientID);
+                TrainerFunctions.delete("admin", trainerID);
             });
         }, (error) => {
             console.log("REDUX: Creating new client failed...");

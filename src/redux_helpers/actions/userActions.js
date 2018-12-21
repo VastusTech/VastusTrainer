@@ -1,8 +1,8 @@
-import QL from '../../GraphQL';
-import { Storage } from "aws-amplify";
+// import QL from '../../GraphQL';
+// import { Storage } from "aws-amplify";
 import {setError, clearError, setIsLoading, setIsNotLoading} from './infoActions';
-import { fetchClient, forceFetchClient } from "./cacheActions";
-import defaultProfilePicture from "../../img/roundProfile.png";
+import { fetchTrainer, forceFetchTrainer } from "./cacheActions";
+// import defaultProfilePicture from "../../img/roundProfile.png";
 
 // TODO Cache the user into the clients so that we actually are getting from there
 export function setUser(user) {
@@ -23,7 +23,7 @@ export function forceFetchUserAttributes(variablesList, dataHandler) {
         // Just overwrite all the user attributes because we want to process them again
         const userID = getStore().user.id;
         if (userID) {
-            forceFetchClient(userID, variablesList, (client) => {
+            forceFetchTrainer(userID, variablesList, (client) => {
                 dispatch(setUser(client));
                 dispatch(setIsNotLoading());
                 if (dataHandler) { dataHandler(getStore().user);}
@@ -44,7 +44,7 @@ export function fetchUserAttributes(variablesList, dataHandler) {
     return (dispatch, getStore) => {
         const userID = getStore().user.id;
         if (userID) {
-            fetchClient(userID, variablesList, (client) => {
+            fetchTrainer(userID, variablesList, (client) => {
                 dispatch(setUser(client));
                 dispatch(setIsNotLoading());
                 if (dataHandler) { dataHandler(getStore().user);}

@@ -392,4 +392,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateChallengeProp);
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePostProp);
