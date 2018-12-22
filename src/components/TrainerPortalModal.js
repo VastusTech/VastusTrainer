@@ -1,12 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Modal, Button, List, Dimmer, Loader, Message, Grid, Image } from 'semantic-ui-react';
-import Lambda from "../Lambda";
 import { connect } from "react-redux";
-import ScheduledEventsList from "../screens/ScheduledEventList";
-// import InviteToScheduledEventsModalProp from "../screens/InviteToScheduledEventsModal";
 import InviteToChallengeModalProp from "../screens/InviteToChallengeModal";
 import _ from "lodash";
-import {fetchClient} from "../redux_helpers/actions/cacheActions";
+import {fetchTrainer} from "../redux_helpers/actions/cacheActions";
 import {forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import InviteFunctions from "../databaseFunctions/InviteFunctions";
 import UserFunctions from "../databaseFunctions/UserFunctions";
@@ -14,19 +11,19 @@ import UserFunctions from "../databaseFunctions/UserFunctions";
 type Props = {
     open: boolean,
     onClose: any,
-    clientID: string
+    trainerID: string
 }
 
 /*
-* Client Modal
+* Trainer Modal
 *
 * This is the generic profile view for any user that the current logged in user clicks on.
  */
-class ClientModal extends Component<Props> {
+class TrainerPortalModal extends Component<Props> {
     state = {
         error: null,
         isLoading: true,
-        clientID: null,
+        trainerID: null,
         sentRequest: false,
         inviteModalOpen: false,
         isRemoveFriendLoading: false,
@@ -34,11 +31,11 @@ class ClientModal extends Component<Props> {
         requestSent: false
     };
 
-    resetState(clientID) {
+    resetState(trainerID) {
         this.setState({
             error: null,
             isLoading: true,
-            clientID,
+            trainerID,
             sentRequest: false,
             inviteModalOpen: false,
             isRemoveFriendLoading: false,
@@ -52,32 +49,32 @@ class ClientModal extends Component<Props> {
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.clientID) {
-            if (this.state.clientID !== newProps.clientID) {
+        if (newProps.trainerID) {
+            if (this.state.trainerID !== newProps.trainerID) {
                 // alert("Setting new state to " + newProps.clientID);
-                this.resetState(newProps.clientID);
-                this.props.fetchClient(newProps.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture", "friendRequests"]);
-                this.state.clientID = newProps.clientID;
+                this.resetState(newProps.trainerID);
+                this.props.fetchTrainer(newProps.trainerID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture", "friendRequests"]);
+                this.state.trainerID = newProps.trainerID;
                 //this.setState({clientID: newProps.clientID});
                 // this.state.sentRequest = true;
             }
         }
     }
 
-    getClientAttribute(attribute) {
-        if (this.state.clientID) {
-            let client = this.props.cache.clients[this.state.clientID];
-            if (client) {
+    getTrainerAttribute(attribute) {
+        if (this.state.trainerID) {
+            let trainer = this.props.cache.trainers[this.state.trainerID];
+            if (trainer) {
                 if (attribute.substr(attribute.length - 6) === "Length") {
                     attribute = attribute.substr(0, attribute.length - 6);
-                    if (client[attribute] && client[attribute].length) {
-                        return client[attribute].length;
+                    if (trainer[attribute] && trainer[attribute].length) {
+                        return trainer[attribute].length;
                     }
                     else {
                         return 0;
                     }
                 }
-                return client[attribute];
+                return trainer[attribute];
             }
         }
         else {
@@ -88,7 +85,7 @@ class ClientModal extends Component<Props> {
     handleAddFriendButton() {
         this.setState({isAddFriendLoading: true});
         // alert("Adding this friend!");
-        if (this.props.user.id && this.getClientAttribute("id")) {
+        if (this.props.user.id && this.getTrainerAttribute("id")) {
             InviteFunctions.createFriendRequest(this.props.user.id, this.props.user.id, this.getClientAttribute("id"),
                 (data) => {
                     this.setState({isAddFriendLoading: false, requestSent: true});
@@ -110,7 +107,7 @@ class ClientModal extends Component<Props> {
 
     handleRemoveFriendButton() {
         // alert("Removing this friend!");
-        if (this.props.user.id && this.getClientAttribute("id")) {
+        if (this.props.user.id && this.getTrainerAttribute("id")) {
             this.setState({isRemoveFriendLoading: true});
             UserFunctions.removeFriend(this.props.user.id, this.props.user.id, this.getClientAttribute("id"),
                 (data) => {
@@ -131,7 +128,7 @@ class ClientModal extends Component<Props> {
     }*/
 
     profilePicture() {
-        if (this.getClientAttribute("profilePicture")) {
+        if (this.getTrainerAttribute("profilePicture")) {
             return(
                 <div className="u-avatar u-avatar--small u-margin-bottom--1" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
             );
@@ -147,9 +144,9 @@ class ClientModal extends Component<Props> {
 
     getCorrectFriendActionButton() {
         // alert("getting correct friend action button for " + this.getClientAttribute("id"));
-        if (this.getClientAttribute("id")) {
+        if (this.getTrainerAttribute("id")) {
             if (this.props.user.friends && this.props.user.friends.length) {
-                if (this.props.user.friends.includes(this.getClientAttribute("id"))) {
+                if (this.props.user.friends.includes(this.getTrainerAttribute("id"))) {
                     // Then they're already your friend
                     return (
                         <Button inverted
@@ -161,7 +158,7 @@ class ClientModal extends Component<Props> {
                     );
                 }
             }
-            const friendRequests = this.getClientAttribute("friendRequests");
+            const friendRequests = this.getTrainerAttribute("friendRequests");
             if (friendRequests && friendRequests.length && friendRequests.includes(this.props.user.id) ||
                 this.state.requestSent) {
                 // Then you already sent a friend request
@@ -233,7 +230,7 @@ class ClientModal extends Component<Props> {
             <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
                 {loadingProp(this.props.info.isLoading)}
                 {errorMessage(this.props.info.error)}
-                <Modal.Header>{this.getClientAttribute("name")}</Modal.Header>
+                <Modal.Header>{this.getTrainerAttribute("name")}</Modal.Header>
                 <Modal.Content image>
                     {this.profilePicture()}
                     <Modal.Description>
@@ -243,7 +240,7 @@ class ClientModal extends Component<Props> {
                             <List.Item>
                                 <List.Icon name='user' />
                                 <List.Content>
-                                    {"Username: " + this.getClientAttribute("username")}
+                                    {"Username: " + this.getTrainerAttribute("username")}
                                 </List.Content>
                             </List.Item>
 
@@ -251,14 +248,14 @@ class ClientModal extends Component<Props> {
                             <List.Item>
                                 <List.Icon name='users' />
                                 <List.Content>
-                                    {this.getClientAttribute("friendsLength") + " friends"}
+                                    {this.getTrainerAttribute("friendsLength") + " friends"}
                                 </List.Content>
                             </List.Item>
                             {/* Event Wins */}
                             <List.Item>
                                 <List.Icon name='trophy' />
                                 <List.Content>
-                                    {this.getClientAttribute("challengesWonLength") + " challenges won"}
+                                    {this.getTrainerAttribute("challengesWonLength") + " challenges won"}
                                 </List.Content>
                             </List.Item>
                         </List>
@@ -270,7 +267,7 @@ class ClientModal extends Component<Props> {
                         open={this.state.inviteModalOpen}
                         onOpen={this.handleInviteModalOpen.bind(this)}
                         onClose={this.handleInviteModalClose.bind(this)}
-                        friendID={this.getClientAttribute("id")}
+                        friendID={this.getTrainerAttribute("id")}
                     />
                     {this.getCorrectFriendActionButton()}
                 </Modal.Actions>
@@ -290,8 +287,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchClient: (id, variablesList) => {
-            dispatch(fetchClient(id, variablesList));
+        fetchTrainer: (id, variablesList, dataHandler) => {
+            dispatch(fetchTrainer(id, variablesList, dataHandler));
         },
         forceFetchUserAttributes: (variablesList) => {
             dispatch(forceFetchUserAttributes(variablesList));
@@ -299,4 +296,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClientModal);
+export default connect(mapStateToProps, mapDispatchToProps)(TrainerPortalModal);

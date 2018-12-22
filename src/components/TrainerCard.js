@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { Card, Dimmer, Loader, Grid, Header } from 'semantic-ui-react';
-import TrainerModal from './ClientModal';
+import TrainerPortalModal from './TrainerPortalModal';
 import { connect } from 'react-redux';
-import { fetchClient } from "../redux_helpers/actions/cacheActions";
+import { fetchTrainer } from "../redux_helpers/actions/cacheActions";
 
 /*
-* Event Card
+* Trainer Card
 *
 * This is the generic view for how a challenge shows up in any feeds or lists.
 * It is used as a modal trigger in the feed.
@@ -13,29 +13,29 @@ import { fetchClient } from "../redux_helpers/actions/cacheActions";
 
 type Props = {
     rank: number,
-    clientID: string
+    trainerID: string
 }
 
-class ClientCard extends Component<Props> {
+class TrainerCard extends Component<Props> {
     constructor(props) {
         super(props);
-        this.openClientModal = this.openClientModal.bind(this);
-        this.closeClientModal = this.closeClientModal.bind(this);
+        this.openTrainerModal = this.openTrainerModal.bind(this);
+        this.closeTrainerModal = this.closeTrainerModal.bind(this);
         this.profilePicture = this.profilePicture.bind(this);
-        this.getClientAttribute = this.getClientAttribute.bind(this);
+        this.getTrainerAttribute = this.getTrainerAttribute.bind(this);
     }
 
     state = {
         error: null,
         // isLoading: true,
-        clientID: null,
+        trainerID: null,
         // event: null,
         // members: {},
         // owner: null,
         // ifOwned: false,
         // ifJoined: false,
         // capacity: null,
-        clientModalOpen: false
+        trainerModalOpen: false
     };
 
     componentDidMount() {
@@ -43,37 +43,37 @@ class ClientCard extends Component<Props> {
     }
 
     componentWillReceiveProps(newProps, nextContext) {
-        if (newProps.clientID && !this.state.clientID) {
-            this.setState({clientID: newProps.clientID});
+        if (newProps.trainerID && !this.state.trainerID) {
+            this.setState({trainerID: newProps.trainerID});
         }
     }
 
-    getClientAttribute(attribute) {
-        if (this.state.clientID) {
-            const client = this.props.cache.clients[this.state.clientID];
-            if (client) {
+    getTrainerAttribute(attribute) {
+        if (this.state.trainerID) {
+            const trainer = this.props.cache.trainers[this.state.trainerID];
+            if (trainer) {
                 if (attribute.substr(attribute.length - 6) === "Length") {
                     attribute = attribute.substr(0, attribute.length - 6);
-                    if (client[attribute] && client[attribute].length) {
-                        return client[attribute].length;
+                    if (trainer[attribute] && trainer[attribute].length) {
+                        return trainer[attribute].length;
                     }
                     else {
                         return 0;
                     }
                 }
-                return this.props.cache.clients[this.state.clientID][attribute];
+                return this.props.cache.trainers[this.state.trainerID][attribute];
             }
         }
         return null;
     }
 
-    openClientModal = () => {this.setState({clientModalOpen: true})};
-    closeClientModal = () => {this.setState({clientModalOpen: false})};
+    openTrainerModal = () => {this.setState({trainerModalOpen: true})};
+    closeTrainerModal = () => {this.setState({trainerModalOpen: false})};
 
     profilePicture() {
-        if (this.getClientAttribute("profilePicture")) {
+        if (this.getTrainerAttribute("profilePicture")) {
             return(
-                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`}}></div>
+                <div className="u-avatar u-avatar--small" style={{backgroundImage: `url(${this.getTrainerAttribute("profilePicture")})`}}></div>
             );
         }
         else {
@@ -87,7 +87,7 @@ class ClientCard extends Component<Props> {
 
     render() {
         const { rank } = this.props;
-        if (!this.getClientAttribute("id")) {
+        if (!this.getTrainerAttribute("id")) {
             return(
                 <Card fluid raised>
                     <h1>Loading...</h1>
@@ -96,7 +96,7 @@ class ClientCard extends Component<Props> {
         }
         return(
             // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised onClick={this.openClientModal}>
+            <Card fluid raised onClick={this.openTrainerModal}>
                 <Card.Content>
                     {/* If no rank */}
                     {!rank && (
@@ -107,7 +107,7 @@ class ClientCard extends Component<Props> {
                                 </div>
                             </Card.Header>
                             <Card.Header textAlign = 'center'>
-                                {this.getClientAttribute("name")}
+                                {this.getTrainerAttribute("name")}
                             </Card.Header>
                         </Fragment>
                     )}
@@ -120,17 +120,17 @@ class ClientCard extends Component<Props> {
                                 </Grid.Column>
                                 <Grid.Column width={12}>
                                     <div className="u-flex u-flex-align--center">
-                                        {this.profilePicture()} <Header size='small' className='u-margin-top--0 u-margin-left--2'>{this.getClientAttribute("name")}</Header>
+                                        {this.profilePicture()} <Header size='small' className='u-margin-top--0 u-margin-left--2'>{this.getTrainerAttribute("name")}</Header>
                                     </div>
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
                     )}
-                    <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.state.clientID}/>
+                    <TrainerPortalModal open={this.state.trainerModalOpen} onClose={this.closeTrainerModal} trainerID={this.state.trainerID}/>
                 </Card.Content>
                 <Card.Content extra>
                     <Card.Meta>
-                        {this.getClientAttribute("challengesWonLength")} challenges won
+                        {this.getTrainerAttribute("challengesWonLength")} challenges won
                     </Card.Meta>
                 </Card.Content>
             </Card>
@@ -146,10 +146,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchClient: (id, variablesList) => {
-            dispatch(fetchClient(id, variablesList));
+        fetchTrainer: (id, variablesList, dataHandler) => {
+            dispatch(fetchTrainer(id, variablesList, dataHandler));
         }
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClientCard);
+export default connect(mapStateToProps, mapDispatchToProps)(TrainerCard);
