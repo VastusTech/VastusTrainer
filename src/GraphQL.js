@@ -72,6 +72,18 @@ class GraphQL {
         GraphQL.execute(GraphQL.constructQuery("GetPost", "getPost", {id: id}, variableList),
             "getPost", successHandler, failureHandler);
     }
+    static getGroup(id, variableList, successHandler, failureHandler) {
+        GraphQL.execute(GraphQL.constructQuery("GetGroup", "getGroup", {id: id}, variableList),
+            "getGroup", successHandler, failureHandler);
+    }
+    static getComment(id, variableList, successHandler, failureHandler) {
+        GraphQL.execute(GraphQL.constructQuery("GetComment", "getComment", {id: id}, variableList),
+            "getComment", successHandler, failureHandler);
+    }
+    static getSponsor(id, variableList, successHandler, failureHandler) {
+        GraphQL.execute(GraphQL.constructQuery("GetSponsor", "getSponsor", {id: id}, variableList),
+            "getSponsor", successHandler, failureHandler);
+    }
     static getClients(ids, variableList, successHandler, failureHandler) {
         if (ids && ids.length > 100) {
             // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
@@ -152,6 +164,33 @@ class GraphQL {
         const idList = GraphQL.generateIDList(ids);
         GraphQL.execute(GraphQL.constructQuery("GetPosts", "getPosts", null, variableList, idList, true),
             "getPosts", successHandler, failureHandler);
+    }
+    static getGroups(ids, variableList, successHandler, failureHandler) {
+        if (ids && ids.length > 100) {
+            // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
+            console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
+        }
+        const idList = GraphQL.generateIDList(ids);
+        GraphQL.execute(GraphQL.constructQuery("GetGroups", "getGroups", null, variableList, idList, true),
+            "getGroups", successHandler, failureHandler);
+    }
+    static getComments(ids, variableList, successHandler, failureHandler) {
+        if (ids && ids.length > 100) {
+            // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
+            console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
+        }
+        const idList = GraphQL.generateIDList(ids);
+        GraphQL.execute(GraphQL.constructQuery("GetComments", "getComments", null, variableList, idList, true),
+            "getComments", successHandler, failureHandler);
+    }
+    static getSponsors(ids, variableList, successHandler, failureHandler) {
+        if (ids && ids.length > 100) {
+            // TODO Make sure we actually test GraphQL so that GraphQL error will pop up!
+            console.log("Be prepared to have some IDs returned in the unretrievedItems list!!!!");
+        }
+        const idList = GraphQL.generateIDList(ids);
+        GraphQL.execute(GraphQL.constructQuery("GetSponsors", "getSponsors", null, variableList, idList, true),
+            "getSponsors", successHandler, failureHandler);
     }
     static queryClients(variableList, filter, limit, nextToken, successHandler, failureHandler, queryClientCache, putCacheQueryClient) {
         var inputVariables = {};
@@ -251,6 +290,39 @@ class GraphQL {
         }
         GraphQL.execute(GraphQL.constructQuery("QueryPosts", "queryPosts", inputVariables, variableList, filter, false, true),
             "queryPosts", successHandler, failureHandler, queryPostCache, putCacheQueryPost);
+    }
+    static queryGroups(variableList, filter, limit, nextToken, successHandler, failureHandler, queryGroupCache, putCacheQueryGroup) {
+        var inputVariables = {};
+        if (limit) {
+            inputVariables.limit = limit;
+        }
+        if (nextToken) {
+            inputVariables.nextToken = nextToken;
+        }
+        GraphQL.execute(GraphQL.constructQuery("QueryGroups", "queryGroups", inputVariables, variableList, filter, false, true),
+            "queryGroups", successHandler, failureHandler, queryGroupCache, putCacheQueryGroup);
+    }
+    static queryComments(variableList, filter, limit, nextToken, successHandler, failureHandler, queryCommentCache, putCacheQueryComment) {
+        var inputVariables = {};
+        if (limit) {
+            inputVariables.limit = limit;
+        }
+        if (nextToken) {
+            inputVariables.nextToken = nextToken;
+        }
+        GraphQL.execute(GraphQL.constructQuery("QueryComments", "queryComments", inputVariables, variableList, filter, false, true),
+            "queryComments", successHandler, failureHandler, queryCommentCache, putCacheQueryComment);
+    }
+    static querySponsors(variableList, filter, limit, nextToken, successHandler, failureHandler, querySponsorCache, putCacheQuerySponsor) {
+        var inputVariables = {};
+        if (limit) {
+            inputVariables.limit = limit;
+        }
+        if (nextToken) {
+            inputVariables.nextToken = nextToken;
+        }
+        GraphQL.execute(GraphQL.constructQuery("QuerySponsors", "querySponsors", inputVariables, variableList, filter, false, true),
+            "querySponsors", successHandler, failureHandler, querySponsorCache, putCacheQuerySponso);
     }
 
     /**

@@ -10,6 +10,9 @@ const ItemType = {
     Challenge: "Challenge",
     Invite: "Invite",
     Post: "Post",
+    Group: "Group",
+    Comment: "Comment",
+    Sponsor: "Sponsor"
 };
 
 export function getItemTypeFromID(id) {
@@ -24,7 +27,7 @@ export function getItemTypeFromID(id) {
     return null;
 }
 
-export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, errorMessage) {
+export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, groupValue, commentValue, sponsorValue, errorMessage) {
     let returnValue = null;
     switch (itemType) {
         case "Client":
@@ -54,6 +57,15 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         case "Post":
             returnValue = postValue;
             break;
+        case "Group":
+            returnValue = groupValue;
+            break;
+        case "Comment":
+            returnValue = commentValue;
+            break;
+        case "Sponsor":
+            returnValue = sponsorValue;
+            break;
         default:
             returnValue = null;
             break;
@@ -66,7 +78,7 @@ export function switchReturnItemType(itemType, clientValue, trainerValue, gymVal
         return null;
     }
 }
-export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, errorMessage) {
+export function switchHandleItemType(itemType, clientHandler, trainerHandler, gymHandler, workoutHandler, reviewHandler, eventHandler, challengeHandler, inviteHandler, postHandler, groupHandler, commentHandler, sponsorHandler, errorMessage) {
     let itemHandler = null;
     switch (itemType) {
         case "Client":
@@ -95,6 +107,15 @@ export function switchHandleItemType(itemType, clientHandler, trainerHandler, gy
             break;
         case "Post":
             itemHandler = postHandler;
+            break;
+        case "Group":
+            itemHandler = groupHandler;
+            break;
+        case "Comment":
+            itemHandler = commentHandler;
+            break;
+        case "Sponsor":
+            itemHandler = sponsorHandler;
             break;
         default:
             itemHandler = null;

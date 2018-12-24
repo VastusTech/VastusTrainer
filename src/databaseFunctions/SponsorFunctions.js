@@ -1,16 +1,16 @@
 import Lambda from "../Lambda";
 import UserFunctions from "./UserFunctions";
 
-const itemType = "Client";
+const itemType = "Sponsor";
 
-class ClientFunctions extends UserFunctions {
+class SponsorFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     // Create Functions ============================================================
-    static createClient(fromID, name, email, username, successHandler, failureHandler) {
+    static createSponsor(fromID, name, email, username, successHandler, failureHandler) {
         this.create(fromID, name, null, null, email, username, null, successHandler, failureHandler);
     }
-    static createClientOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
+    static createSponsorOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
         this.create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler);
     }
 
@@ -30,4 +30,4 @@ class ClientFunctions extends UserFunctions {
     }
 }
 
-export default ClientFunctions;
+export default SponsorFunctions;

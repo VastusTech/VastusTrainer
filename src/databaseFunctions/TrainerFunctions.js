@@ -7,11 +7,11 @@ class TrainerFunctions extends UserFunctions {
     // TODO THESE ARE THE HIGH-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     // Create Functions ============================================================
-    static createTrainer(fromID, name, gender, birthday, email, username, successHandler, failureHandler) {
-        this.create(fromID, name, gender, birthday, email, username, null, successHandler, failureHandler);
+    static createTrainer(fromID, name, username, email, successHandler, failureHandler) {
+        this.create(fromID, name, null,null, username, email, null, successHandler, failureHandler);
     }
-    static createTrainerOptional(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
-        this.create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler);
+    static createTrainerOptional(fromID, name, gender, birthday, username, email, bio, successHandler, failureHandler) {
+        this.create(fromID, name, gender, birthday, username, email, bio, successHandler, failureHandler);
     }
 
     // Update Functions ============================================================
@@ -19,13 +19,13 @@ class TrainerFunctions extends UserFunctions {
 
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
-    static create(fromID, name, gender, birthday, email, username, bio, successHandler, failureHandler) {
+    static create(fromID, name, gender, birthday, username, email, bio, successHandler, failureHandler) {
         Lambda.create(fromID, itemType, {
             name,
             gender,
             birthday,
-            email,
             username,
+            email,
             bio
         }, successHandler, failureHandler);
     }

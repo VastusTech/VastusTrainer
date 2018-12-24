@@ -32,6 +32,12 @@ class UserFunctions {
     static removeEvent(fromID, userID, eventID, successHandler, failureHandler) {
         this.updateRemove(fromID, userID, "scheduledEvents", eventID, successHandler, failureHandler);
     }
+    static addGroup(fromID, userID, groupID, successHandler, failureHandler) {
+        this.updateAdd(fromID, userID, "groups", groupID, successHandler, failureHandler);
+    }
+    static removeGroup(fromID, userID, groupID, successHandler, failureHandler) {
+        this.updateRemove(fromID, userID, "groups", groupID, successHandler, failureHandler);
+    }
     static updateName(fromID, userID, name, successHandler, failureHandler) {
         this.updateSet(fromID, userID, "name", name, successHandler, failureHandler);
     }
