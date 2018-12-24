@@ -327,7 +327,7 @@ class GraphQL {
             inputVariables.nextToken = nextToken;
         }
         GraphQL.execute(GraphQL.constructQuery("QuerySponsors", "querySponsors", inputVariables, variableList, filter, false, true),
-            "querySponsors", successHandler, failureHandler, querySponsorCache, putCacheQuerySponso);
+            "querySponsors", successHandler, failureHandler, querySponsorCache, putCacheQuerySponsor);
     }
 
     /**
