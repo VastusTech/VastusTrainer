@@ -6,21 +6,22 @@ import ItemType, {switchReturnItemType} from "./logic/ItemType";
 class GraphQL {
     static getFetchIDFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
-            GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, "GraphQL get Fetch function function not implemented");
+            GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getGroup, GraphQL.getComment,
+            GraphQL.getSponsor, "GraphQL get Fetch function function not implemented");
     }
     static getFetchUsernameFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClientByUsername, GraphQL.getTrainerByUsername, GraphQL.getGymByUsername,
-            null, null, null, null, null, null, "GraphQL get Fetch Username function function not implemented");
+            null, null, null, null, null, null, null, null, GraphQL.getSponsorByUsername, "GraphQL get Fetch Username function function not implemented");
     }
     static getBatchFetchIDFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
             GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
-            "GraphQL get Batch Fetch function function not implemented");
+            GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, "GraphQL get Batch Fetch function function not implemented");
     }
     static getQueryFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
             GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
-            "GraphQL get Query function function not implemented");
+            GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, "GraphQL get Query function function not implemented");
     }
     static getClient(id, variableList, successHandler, failureHandler) {
         GraphQL.execute(GraphQL.constructQuery("GetClient", "getClient", {id: id}, variableList),
@@ -83,6 +84,10 @@ class GraphQL {
     static getSponsor(id, variableList, successHandler, failureHandler) {
         GraphQL.execute(GraphQL.constructQuery("GetSponsor", "getSponsor", {id: id}, variableList),
             "getSponsor", successHandler, failureHandler);
+    }
+    static getSponsorByUsername(username, variableList, successHandler, failureHandler) {
+        GraphQL.execute(GraphQL.constructQuery("GetSponsorByUsername", "getSponsorByUsername", {username: username}, variableList),
+            "getSponsorByUsername", successHandler, failureHandler);
     }
     static getClients(ids, variableList, successHandler, failureHandler) {
         if (ids && ids.length > 100) {
