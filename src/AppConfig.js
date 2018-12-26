@@ -8,7 +8,7 @@ function setupAWS() {
 
     Amplify.configure({
         API: {
-            graphql_endpoint: 'https://ferhxllitvaypgfmlu75ra22su.appsync-api.us-east-1.amazonaws.com/graphql',
+            graphql_endpoint: 'https://tb3ntbccxnevxoi7z5honbayca.appsync-api.us-east-1.amazonaws.com/graphql',
             graphql_endpoint_iam_region: 'us-east-1'
         },
         Auth: {
