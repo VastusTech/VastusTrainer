@@ -85,7 +85,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 email: email
             }
         };
-        TrainerFunctions.createTrainer("admin", name, gender, birthday, email, username, (trainerID) => {
+        TrainerFunctions.createTrainerOptional("admin", name, gender, birthday, username, email, null, (trainerID) => {
             Auth.signUp(params).then((data) => {
                 console.log("REDUX: Successfully signed up!");
                 dispatch(authSignUp());
@@ -98,7 +98,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 TrainerFunctions.delete("admin", trainerID);
             });
         }, (error) => {
-            console.log("REDUX: Creating new client failed...");
+            console.log("REDUX: Creating new trainer failed...");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
