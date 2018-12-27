@@ -139,7 +139,7 @@ class PostFeed extends Component {
                 access: "public"
             });
             // const oldFilter = QL.generateFilter("and", {"ifCompleted": "eq"}, {"ifCompleted": "false"});
-            QL.queryPosts(["by", "about", "time_created", "access", "description", "postType", "picturePaths", "videoPaths"], filter, this.state.eventFeedLength,
+            QL.queryPosts(["id", "item_type", "by", "about", "time_created", "access", "description", "postType", "picturePaths", "videoPaths"], filter, this.state.eventFeedLength,
                 this.state.nextToken, (data) => {
                     if (!data.nextToken) {
                         this.setState({ifFinished: true});
@@ -174,6 +174,7 @@ class PostFeed extends Component {
                         // TODO Came up with no events
                     }
                     this.setState({isLoading: false});
+                    console.log("Finish successHandler");
                 }, (error) => {
                     console.log("Querying events failed!");
                     console.log(error);
@@ -244,8 +245,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchPost: (id, variablesList) => {
             dispatch(fetchPost(id, variablesList));
         },
-        putPost: (event) => {
-            dispatch(putPost(event));
+        putPost: (post) => {
+            dispatch(putPost(post));
         },
         putPostQuery: (queryString, queryResult) => {
             dispatch(putPostQuery(queryString, queryResult));

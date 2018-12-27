@@ -468,7 +468,7 @@ class GraphQL {
         else {
             console.log("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             if (ifDebug) {
-                console.log("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
+                alert("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             }
             API.graphql(graphqlOperation(query.query, query.variables)).then((data) => {
                 console.log("GraphQL operation succeeded!");
@@ -481,13 +481,14 @@ class GraphQL {
                 // console.log("Returned!");
                 console.log("Returned: " + JSON.stringify(data.data[queryFunctionName]));
                 if (ifDebug) {
-                    console.log("Returned: " + JSON.stringify(data.data[queryFunctionName]));
+                    alert("Returned: " + JSON.stringify(data.data[queryFunctionName]));
                 }
                 // console.log(JSON.stringify(queryCache));
                 if (putQuery) {
                     // console.log("Putting the query in!");
                     putQuery(queryString, data.data[queryFunctionName]);
                 }
+                console.log("Handling the successHandler...");
                 successHandler(data.data[queryFunctionName]);
             }).catch((error) => {
                 console.log("GraphQL operation failed...");
@@ -495,6 +496,7 @@ class GraphQL {
                     error = error.message;
                 }
                 console.log(JSON.stringify(error));
+                console.log("Handling the failureHandler...");
                 failureHandler(error);
             });
         }

@@ -499,7 +499,7 @@ export function putClient(client) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putTrainer(trainer) {
     if (trainer && trainer.id) {
@@ -511,7 +511,7 @@ export function putTrainer(trainer) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putGym(gym) {
     if (gym && gym.id) {
@@ -523,7 +523,7 @@ export function putGym(gym) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putWorkout(workout) {
     if (workout && workout.id) {
@@ -535,7 +535,7 @@ export function putWorkout(workout) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putReview(review) {
     if (review && review.id) {
@@ -547,7 +547,7 @@ export function putReview(review) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putEvent(event) {
     if (event && event.id) {
@@ -559,7 +559,7 @@ export function putEvent(event) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putChallenge(challenge) {
     if (challenge && challenge.id) {
@@ -571,7 +571,7 @@ export function putChallenge(challenge) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putInvite(invite) {
     if (invite && invite.id) {
@@ -583,7 +583,7 @@ export function putInvite(invite) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putPost(post) {
     if (post && post.id) {
@@ -595,7 +595,7 @@ export function putPost(post) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putGroup(group) {
     if (group && group.id) {
@@ -607,7 +607,7 @@ export function putGroup(group) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putComment(comment) {
     if (comment && comment.id) {
@@ -619,7 +619,7 @@ export function putComment(comment) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function putSponsor(sponsor) {
     if (sponsor && sponsor.id) {
@@ -631,7 +631,7 @@ export function putSponsor(sponsor) {
             }
         };
     }
-    return null;
+    return {type: ""};
 }
 export function getCache(itemType, getStore) {
     const cache = getStore().cache;
