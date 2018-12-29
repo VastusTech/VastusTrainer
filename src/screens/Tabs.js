@@ -40,6 +40,15 @@ export default () => (
             {
                 menuItem: (
                     <Menu.Item key={2}>
+                        <Icon name='world' size='large' />
+                    </Menu.Item>),
+                render: () => <Tab.Pane basic attached={false}>
+                    <ProfileProp/>
+                </Tab.Pane>
+            },
+            {
+                menuItem: (
+                    <Menu.Item key={2}>
                         <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>

@@ -32,6 +32,10 @@ export function convertFromIntervalISO(dateTime) {
         days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     return days[fromDate.getDay()]+', '+months[fromDate.getMonth()]+' '+fromDate.getDate()+', '+fromDate.getFullYear()+' '+fromhours+':'+fromminutes+fromampm + ' - '+tohours+':'+tominutes+toampm;
 }
+function parseISOString(s) {
+    const b = s.split(/\D+/);
+    return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+}
 export function convertToISOString(date) {
     const tzo = -date.getTimezoneOffset(),
             dif = tzo >= 0 ? '+' : '-',
@@ -47,6 +51,19 @@ export function convertToISOString(date) {
         ':' + pad(date.getSeconds()) +
         dif + pad(tzo / 60) +
         ':' + pad(tzo % 60);
+}
+export function calculateAge(birthday) {
+    // TODO Use more libraries to calculate this way better
+    if (birthday) {
+        const now = new Date();
+        const birthdayDate = parseISOString(birthday);
+        let one_year = 1000 * 60 * 60 * 24 * 365;                       // Convert both dates to milliseconds
+        let date1_ms = birthdayDate.getTime();
+        let date2_ms = now.getTime();                   // Calculate the difference in milliseconds
+        let difference_ms = date1_ms - date2_ms;        // Convert back to days and return
+        return Math.round(difference_ms / one_year);
+    }
+    return null;
 }
 export function convertToISOIntervalString(fromDate, toDate) {
     return convertToISOString(fromDate) + "_" + convertToISOString(toDate);

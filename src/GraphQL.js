@@ -197,136 +197,124 @@ class GraphQL {
         GraphQL.execute(GraphQL.constructQuery("GetSponsors", "getSponsors", null, variableList, idList, true),
             "getSponsors", successHandler, failureHandler);
     }
-    static queryClients(variableList, filter, limit, nextToken, successHandler, failureHandler, queryClientCache, putCacheQueryClient) {
+    static constructClientQuery(variableList, filter, limit, nextToken) {
         var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryClients", "queryClients", inputVariables, variableList, filter, false, true),
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryClients", "queryClients", inputVariables, variableList, filter, false, true);
+    }
+    static constructTrainerQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryTrainers", "queryTrainers", inputVariables, variableList, filter, false, true);
+    }
+    static constructGymQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryGyms", "queryGyms", inputVariables, variableList, filter, false, true);
+    }
+    static constructWorkoutQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryWorkouts", "queryWorkouts", inputVariables, variableList, filter, false, true);
+    }
+    static constructReviewQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryReviews", "queryReviews", inputVariables, variableList, filter, false, true);
+    }
+    static constructEventQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryEvents", "queryEvents", inputVariables, variableList, filter, false, true);
+    }
+    static constructChallengeQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryChallenges", "queryChallenges", inputVariables, variableList, filter, false, true);
+    }
+    static constructInviteQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryInvites", "queryInvites", inputVariables, variableList, filter, false, true);
+    }
+    static constructPostQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryPosts", "queryPosts", inputVariables, variableList, filter, false, true);
+    }
+    static constructGroupQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryGroups", "queryGroups", inputVariables, variableList, filter, false, true);
+    }
+    static constructCommentQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QueryComments", "queryComments", inputVariables, variableList, filter, false, true);
+    }
+    static constructSponsorQuery(variableList, filter, limit, nextToken) {
+        var inputVariables = {};
+        if (limit) { inputVariables.limit = limit; }
+        if (nextToken) { inputVariables.nextToken = nextToken; }
+        return GraphQL.constructQuery("QuerySponsors", "querySponsors", inputVariables, variableList, filter, false, true);
+    }
+    static queryClients(variableList, filter, limit, nextToken, successHandler, failureHandler, queryClientCache, putCacheQueryClient) {
+        GraphQL.execute(GraphQL.constructClientQuery(variableList, filter, limit, nextToken),
             "queryClients", successHandler, failureHandler, queryClientCache, putCacheQueryClient);
     }
     static queryTrainers(variableList, filter, limit, nextToken, successHandler, failureHandler, queryTrainerCache, putCacheQueryTrainer) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryTrainers", "queryTrainers", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructTrainerQuery(variableList, filter, limit, nextToken),
             "queryTrainers", successHandler, failureHandler, queryTrainerCache, putCacheQueryTrainer);
     }
-    static queryGyms(variableList, filter, limit, nextToken, successHandler, failureHandler, queryGymCache, putCacheQueryGyms) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryGyms", "queryGyms", inputVariables, variableList, filter, false, true),
-            "queryGyms", successHandler, failureHandler, queryGymCache, putCacheQueryGyms);
+    static queryGyms(variableList, filter, limit, nextToken, successHandler, failureHandler, queryGymCache, putCacheQueryGym) {
+        GraphQL.execute(GraphQL.constructGymQuery(variableList, filter, limit, nextToken),
+            "queryGyms", successHandler, failureHandler, queryGymCache, putCacheQueryGym);
     }
     static queryWorkouts(variableList, filter, limit, nextToken, successHandler, failureHandler, queryWorkoutCache, putCacheQueryWorkout) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryWorkouts", "queryWorkouts", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructWorkoutQuery(variableList, filter, limit, nextToken),
             "queryWorkouts", successHandler, failureHandler, queryWorkoutCache, putCacheQueryWorkout);
     }
     static queryReviews(variableList, filter, limit, nextToken, successHandler, failureHandler, queryReviewCache, putCacheQueryReview) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryReviews", "queryReviews", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructReviewQuery(variableList, filter, limit, nextToken),
             "queryReviews", successHandler, failureHandler, queryReviewCache, putCacheQueryReview);
     }
     static queryEvents(variableList, filter, limit, nextToken, successHandler, failureHandler, queryEventCache, putCacheQueryEvent) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryEvents", "queryEvents", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructEventQuery(variableList, filter, limit, nextToken),
             "queryEvents", successHandler, failureHandler, queryEventCache, putCacheQueryEvent);
     }
-    static queryChallenges(variableList, filter, limit, nextToken, successHandler, failureHandler, queryEventCache, putCacheQueryEvent) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryChallenges", "queryChallenges", inputVariables, variableList, filter, false, true),
-            "queryChallenges", successHandler, failureHandler, queryEventCache, putCacheQueryEvent);
+    static queryChallenges(variableList, filter, limit, nextToken, successHandler, failureHandler, queryChallengeCache, putCacheQueryChallenge) {
+        GraphQL.execute(GraphQL.constructChallengeQuery(variableList, filter, limit, nextToken),
+            "queryChallenges", successHandler, failureHandler, queryChallengeCache, putCacheQueryChallenge);
     }
     static queryInvites(variableList, filter, limit, nextToken, successHandler, failureHandler, queryInviteCache, putCacheQueryInvite) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryInvites", "queryInvites", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructInviteQuery(variableList, filter, limit, nextToken),
             "queryInvites", successHandler, failureHandler, queryInviteCache, putCacheQueryInvite);
     }
     static queryPosts(variableList, filter, limit, nextToken, successHandler, failureHandler, queryPostCache, putCacheQueryPost) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryPosts", "queryPosts", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructPostQuery(variableList, filter, limit, nextToken),
             "queryPosts", successHandler, failureHandler, queryPostCache, putCacheQueryPost);
     }
     static queryGroups(variableList, filter, limit, nextToken, successHandler, failureHandler, queryGroupCache, putCacheQueryGroup) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryGroups", "queryGroups", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructGroupQuery(variableList, filter, limit, nextToken),
             "queryGroups", successHandler, failureHandler, queryGroupCache, putCacheQueryGroup);
     }
     static queryComments(variableList, filter, limit, nextToken, successHandler, failureHandler, queryCommentCache, putCacheQueryComment) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QueryComments", "queryComments", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructCommentQuery(variableList, filter, limit, nextToken),
             "queryComments", successHandler, failureHandler, queryCommentCache, putCacheQueryComment);
     }
     static querySponsors(variableList, filter, limit, nextToken, successHandler, failureHandler, querySponsorCache, putCacheQuerySponsor) {
-        var inputVariables = {};
-        if (limit) {
-            inputVariables.limit = limit;
-        }
-        if (nextToken) {
-            inputVariables.nextToken = nextToken;
-        }
-        GraphQL.execute(GraphQL.constructQuery("QuerySponsors", "querySponsors", inputVariables, variableList, filter, false, true),
+        GraphQL.execute(GraphQL.constructSponsorQuery(variableList, filter, limit, nextToken),
             "querySponsors", successHandler, failureHandler, querySponsorCache, putCacheQuerySponsor);
     }
 

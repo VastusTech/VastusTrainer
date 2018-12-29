@@ -1,20 +1,20 @@
 import React, {  } from 'react'
-import { Player } from 'video-react';
+// import { Player } from 'video-react';
 import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider } from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
 import BuddyListProp from "./BuddyList";
 // import TrophyCaseProp from "./TrophyCase";
-import { S3Image } from 'aws-amplify-react';
+// import { S3Image } from 'aws-amplify-react';
 // import ChallengeManagerProp from "./ManageChallenges";
 // import QL from '../GraphQL';
-import Lambda from '../Lambda';
+// import Lambda from '../Lambda';
 // import ScheduledEventList from "./ScheduledEventList";
 // import CompletedEventList from "./CompletedEventList";
 // import OwnedEventList from "./OwnedEventList";
 import ChallengeList from "../components/ChallengeList";
+import TrainerPortalModal from "../components/TrainerPortalModal";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import { connect } from "react-redux";
-// import AWSSetup from "../AppConfig";
 import {logOut} from "../redux_helpers/actions/authActions";
 import ClientFunctions from "../databaseFunctions/ClientFunctions";
 
@@ -38,6 +38,7 @@ class Profile extends React.PureComponent {
         buddyModalOpen: false,
         scheduledModalOpen: false,
         ownedModalOpen: false,
+        portalModalOpen: false,
         error: null
     };
 
@@ -58,6 +59,8 @@ class Profile extends React.PureComponent {
         this.closeScheduledModal = this.closeScheduledModal.bind(this);
         this.openOwnedModal = this.openOwnedModal.bind(this);
         this.closeOwnedModal = this.closeOwnedModal.bind(this);
+        this.openPortalModal = this.openPortalModal.bind(this);
+        this.closePortalModal = this.closePortalModal.bind(this);
         this.handleLogOut = this.handleLogOut.bind(this);
     }
 
@@ -70,6 +73,7 @@ class Profile extends React.PureComponent {
             scheduledModalOpen: false,
             completedModalOpen: false,
             ownedModalOpen: false,
+            portalModalOpen: false,
             error: null,
         });
     }
@@ -196,6 +200,8 @@ class Profile extends React.PureComponent {
     closeCompletedModal = () => { this.setState({completedModalOpen: false}); };
     openOwnedModal = () => { this.setState({ownedModalOpen: true}); };
     closeOwnedModal = () => { this.setState({ownedModalOpen: false}); };
+    openPortalModal = () => { this.setState({portalModalOpen: true}); };
+    closePortalModal = () => { this.setState({portalModalOpen: false}); };
 
 
     render() {
@@ -278,6 +284,11 @@ class Profile extends React.PureComponent {
                                     <ChallengeList challengeIDs={this.props.user.completedChallenges}/>
                                 </Modal.Content>
                             </Modal>
+                        </List.Item>
+                        <Divider/>
+                        <List.Item>
+                            <Button primary fluid size="large" onClick={this.openPortalModal}><Icon name="world" /> Portal</Button>
+                            <TrainerPortalModal trainerID={this.props.user.id} open={this.state.portalModalOpen} onClose={this.closePortalModal}/>
                         </List.Item>
                         <Divider />
                         <List.Item>
