@@ -3,29 +3,10 @@ import { Card } from 'semantic-ui-react';
 import EventDescriptionModal from './EventDescriptionModal';
 import { connect } from 'react-redux';
 import {fetchEvent} from "../redux_helpers/actions/cacheActions";
+import {convertFromISO, convertFromIntervalISO} from "../logic/TimeHelper";
 
-function convertTime(time) {
-    if (parseInt(time, 10) > 12) {
-        return "0" + (parseInt(time, 10) - 12) + time.substr(2, 3) + "pm";
-    }
-    else if (parseInt(time, 10) === 12) {
-        return time + "pm";
-    }
-    else if (parseInt(time, 10) === 0) {
-        return "0" + (parseInt(time, 10) + 12) + time.substr(2, 3) + "am"
-    }
-    else {
-        return time + "am"
-    }
-}
-
-function convertDate(date) {
-    let dateString = String(date);
-    let year = dateString.substr(0, 4);
-    let month = dateString.substr(5, 2);
-    let day = dateString.substr(8, 2);
-
-    return month + "/" + day + "/" + year;
+type Props = {
+    eventID: string
 }
 
 /*
@@ -34,37 +15,13 @@ function convertDate(date) {
 * This is the generic view for how a challenge shows up in any feeds or lists.
 * It is used as a modal trigger in the feed.
  */
-class EventCard extends Component {
+class EventCard extends Component<Props> {
     state = {
         error: null,
-        // isLoading: true,
         eventID: null,
-        // event: null,
-        // members: {},
-        // owner: null,
-        // ifOwned: false,
-        // ifJoined: false,
-        // capacity: null,
         eventModalOpen: false
     };
 
-    // componentDidMount() {
-        // if (this.props.event) {
-        //     let ifOwned = false;
-        //     let ifJoined = false;
-        //     //alert("Membahs: " + this.props.event.members);
-        //     //alert(this.props.owner + "vs. " + this.props.event.owner);
-        //     if (this.props.user.id === this.props.event.owner) {
-        //         //alert("Same owner and cur user for: " + this.props.event.id);
-        //         ifOwned = true;
-        //     }
-        //     if (this.props.event.members && this.props.event.members.includes(this.props.user.id)) {
-        //         ifJoined = false;
-        //     }
-        //
-        //     this.setState({isLoading: false, event: this.props.event, members: this.props.event.members, ifOwned, ifJoined});
-        // }
-    // }
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
     }
@@ -74,29 +31,6 @@ class EventCard extends Component {
             // this.props.fetchEvent(newProps.eventID, ["id", "title", "goal", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
             this.setState({eventID: newProps.eventID});
         }
-    }
-
-    convertFromISO(dateTime) {
-        let dateTimeString = String(dateTime);
-        let dateTimes = String(dateTimeString).split("_");
-        let fromDateString = dateTimes[0];
-        let toDateString = dateTimes[1];
-        let fromDate = new Date(fromDateString);
-        let toDate = new Date(toDateString);
-
-        // Display time logic came from stack over flow
-        // https://stackoverflow.com/a/18537115
-        const fromHourInt = fromDate.getHours() > 12 ? fromDate.getHours() - 12 : fromDate.getHours();
-        const toHourInt = toDate.getHours() > 12 ? toDate.getHours() - 12 : toDate.getHours();
-        const fromminutes = fromDate.getMinutes().toString().length === 1 ? '0'+ fromDate.getMinutes() : fromDate.getMinutes(),
-            fromhours = fromHourInt.toString().length === 1 ? '0'+ fromHourInt : fromHourInt,
-            fromampm = fromDate.getHours() >= 12 ? 'PM' : 'AM',
-            tominutes = toDate.getMinutes().toString().length === 1 ? '0'+ toDate.getMinutes() : toDate.getMinutes(),
-            tohours = toHourInt.toString().length === 1 ? '0'+ toHourInt : toHourInt,
-            toampm = toDate.getHours() >= 12 ? 'PM' : 'AM',
-            months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-            days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        return days[fromDate.getDay()]+', '+months[fromDate.getMonth()]+' '+fromDate.getDate()+', '+fromDate.getFullYear()+' '+fromhours+':'+fromminutes+fromampm + ' - '+tohours+':'+tominutes+toampm;
     }
 
     getEventAttribute(attribute) {
@@ -135,8 +69,14 @@ class EventCard extends Component {
                 <Card.Content>
                     <Card.Header textAlign = 'center'>{this.getEventAttribute("title")}</Card.Header>
                     <Card.Meta textAlign = 'center' >{this.convertFromISO(this.getEventAttribute("time"))}</Card.Meta>
-                    <Card.Meta textAlign = 'center'>Location: {this.getEventAttribute("address")}</Card.Meta>
-                    <EventDescriptionModal open={this.state.eventModalOpen} onClose={this.closeEventModal.bind(this)} eventID={this.state.eventID}/> </Card.Content> <Card.Content extra> {/* <Card.Meta>{this.state.event.time_created}</Card.Meta> */} <Card.Meta textAlign = 'center'>{this.getEventAttribute("membersLength")} of {this.getEventAttribute("capacity")} spots taken.</Card.Meta> </Card.Content>
+                    <EventDescriptionModal open={this.state.eventModalOpen} onClose={this.closeEventModal.bind(this)} eventID={this.state.eventID}/>
+                </Card.Content>
+                <Card.Content extra>
+                    <Card.Meta>{convertFromISO(this.getEventAttribute("time_created"))}</Card.Meta>
+                    <Card.Meta textAlign = 'center'>
+                        {this.getEventAttribute("membersLength")} of {this.getEventAttribute("capacity")} spots taken.
+                    </Card.Meta>
+                </Card.Content>
             </Card>
         );
     }

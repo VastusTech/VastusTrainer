@@ -19,7 +19,7 @@ class Leaderboard extends Component {
     }
 
     componentDidMount() {
-        // alert("Mounted");
+        // console.log("Mounted");
         this.update(this.props);
     }
 
@@ -29,12 +29,12 @@ class Leaderboard extends Component {
 
     update(props) {
         if (!props.user.id) {
-            // alert("No user ID...");
+            // console.log("No user ID...");
             return;
         }
-        //alert("Cur User for grabbing Attributes: " + this.props.user.id);
+        //console.log("Cur User for grabbing Attributes: " + this.props.user.id);
         if (props.user.hasOwnProperty("friends") && props.user.hasOwnProperty("challengesWon") && props.user.friends && props.user.friends.length && this.state.isLoading) {
-            // alert("in here + " + this.state.isLoading);
+            // console.log("in here + " + this.state.isLoading);
             this.state.isLoading = false;
             let challengesWonLength;
             if (props.user.challengesWon) {
@@ -45,18 +45,18 @@ class Leaderboard extends Component {
             }
             // this.state.friends.push({id: props.user.id, challengesWonLength: challengesWonLength});
             //this.setState({isLoading: false});
-            // alert(JSON.stringify(props.user.friends));
-            // alert(JSON.stringify(this.state.friends));
+            // console.log(JSON.stringify(props.user.friends));
+            // console.log(JSON.stringify(this.state.friends));
             this.state.friends.push({id: this.props.user.id, challengesWonLength});
             for (let i = 0; i < props.user.friends.length; i++) {
                 // if (!(this.props.user.scheduledEvents[i] in this.state.events)) {
                 //     this.addEventFromGraphQL(this.props.user.scheduledEvents[i]);
                 // }
-                // alert("Fetching client = " + props.user.friends[i]);
+                // console.log("Fetching client = " + props.user.friends[i]);
                 props.fetchClient(props.user.friends[i], ["id", "challengesWon"],
                     (client) => {
                         // Rerender when you get a new scheduled event
-                        // alert("Received client id = " + client.id);
+                        // console.log("Received client id = " + client.id);
                         for (let i = 0; i < this.state.friends.length; i++) {
                             if (this.state.friends[i].id === client.id) {
                                 return;
@@ -69,8 +69,8 @@ class Leaderboard extends Component {
                         else {
                             challengesWonLength = 0;
                         }
-                        // alert("Client id = " + client.id + " has challenge length = " + challengesWonLength);
-                        // alert("hey " + JSON.stringify(this.state.friends));
+                        // console.log("Client id = " + client.id + " has challenge length = " + challengesWonLength);
+                        // console.log("hey " + JSON.stringify(this.state.friends));
                         this.state.friends.push({id: client.id, challengesWonLength: challengesWonLength});
                         if (this.state.friends.length === props.user.friends.length) {
                             this.setState({isFetching: false})
@@ -116,25 +116,18 @@ class Leaderboard extends Component {
          */
         function rows(clients, getClientAttribute) {
             //let sortedClients = [...clients];
-            // alert(JSON.stringify(clients));
+            // console.log(JSON.stringify(clients));
             let sortedClients = clients.sort(function(a,b) {
                 return (b.challengesWonLength - a.challengesWonLength);
             });
-            // alert(JSON.stringify(sortedClients));
+            // console.log(JSON.stringify(sortedClients));
             // if(events != null && events.length > 0)
-            //     alert(JSON.stringify(events[0].id));
-            // alert("EVENTS TO PRINT: ");
-            // alert(JSON.stringify(events));
+            //     console.log(JSON.stringify(events[0].id));
+            // console.log("EVENTS TO PRINT: ");
+            // console.log(JSON.stringify(events));
             return _.times(sortedClients.length, i => (
                 <Fragment key={i}>
-                    <Grid columns={2}>
-                        <Grid.Column>
-                            <Header>{i + 1}. </Header>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <ClientCard clientID={sortedClients[i].id}/>
-                        </Grid.Column>
-                    </Grid>
+                    <ClientCard rank={i + 1} clientID={sortedClients[i].id}/>
                 </Fragment>
             ));
         }

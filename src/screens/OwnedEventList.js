@@ -17,16 +17,16 @@ class OwnedEventsList extends Component {
     constructor(props) {
         super(props);
         this.forceUpdate = this.forceUpdate.bind(this);
-        //alert("Got into Scheduled Events constructor");
+        //console.log("Got into Scheduled Events constructor");
         // this.state.username = this.props.username;
     }
 
     update() {
         // TODO Change this if we want to actually be able to do something while it's loading
         const user = this.props.user;
-        //alert("Updating Scheduled Events");
+        //console.log("Updating Scheduled Events");
         if (!user.id) {
-            // alert("Pretty bad error");
+            // console.error("Pretty bad error");
             this.setState({isLoading: true});
         }
 
@@ -63,7 +63,7 @@ class OwnedEventsList extends Component {
     //     });
     // }
 
-    // getEventAttribute(id, attribute) {
+    // getChallengeAttribute(id, attribute) {
     //     if (id && attribute) {
     //         if (this.props.cache.events[id]) {
     //             return this.props.cache.events[id][attribute];
@@ -76,20 +76,20 @@ class OwnedEventsList extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        //alert("Receevin props");
+        //console.log("Receevin props");
         //this.props = newProps;
         this.update();
     }
 
     render() {
-        //alert("Redering");
+        //console.log("Redering");
         function rows(events) {
             const row = [];
             const rowProps = [];
             // this.forceUpdate();
             for (const key in events) {
                 if (events.hasOwnProperty(key)) {
-                    //alert(JSON.stringify(events[key]));
+                    //console.log(JSON.stringify(events[key]));
                     row.push(
                         events[key]
                     );
@@ -110,7 +110,7 @@ class OwnedEventsList extends Component {
             return rowProps;
         }
         if (this.props.info.isLoading) {
-            //alert("loading: " + JSON.stringify(this.state));
+            //console.log("loading: " + JSON.stringify(this.state));
             return(
                 <Message>Loading...</Message>
             )

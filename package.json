@@ -29,6 +29,7 @@
     "gulp-watch": "^5.0.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-recaptcha-google": "^1.1.1",
     "react-redux": "^6.0.0",
     "react-scripts": "2.1.1",
     "redux": "^4.0.1",
@@ -36,9 +37,9 @@
     "redux-thunk": "^2.3.0",
     "require-dot-file": "^0.4.0",
     "run-sequence": "^2.2.1",
-    "semantic": "^0.0.1",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.84.0",
+    "semantic-ui-calendar-react": "^0.12.1",
+    "semantic-ui-react": "^0.83.0",
+    "video-react": "^0.13.1",
     "yamljs": "^0.3.0"
   },
   "scripts": {

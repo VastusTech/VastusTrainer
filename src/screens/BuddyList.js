@@ -13,7 +13,7 @@ import ClientCard from "../components/ClientCard";
 class BuddyListProp extends Component {
     state = {
         isLoading: true,
-        friends: {},
+        friends: [],
         sentRequest: false,
         clientModalOpen: false,
         error: null
@@ -33,14 +33,14 @@ class BuddyListProp extends Component {
     //     // TODO Change this if we want to actually be able to do something while it's loading
     //     const user = this.props.user;
     //     if (!user.id) {
-    //         alert("Pretty bad error");
+    //         console.error("Pretty bad error");
     //         this.setState({isLoading: true});
     //     }
     //
     //     if (user.hasOwnProperty("friends")) {
-    //         //alert("Friends: " + user.friends);
+    //         //console.log("Friends: " + user.friends);
     //         if(user.friends != null) {
-    //             //alert("getting to friend loupe");
+    //             //console.log("getting to friend loupe");
     //             for (let i = 0; i < user.friends.length; i++) {
     //                 if (!(user.friends[i] in this.state.friends)) {
     //                     this.addFriendFromGraphQL(user.friends[i]);
@@ -48,7 +48,7 @@ class BuddyListProp extends Component {
     //             }
     //         }
     //         else {
-    //             alert("You got no friends you loser");
+    //             console.log("You got no friends you loser");
     //         }
     //     }
     //     else if (!this.props.info.isLoading) {
@@ -62,16 +62,24 @@ class BuddyListProp extends Component {
     update(props) {
         // TODO Change this if we want to actually be able to do something while it's loading
         const user = props.user;
-        //alert("Updating Scheduled Events");
+        //console.log("Updating Scheduled Events");
         if (!user.id) {
-            alert("Pretty bad error");
+            console.error("Pretty bad error");
             this.setState({isLoading: true});
         }
 
-        if (this.state.isLoading && user.hasOwnProperty("friends") && user.friends && user.friends.length) {
+        if (!this.state.sentRequest && this.state.isLoading && user.hasOwnProperty("friends") && user.friends && user.friends.length) {
+            this.state.sentRequest = true;
             this.setState({isLoading: false});
             for (let i = 0; i < user.friends.length; i++) {
-                props.fetchClient(user.friends[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"]);
+                if (!this.state.friends.includes(user.friends[i])) {
+                    props.fetchClient(user.friends[i], ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture", "friendRequests"]
+                        , (client) => {
+                            if (client && client.id) {
+                                this.state.friends.push(client.id);
+                            }
+                        });
+                }
                 // if (!(user.scheduledEvents[i] in this.state.events)) {
                 //     this.addEventFromGraphQL(user.scheduledEvents[i]);
                 // }
@@ -117,12 +125,12 @@ class BuddyListProp extends Component {
             const rowProps = [];
             for (const key in friends) {
                 if (friends.hasOwnProperty(key) === true) {
-                    //alert("Friend " + key + ": " + JSON.stringify(friends[key].id));
+                    //console.log("Friend " + key + ": " + JSON.stringify(friends[key].id));
                     const friendID = friends[key];
                     rowProps.push(
                         <List.Item>
                             <List.Content>
-                                <ClientCard clientID={friendID} feedUpdate={forceUpdate}/>
+                                <ClientCard rank={key} clientID={friendID} feedUpdate={forceUpdate}/>
                             </List.Content>
                         </List.Item>
                     );
@@ -136,10 +144,10 @@ class BuddyListProp extends Component {
                 <Message>Loading...</Message>
             )
         }
-        if (this.props.user.friends && this.props.user.friends.length && this.props.user.friends.length > 0) {
+        if (this.props.user.friends && this.props.user.friends.length > 0 && this.state.friends.length > 0) {
             return(
-                <List relaxed divided verticalAlign="middle">
-                    {rows(this.props.user.friends, this.closeClientModal, this.openClientModal, this.state.clientModalOpen, this.props.user.id, this.getClientAttribute.bind(this),
+                <List relaxed verticalAlign="middle">
+                    {rows(this.state.friends, this.closeClientModal, this.openClientModal, this.state.clientModalOpen, this.props.user.id, this.getClientAttribute.bind(this),
                     this.forceUpdate.bind(this))}
                 </List>
             );
@@ -163,8 +171,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchUserAttributes: (attributeList) => {
             dispatch(fetchUserAttributes(attributeList));
         },
-        fetchClient: (id, variablesList) => {
-            dispatch(fetchClient(id, variablesList));
+        fetchClient: (id, variablesList, dataHandler) => {
+            dispatch(fetchClient(id, variablesList, dataHandler));
         }
     };
 };

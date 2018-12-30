@@ -18,27 +18,218 @@ body {
   background-image: @primaryGradient !important;
 }
 
+.u-container {
+  background-color: @darkBlack;
+  margin-bottom: 24px;
+  padding: 24px 24px 0;
+}
+
 .u-avatar {
-  width: 1000px;
-  height: 1000px;
-  margin: 0 auto;
+  width: 100px;
+  height: 100px;
   background-size: cover;
   background-position: center;
+  border: 2px solid @black;
   border-radius: 50%;
-  border: 2px solid @bgColor;
   position: relative;
+}
+
+.u-avatar--small {
+  width: 75px;
+  height: 75px;
+}
+
+.u-avatar--large {
+  width: 125px;
+  height: 125px;
+}
+
+// display
+
+.u-display--block {
+  display: block !important;
+}
+
+.u-display--inline-block {
+  display: inline-block !important;
+}
+
+// Color
+
+.u-color--white {
+  color: @white !important;
+}
+
+// Font Weights
+
+.u-font-weight--normal {
+  font-weight: normal !important;
+}
+
+// Backgrounds
+
+.u-bg--bg {
+  background: @bgColor !important;
+}
+
+.u-bg--primary {
+  background: @primaryColor !important;
+}
+
+.u-bg--input {
+  background: @inputBackground !important;
+}
+
+.u-bg--none {
+  background: none !important;
+}
+
+// Borders
+
+.u-border--0 {
+  border: none !important;
+}
+
+.u-border-x--0 {
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.u-border-y--1 {
+  border-top: 1px solid !important;
+  border-bottom: 1px solid !important
+}
+
+// Border Color
+
+.u-border-color--border {
+  border-color: @borderColor !important;
+}
+
+// Border Radius
+
+.u-radius--0 {
+  border-radius: 0 !important;
+}
+
+// Margins
+
+.u-margin--0 {
+  margin: 0 !important;
+}
+
+.u-margin-bottom--neg2 {
+  margin-bottom: -24px !important;
+}
+
+.u-margin-top--neg4 {
+  margin-top: -32px !important;
+}
+
+.u-margin-top--0 {
+  margin-top: 0 !important;
 }
 
 .u-margin-top--1 {
   margin-top: 8px !important;
 }
 
+.u-margin-top--2 {
+  margin-top: 16px !important;
+}
+
+.u-margin-top--3 {
+  margin-top: 24px !important;
+}
+
+.u-margin-top--4 {
+  margin-top: 32px !important;
+}
+
 .u-margin-right--0 {
   margin-right: 0 !important;
 }
 
+.u-margin-bottom--half {
+  margin-bottom: 4px !important;
+}
+
+.u-margin-bottom--1 {
+  margin-bottom: 8px !important;
+}
+
+.u-margin-bottom--2 {
+  margin-bottom: 16px !important;
+}
+
+.u-margin-x--auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.u-margin-y--2 {
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+.u-margin-left--2 {
+  margin-left: 16px !important;
+}
+
+// Padding
+
+.u-padding--0 {
+  padding: 0 !important;
+}
+
 .ui.u-padding-left--1 {
   padding-left: 8px !important;
+}
+
+.u-padding-y--2 {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+// Text align
+
+.u-text-align--left {
+  text-align: left !important;
+}
+
+
+.u-text-align--right {
+  text-align: right !important;
+}
+
+// Overflow
+
+.u-overflow-wrap--break {
+  overflow-wrap: break-word !important;
+}
+
+// width
+
+.u-max-width--full {
+  max-width: 100% !important;
+}
+
+// Flex
+
+.u-flex {
+  display: flex !important;
+}
+
+.u-flex-align--center {
+  align-items: center !important;
+}
+
+.u-flex-justify--center {
+  justify-content: center !important;
+}
+
+.u-flex-justify--space-between {
+  justify-content: space-between !important;
 }
 
 .u-button--flat {
@@ -48,4 +239,10 @@ body {
   box-shadow: none !important;
   border: none !important;
   background: none !important;
+}
+
+// Temp
+
+.u-challenge .ui.item.menu .item {
+  background-color: @darkBlack;
 }

@@ -56,9 +56,9 @@ class NotificationFeed extends Component {
 
     update(props) {
         const user = props.user;
-        //alert("Updating Scheduled Events");
+        //console.log("Updating Scheduled Events");
         if (!user.id) {
-            alert("Pretty bad error");
+            console.error("Pretty bad error");
             this.setState({isLoading: true});
         }
 
@@ -87,7 +87,7 @@ class NotificationFeed extends Component {
 
         // function friendRows(friendRequests, userID, feedUpdate)
         // {
-        //     //alert(friendRequests);
+        //     //console.log(friendRequests);
         //     if (friendRequests != null) {
         //         return _.times(friendRequests.length, i => (
         //             <NotificationCard userID={userID} friendRequestID={friendRequests[i]} feedUpdate={feedUpdate}/>
@@ -97,7 +97,7 @@ class NotificationFeed extends Component {
         //
         // function challengeRows(eventRequests, userID)
         // {
-        //     //alert(friendRequests);
+        //     //console.log(friendRequests);
         //     if (eventRequests != null) {
         //         return _.times(eventRequests.length, i => (
         //             <NotificationCard userID={userID} eventRequestID={eventRequests[i]}/>
