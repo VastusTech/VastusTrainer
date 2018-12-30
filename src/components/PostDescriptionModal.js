@@ -5,7 +5,7 @@ import Lambda from '../Lambda';
 // import EventMemberList from "../screens/EventMemberList";
 import { connect } from 'react-redux';
 // import QL from '../GraphQL';
-import { fetchClient, forceFetchPost, fetchPost } from "../redux_helpers/actions/cacheActions";
+import fetchPost, {fetchClient, forceFetchPost} from "../redux_helpers/actions/cacheActions";
 // import CompleteChallengeModal from "../screens/CompleteChallengeModal";
 import { convertFromISO } from "../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../redux_helpers/actions/userActions";

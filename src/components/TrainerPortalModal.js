@@ -1,4 +1,4 @@
-import React, {  } from 'react'
+import React from 'react'
 // import { Player } from 'video-react';
 import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider } from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';

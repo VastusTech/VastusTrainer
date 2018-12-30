@@ -5,7 +5,7 @@ import PostCard from "../components/PostCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
-import {fetchPost, putClientQuery, putPost, putPostQuery} from "../redux_helpers/actions/cacheActions";
+import fetchPost, {putClientQuery, putPost, putPostQuery} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 import CreatePostProp from "./CreatePost";
 // import CreateEventProp from "./CreateEvent";
@@ -165,7 +165,7 @@ class PostFeed extends Component {
                             //console.log(data.items[i].time_created);
                             // console.log("Putting in event: " + JSON.stringify(data.items[i]));
                             // this.setState({events: [...this.state.events, data.items[i]]});
-                            this.props.putPost(data.items[i]);
+                            //TODO: put this back later -> this.props.putPost(data.items[i]);
                         }
                         // console.log("events in the end: " + JSON.stringify(this.state.events));
                         this.setState({nextToken: data.nextToken});
@@ -223,7 +223,7 @@ class PostFeed extends Component {
         //is hit by the user.
         return (
             <Visibility onUpdate={this.handleUpdate}>
-                <CreatePostProp queryPosts={this.queryPosts}/>
+                <CreatePostProp queryPosts={this.queryPosts} queryChallenges={this.queryChallenges}/>
                 <Header sub>Recent Posts:</Header>
                 {rows(this.state.posts)}
             </Visibility>
