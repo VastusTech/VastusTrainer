@@ -4,6 +4,45 @@ import { Storage } from "aws-amplify";
 import defaultProfilePicture from "../../img/roundProfile.png";
 import {switchReturnItemType} from "../../logic/ItemType";
 
+const FETCH_CLIENT = 'FETCH_CLIENT';
+const FETCH_TRAINER = 'FETCH_TRAINER';
+const FETCH_GYM = 'FETCH_GYM';
+const FETCH_WORKOUT = 'FETCH_WORKOUT';
+const FETCH_REVIEW = 'FETCH_REVIEW';
+const FETCH_EVENT = 'FETCH_EVENT';
+const FETCH_CHALLENGE = 'FETCH_CHALLENGE';
+const FETCH_INVITE = 'FETCH_INVITE';
+const FETCH_POST = 'FETCH_POST';
+const FETCH_GROUP = 'FETCH_GROUP';
+const FETCH_COMMENT = 'FETCH_COMMENT';
+const FETCH_SPONSOR = 'FETCH_SPONSOR';
+
+const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
+const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
+const FETCH_GYM_QUERY = 'FETCH_GYM_QUERY';
+const FETCH_WORKOUT_QUERY = 'FETCH_WORKOUT_QUERY';
+const FETCH_REVIEW_QUERY = 'FETCH_REVIEW_QUERY';
+const FETCH_EVENT_QUERY = 'FETCH_EVENT_QUERY';
+const FETCH_CHALLENGE_QUERY = 'FETCH_CHALLENGE_QUERY';
+const FETCH_INVITE_QUERY = 'FETCH_INVITE_QUERY';
+const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
+const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
+const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
+const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
+
+const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
+const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
+const CLEAR_GYM_QUERY = 'CLEAR_GYM_QUERY';
+const CLEAR_WORKOUT_QUERY = 'CLEAR_WORKOUT_QUERY';
+const CLEAR_REVIEW_QUERY = 'CLEAR_REVIEW_QUERY';
+const CLEAR_EVENT_QUERY = 'CLEAR_EVENT_QUERY';
+const CLEAR_CHALLENGE_QUERY = 'CLEAR_CHALLENGE_QUERY';
+const CLEAR_INVITE_QUERY = 'CLEAR_INVITE_QUERY';
+const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
+const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
+const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
+const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
+
 function addProfilePictureToData(data, callback) {
     if (data && data.hasOwnProperty("profileImagePath")) {
         const imageKey = data.profileImagePath;
@@ -79,7 +118,7 @@ function addProfilePicturesToData(data, callback) {
         });
     }
 }
-function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler) {
+function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         const currentObject = getStore().cache[cacheSet][id];
@@ -88,16 +127,16 @@ function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, d
             variablesList = variablesList.filter((v) => { return !objectKeyList.includes(v) });
             // console.log("Final filtered list is = " + JSON.stringify(variablesList));
         }
-        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore);
+        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore);
     };
 }
-function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler) {
+function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore);
+        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, failureHandler, getStore);
     };
 }
-function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore) {
+function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
     const profilePictureIndex = variablesList.indexOf("profilePicture");
     const profilePicturesIndex = variablesList.indexOf("profilePictures");
     if (profilePictureIndex !== -1) {
@@ -164,6 +203,7 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
             console.error("Error in retrieval");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
+            if (failureHandler) { failureHandler(error); }
         });
     }
     else {
@@ -180,7 +220,7 @@ function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispat
 }
 // TODO THIS'LL BEE SUPER COOL TO DO IN THE FUTURE
 // TODO DON'T OPTIMIZE UNLESS THERE'S AN ACTUAL PROBLEM YOU GOBLIN
-function batchFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler) {
+function batchFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler) {
     // TODO Check to see if this has already been fulfilled
     // TODO Check to see if we have already called the same batch fetch query (add a set in the cache?)
     // TODO Maybe also try to remove variables based on that
@@ -197,16 +237,16 @@ function batchFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchT
                 // console.log("Final filtered list is = " + JSON.stringify(variablesList));
             }
         }
-        batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore);
     };
 }
-function batchForceFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler) {
+function batchForceFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, dispatch, getStore);
+        batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore);
     };
 }
-function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, dispatch, getStore) {
+function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, unretrievedDataHandler, failureHandler, dispatch, getStore) {
     const profilePictureIndex = variablesList.indexOf("profilePicture");
     const profilePicturesIndex = variablesList.indexOf("profilePictures");
     if (profilePictureIndex !== -1) {
@@ -275,9 +315,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
                     retrievedItems.push(getStore().cache[cacheSet][id]);
                 }
                 dispatch(setIsNotLoading());
-                if (dataHandler) {
-                    dataHandler(retrievedItems);
-                }
+                if (dataHandler) {dataHandler(retrievedItems);}
             }
             if (data.hasOwnProperty("unretrievedItems") && data.unretrievedItems && data.unretrievedItems.length && unretrievedDataHandler) {
                 unretrievedDataHandler(data.unretrievedItems);
@@ -286,6 +324,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
             console.error("Error in retrieval");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
+            if (failureHandler) { failureHandler(error);}
         });
     }
     else {
@@ -302,239 +341,309 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
             items.push(getStore().cache[cacheSet][id]);
         }
         dispatch(setIsNotLoading());
-        if (dataHandler) {
-            dataHandler(items);
-        }
+        if (dataHandler) { dataHandler(items);}
     }
 }
 // TODO This is almost finished, I'm just in a lapse
-// export function fetchQuery(variablesList, filter, limit, nextToken, cacheSet, QLFunctionName, fetchDispatchType, dataHandler) {
-//     return (dispatch, getStore) => {
-//         dispatch(setIsLoading());
-//         if (!variablesList.contains("id")) {
-//             variablesList.push("id");
-//         }
-//         if (!variablesList.contains("item_type")) {
-//             variablesList.push("item_type");
-//         }
-//         const queryString = QL.constructClientQuery(variablesList, filter, limit, nextToken);
-//         const queryResult = getStore().cache[cacheSet][queryString];
-//         if (queryResult) {
-//             dispatch({
-//                 type: fetchDispatchType,
-//                 payload: {
-//                     queryString,
-//                     queryResult
-//                 }
-//             });
-//             dataHandler(queryResult);
-//         }
-//         else {
-//             overwriteFetchQuery()
-//         }
-//     };
-// }
-// export function forceFetchQuery(variablesList, filter, limit, nextToken, cacheSet, QLFunctionName, fetchDispatchType, dataHandler) {
-//     return (dispatch, getStore) => {
-//         dispatch(setIsLoading());
-//         if (!variablesList.contains("id")) {
-//             variablesList.push("id");
-//         }
-//         if (!variablesList.contains("item_type")) {
-//             variablesList.push("item_type");
-//         }
-//         const queryString = QL.constructClientQuery(variablesList, filter, limit, nextToken);
-//         overwriteFetchQuery(queryString, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore);
-//     };
-// }
-// export function overwriteFetchQuery(queryString, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, getStore) {
-//     QL.execute(queryString, QLFunctionName, (data) => {
-//
-//     }, (error) => {
-//
-//     });
-//     QL[QLFunctionName](id, variablesList, (data) => {
-//         // console.log("Successfully retrieved the QL info");
-//         if (profilePictureIndex !== -1) {
-//             // console.log("Adding profile image to the data");
-//             addProfilePictureToData(data, (updatedData) => {
-//                 // console.log("Dispatching the profile image + data");
-//                 dispatch({
-//                     type: fetchDispatchType,
-//                     payload: {
-//                         id,
-//                         data: updatedData
-//                     }
-//                 });
-//                 dispatch(setIsNotLoading());
-//                 if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
-//             });
-//         }
-//         else {
-//             // console.log("Just dispatching the normal data");
-//             dispatch({
-//                 type: fetchDispatchType,
-//                 payload: {
-//                     id,
-//                     data
-//                 }
-//             });
-//             dispatch(setIsNotLoading());
-//             if (dataHandler) { dataHandler(getStore().cache[cacheSet][id]);}
-//         }
-//     }, (error) => {
-//         console.error("Error in retrieval");
-//         dispatch(setError(error));
-//         dispatch(setIsNotLoading());
-//     });
-// }
-export function fetchClient(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler);
+export function fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        if (!variablesList.includes("id")) {
+            variablesList.push("id");
+        }
+        if (!variablesList.includes("item_type")) {
+            variablesList.push("item_type");
+        }
+
+        // TODO Make this sort alphabetically, so that it's deterministic
+        // variablesList = variablesList.sort();
+
+        // const fetchQueryDispatchType = getFetchQueryType(itemType);
+        const queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        const queryResult = getCache(itemType, getStore)[queryString];
+        // const queryResult = getStore().cache[cacheSet][queryString];
+        if (queryResult) {
+            dispatch({
+                type: getFetchQueryType(itemType),
+                payload: {
+                    queryString,
+                    queryResult
+                }
+            });
+            dataHandler(queryResult);
+        }
+        else {
+            overwriteFetchQuery(itemType, queryString, dataHandler, failureHandler, dispatch);
+        }
+    };
 }
-export function fetchTrainer(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "trainers", "getTrainer", "FETCH_TRAINER", dataHandler);
+export function forceFetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return (dispatch) => {
+        dispatch(setIsLoading());
+        if (!variablesList.includes("id")) {
+            variablesList.push("id");
+        }
+        if (!variablesList.includes("item_type")) {
+            variablesList.push("item_type");
+        }
+
+        // TODO Make this sort alphabetically, so that it's deterministic
+        // variablesList = variablesList.sort();
+
+        const queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit);
+        // const queryString = QL[QLFunctionName](variablesList, filter, limit, nextToken);
+        overwriteFetchQuery(itemType, queryString, dataHandler, failureHandler, dispatch);
+    };
 }
-export function fetchGym(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "gyms", "getGym", "FETCH_GYM", dataHandler);
+export function overwriteFetchQuery(itemType, queryString, dataHandler, failureHandler, dispatch) {
+    QL.queryItems(itemType, queryString, (data) => {
+        if (data && data.items && data.items.length) {
+            for (let i = 0; i < data.items.length; i++) {
+                // TODO Handle the profile image path retrieval
+                const item = data.items[i];
+                const id = item.id;
+                addProfilePictureToData(item, (updatedData) => {
+                    dispatch({
+                        type: getFetchType(itemType),
+                        payload: {
+                            id,
+                            data: updatedData
+                        }
+                    });
+                });
+            }
+        }
+        dispatch({
+            type: getFetchQueryType(itemType),
+            payload: {
+                queryString,
+                queryResult: data
+            }
+        });
+        if (dataHandler) { dataHandler(data);}
+    }, (error) => {
+        console.error("Error in QUERY retrieval. ItemType = " + itemType + ", query string = " + queryString);
+        dispatch(setError(error));
+        dispatch(setIsNotLoading());
+        if (failureHandler) { failureHandler(error);}
+    });
 }
-export function fetchWorkout(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "workouts", "getWorkout", "FETCH_WORKOUT", dataHandler);
+export function fetchClient(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler, failureHandler);
 }
-export function fetchReview(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "reviews", "getReview", "FETCH_REVIEW", dataHandler);
+export function fetchTrainer(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "trainers", "getTrainer", "FETCH_TRAINER", dataHandler, failureHandler);
 }
-export function fetchEvent(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler);
+export function fetchGym(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "gyms", "getGym", "FETCH_GYM", dataHandler, failureHandler);
 }
-export function fetchChallenge(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler);
+export function fetchWorkout(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "workouts", "getWorkout", "FETCH_WORKOUT", dataHandler, failureHandler);
 }
-export function fetchInvite(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler);
+export function fetchReview(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "reviews", "getReview", "FETCH_REVIEW", dataHandler, failureHandler);
 }
-export default function fetchPost(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler);
+export function fetchEvent(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler, failureHandler);
 }
-export function fetchGroup(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler);
+export function fetchChallenge(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler, failureHandler);
 }
-export function fetchComment(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "comments", "getComment", "FETCH_COMMENT", dataHandler);
+export function fetchInvite(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler, failureHandler);
 }
-export function fetchSponsor(id, variablesList, dataHandler) {
-    return fetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler);
+export default function fetchPost(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler, failureHandler);
 }
-export function forceFetchClient(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler);
+export function fetchGroup(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler, failureHandler);
 }
-export function forceFetchTrainer(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "trainers", "getTrainer", "FETCH_TRAINER", dataHandler);
+export function fetchComment(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "comments", "getComment", "FETCH_COMMENT", dataHandler, failureHandler);
 }
-export function forceFetchGym(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "gyms", "getGym", "FETCH_GYM", dataHandler);
+export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
 }
-export function forceFetchWorkout(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "workouts", "getWorkout", "FETCH_WORKOUT", dataHandler);
+export function forceFetchClient(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler, failureHandler);
 }
-export function forceFetchReview(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "reviews", "getReview", "FETCH_REVIEW", dataHandler);
+export function forceFetchTrainer(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "trainers", "getTrainer", "FETCH_TRAINER", dataHandler, failureHandler);
 }
-export function forceFetchEvent(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler);
+export function forceFetchGym(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "gyms", "getGym", "FETCH_GYM", dataHandler, failureHandler);
 }
-export function forceFetchChallenge(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler);
+export function forceFetchWorkout(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "workouts", "getWorkout", "FETCH_WORKOUT", dataHandler, failureHandler);
 }
-export function forceFetchInvite(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler);
+export function forceFetchReview(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "reviews", "getReview", "FETCH_REVIEW", dataHandler, failureHandler);
 }
-export function forceFetchPost(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler);
+export function forceFetchEvent(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "events", "getEvent", "FETCH_EVENT", dataHandler, failureHandler);
 }
-export function forceFetchGroup(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler);
+export function forceFetchChallenge(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler, failureHandler);
 }
-export function forceFetchComment(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "comments", "getComment", "FETCH_COMMENT", dataHandler);
+export function forceFetchInvite(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler, failureHandler);
 }
-export function forceFetchSponsor(id, variablesList, dataHandler) {
-    return forceFetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler);
+export function forceFetchPost(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler, failureHandler);
 }
-export function fetchClients(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler);
+export function forceFetchGroup(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler, failureHandler);
 }
-export function fetchTrainers(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "trainers", "getTrainers", "FETCH_TRAINER", dataHandler, unretrievedDataHandler);
+export function forceFetchComment(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "comments", "getComment", "FETCH_COMMENT", dataHandler, failureHandler);
 }
-export function fetchGyms(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "gyms", "getGyms", "FETCH_GYM", dataHandler, unretrievedDataHandler);
+export function forceFetchSponsor(id, variablesList, dataHandler, failureHandler) {
+    return forceFetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
 }
-export function fetchWorkouts(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "workouts", "getWorkouts", "FETCH_WORKOUT", dataHandler, unretrievedDataHandler);
+export function fetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchReviews(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "reviews", "getReviews", "FETCH_REVIEW", dataHandler, unretrievedDataHandler);
+export function fetchTrainers(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "trainers", "getTrainers", "FETCH_TRAINER", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchEvents(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "events", "getEvents", "FETCH_EVENT", dataHandler, unretrievedDataHandler);
+export function fetchGyms(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "gyms", "getGyms", "FETCH_GYM", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchChallenges(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "challenges", "getChallenges", "FETCH_CHALLENGE", dataHandler, unretrievedDataHandler);
+export function fetchWorkouts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "workouts", "getWorkouts", "FETCH_WORKOUT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchInvites(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "invites", "getInvites", "FETCH_INVITE", dataHandler, unretrievedDataHandler);
+export function fetchReviews(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "reviews", "getReviews", "FETCH_REVIEW", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchPosts(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "posts", "getPosts", "FETCH_POST", dataHandler, unretrievedDataHandler);
+export function fetchEvents(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "events", "getEvents", "FETCH_EVENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchGroups(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "groups", "getGroups", "FETCH_GROUP", dataHandler, unretrievedDataHandler);
+export function fetchChallenges(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "challenges", "getChallenges", "FETCH_CHALLENGE", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchComments(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "comments", "getComments", "FETCH_COMMENT", dataHandler, unretrievedDataHandler);
+export function fetchInvites(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "invites", "getInvites", "FETCH_INVITE", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function fetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler);
+export function fetchPosts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "posts", "getPosts", "FETCH_POST", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchClients(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler);
+export function fetchGroups(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "groups", "getGroups", "FETCH_GROUP", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchTrainers(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "trainers", "getTrainers", "FETCH_TRAINER", dataHandler, unretrievedDataHandler);
+export function fetchComments(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "comments", "getComments", "FETCH_COMMENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchGyms(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "gyms", "getGyms", "FETCH_GYM", dataHandler, unretrievedDataHandler);
+export function fetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchWorkouts(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "workouts", "getWorkouts", "FETCH_WORKOUT", dataHandler, unretrievedDataHandler);
+export function forceFetchClients(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "clients", "getClients", "FETCH_CLIENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchReviews(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "reviews", "getReviews", "FETCH_REVIEW", dataHandler, unretrievedDataHandler);
+export function forceFetchTrainers(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "trainers", "getTrainers", "FETCH_TRAINER", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchEvents(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "events", "getEvents", "FETCH_EVENT", dataHandler, unretrievedDataHandler);
+export function forceFetchGyms(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "gyms", "getGyms", "FETCH_GYM", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchChallenges(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "challenges", "getChallenges", "FETCH_CHALLENGE", dataHandler, unretrievedDataHandler);
+export function forceFetchWorkouts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "workouts", "getWorkouts", "FETCH_WORKOUT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchInvites(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "invites", "getInvites", "FETCH_INVITE", dataHandler, unretrievedDataHandler);
+export function forceFetchReviews(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "reviews", "getReviews", "FETCH_REVIEW", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchPosts(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "posts", "getPosts", "FETCH_POST", dataHandler, unretrievedDataHandler);
+export function forceFetchEvents(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "events", "getEvents", "FETCH_EVENT", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchGroups(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "groups", "getGroups", "FETCH_GROUP", dataHandler, unretrievedDataHandler);
+export function forceFetchChallenges(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "challenges", "getChallenges", "FETCH_CHALLENGE", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchComments(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "comments", "getComments", "FETCH_COMMENT", dataHandler, unretrievedDataHandler);
+export function forceFetchInvites(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "invites", "getInvites", "FETCH_INVITE", dataHandler, unretrievedDataHandler, failureHandler);
 }
-export function forceFetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler) {
-    return batchForceFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler);
+export function forceFetchPosts(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "posts", "getPosts", "FETCH_POST", dataHandler, unretrievedDataHandler, failureHandler);
 }
-// export function fetchClientQuery(variablesList, filter, limit, nextToken) {
-//
-// }
+export function forceFetchGroups(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "groups", "getGroups", "FETCH_GROUP", dataHandler, unretrievedDataHandler, failureHandler);
+}
+export function forceFetchComments(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "comments", "getComments", "FETCH_COMMENT", dataHandler, unretrievedDataHandler, failureHandler);
+}
+export function forceFetchSponsors(ids, variablesList, dataHandler, unretrievedDataHandler, failureHandler) {
+    return batchForceFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
+}
+export function fetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchTrainerQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Trainer", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchGymQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Gym", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchWorkoutQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Workout", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchReviewQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Review", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchEventQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Event", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchChallengeQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Challenge", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchPostQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Post", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchInviteQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Invite", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchGroupQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Group", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchCommentQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Comment", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function fetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchTrainerQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Trainer", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchGymQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Gym", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchWorkoutQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Workout", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchReviewQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Review", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchEventQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Event", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchChallengeQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Challenge", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchPostQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Post", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchInviteQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Invite", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchGroupQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Group", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchCommentQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Comment", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
 // TODO Consider how this might scale? Another LRU Cache here?
 export function putClientQuery(queryString, queryResult) {
     return (dispatch) => {
@@ -855,6 +964,15 @@ export function putSponsor(sponsor) {
     }
     return {type: ""};
 }
+export function getFetchType(itemType) {
+    return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
+        FETCH_EVENT, FETCH_CHALLENGE, FETCH_POST, FETCH_INVITE, FETCH_GROUP, FETCH_COMMENT, FETCH_SPONSOR, "Retrieve fetch type not implemented for type.")
+}
+export function getFetchQueryType(itemType) {
+    return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
+        FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_POST_QUERY, FETCH_INVITE_QUERY, FETCH_GROUP_QUERY,
+        FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, "Retrieve fetch query type not implemented for type");
+}
 export function getCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
@@ -870,11 +988,19 @@ export function getPutItemFunction(itemType) {
     return switchReturnItemType(itemType, putClient, putTrainer, putGym, putWorkout, putReview, putEvent, putChallenge,
         putPost, putGroup, putComment, putSponsor, "Retrieve put item function item type not implemented");
 }
+export function getFetchQueryFunction(itemType) {
+    return switchReturnItemType(itemType, fetchClientQuery, fetchTrainerQuery, fetchGymQuery, fetchWorkoutQuery,
+        fetchReviewQuery, fetchEventQuery, fetchChallengeQuery, fetchPostQuery, fetchInviteQuery, fetchGroupQuery,
+        fetchCommentQuery, fetchSponsorQuery, "Retrieve fetch query function item type not implemented");
+
+}
 export function getPutQueryFunction(itemType) {
     return switchReturnItemType(itemType, putClientQuery, putTrainerQuery, putGymQuery, putWorkoutQuery, putReviewQuery,
-        putEventQuery, putChallengeQuery, putInviteQuery, putPostQuery, putGroupQuery, putCommentQuery, putSponsorQuery, "Retrieve Put Query Function not implemented");
+        putEventQuery, putChallengeQuery, putInviteQuery, putPostQuery, putGroupQuery, putCommentQuery, putSponsorQuery,
+        "Retrieve Put Query Function not implemented");
 }
 export function getClearQueryFunction(itemType) {
     return switchReturnItemType(itemType, clearClientQuery, clearTrainerQuery, clearGymQuery, clearWorkoutQuery, clearReviewQuery,
-        clearEventQuery, clearChallengeQuery, clearInviteQuery, clearPostQuery, clearGroupQuery, clearCommentQuery, clearSponsorQuery, "Retrieve Clear Query Function not implemented");
+        clearEventQuery, clearChallengeQuery, clearInviteQuery, clearPostQuery, clearGroupQuery, clearCommentQuery, clearSponsorQuery,
+        "Retrieve Clear Query Function not implemented");
 }

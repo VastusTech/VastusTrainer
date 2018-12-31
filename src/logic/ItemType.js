@@ -27,7 +27,7 @@ export function getItemTypeFromID(id) {
     return null;
 }
 
-export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, inviteValue, postValue, groupValue, commentValue, sponsorValue, errorMessage) {
+export function switchReturnItemType(itemType, clientValue, trainerValue, gymValue, workoutValue, reviewValue, eventValue, challengeValue, postValue, inviteValue, groupValue, commentValue, sponsorValue, errorMessage) {
     let returnValue = null;
     switch (itemType) {
         case "Client":

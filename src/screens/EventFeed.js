@@ -5,7 +5,13 @@ import EventCard from "../components/EventCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
-import {fetchEvent, putClientQuery, putEvent, putEventQuery} from "../redux_helpers/actions/cacheActions";
+import {
+    fetchEvent,
+    fetchEventQuery,
+    putClientQuery,
+    putEvent,
+    putEventQuery
+} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 // import CreateEventProp from "./CreateEvent";
 // import WorkoutSelectionList from "./WorkoutSelectionList";
@@ -135,8 +141,10 @@ class EventFeed extends Component {
 
             });
             // const oldFilter = QL.generateFilter("and", {"ifCompleted": "eq"}, {"ifCompleted": "false"});
-            QL.queryEvents(["id", "title", "time", "time_created", "address", "owner", "ifCompleted", "members", "capacity", "access"], filter, this.state.eventFeedLength,
-                this.state.nextToken, (data) => {
+            // QL.queryEventsOld(["id", "title", "time", "time_created", "address", "owner", "ifCompleted", "members", "capacity", "access"], filter, this.state.eventFeedLength,
+            //     this.state.nextToken, (data) => {
+            this.props.fetchEventQuery(["id", "title", "time", "time_created", "address", "owner", "ifCompleted", "members", "capacity", "access"],
+                filter, this.state.eventFeedLength, this.state.nextToken, (data) => {
                     if (!data.nextToken) {
                         this.setState({ifFinished: true});
                     }
@@ -253,6 +261,9 @@ const mapDispatchToProps = (dispatch) => {
         putEventQuery: (queryString, queryResult) => {
             dispatch(putEventQuery(queryString, queryResult));
         },
+        fetchEventQuery: (variablesList, filter, limit, nextToken, dataHandler, failureHandler) => {
+            dispatch(fetchEventQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler));
+        }
     }
 };
 

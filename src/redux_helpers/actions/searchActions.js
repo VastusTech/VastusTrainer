@@ -1,6 +1,6 @@
 import { setError, setIsLoading } from "./infoActions";
 import QL from "../../GraphQL";
-import {getCache, getPutItemFunction, getPutQueryFunction, getQueryCache} from "./cacheActions";
+import {getCache, getPutItemFunction, getPutQueryFunction, getQueryCache, getFetchQueryType, getFetchQueryFunction} from "./cacheActions";
 
 const ENABLE_TYPE = 'ENABLE_TYPE';
 const DISABLE_TYPE = 'DISABLE_TYPE';
@@ -86,18 +86,34 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
         const ifFirst = typeQuery.ifFirst;
         if (nextToken || ifFirst) {
             const putItemFunction = getPutItemFunction(itemType);
-            QL.getQueryFunction(itemType)(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
-                dispatch(setTypeNextToken(itemType, nextToken));
-                successHandler(data);
-                if (data && data.items) {
-                    for (let i = 0; i < data.items.length; i++) {
-                        dispatch(putItemFunction(data.items[i]));
+            getFetchQueryFunction(itemType)(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+                if (data) {
+                    dispatch(setTypeNextToken(itemType, data.nextToken));
+                    successHandler(data);
+                    if (data && data.items) {
+                        for (let i = 0; i < data.items.length; i++) {
+                            dispatch(putItemFunction(data.items[i]));
+                        }
                     }
                 }
+                else {
+                    console.error("Query function returned null?");
+                }
             }, (error) => {
-                dispatch(setError(error));
-                failureHandler();
-            }, getQueryCache(itemType, getStore), getPutQueryFunction(itemType, getStore));
+                if (failureHandler) { failureHandler(error); }
+            });
+            // QL.getOldQueryFunction(itemType)(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+            //     dispatch(setTypeNextToken(itemType, nextToken));
+            //     successHandler(data);
+            //     if (data && data.items) {
+            //         for (let i = 0; i < data.items.length; i++) {
+            //             dispatch(putItemFunction(data.items[i]));
+            //         }
+            //     }
+            // }, (error) => {
+            //     dispatch(setError(error));
+            //     failureHandler();
+            // }, getQueryCache(itemType, getStore), getPutQueryFunction(itemType, getStore));
         }
         else {
             successHandler({items: [], nextToken: null});

@@ -5,7 +5,7 @@ import PostCard from "../components/PostCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
-import fetchPost, {putClientQuery, putPost, putPostQuery} from "../redux_helpers/actions/cacheActions";
+import fetchPost, {fetchPostQuery, putClientQuery, putPost, putPostQuery} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 import CreatePostProp from "./CreatePost";
 // import CreateEventProp from "./CreateEvent";
@@ -139,8 +139,10 @@ class PostFeed extends Component {
                 access: "public"
             });
             // const oldFilter = QL.generateFilter("and", {"ifCompleted": "eq"}, {"ifCompleted": "false"});
-            QL.queryPosts(["id", "item_type", "by", "about", "time_created", "access", "description", "postType", "picturePaths", "videoPaths"], filter, this.state.eventFeedLength,
-                this.state.nextToken, (data) => {
+            // QL.queryPostsOld(["id", "item_type", "by", "about", "time_created", "access", "description", "postType", "picturePaths", "videoPaths"], filter, this.state.eventFeedLength,
+            //     this.state.nextToken, (data) => {
+            this.props.fetchPostQuery(["id", "item_type", "by", "about", "time_created", "access", "description", "postType", "picturePaths", "videoPaths"],
+                filter, this.state.eventFeedLength, this.state.nextToken, (data) => {
                     if (!data.nextToken) {
                         this.setState({ifFinished: true});
                     }
@@ -160,6 +162,7 @@ class PostFeed extends Component {
                                 newlyQueriedPosts.push(post);
                             }
                         }
+                        console.error(JSON.stringify(this.state.posts) + "\n" + JSON.stringify(newlyQueriedPosts));
                         this.setState({posts: [...this.state.posts, ...newlyQueriedPosts]});
                         for (let i = 0; i < data.items.length; i++) {
                             //console.log(data.items[i].time_created);
@@ -251,6 +254,9 @@ const mapDispatchToProps = (dispatch) => {
         putPostQuery: (queryString, queryResult) => {
             dispatch(putPostQuery(queryString, queryResult));
         },
+        fetchPostQuery: (variablesList, filter, limit, nextToken, dataHandler, failureHandler) => {
+            dispatch(fetchPostQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler));
+        }
     }
 };
 

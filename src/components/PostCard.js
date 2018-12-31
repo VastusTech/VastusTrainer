@@ -164,39 +164,48 @@ class PostCard extends Component {
                 }
                 else if (postType === "Trainer") {
                     //return (<TrainerDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    return null;
                 }
                 else if (postType === "Gym") {
                     //return (<GymDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    return null;
                 }
                 else if (postType === "Workout") {
                     //return (<WorkoutDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    return null;
                 }
                 else if (postType === "Review") {
                     //return (<ReviewDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    return null;
                 }
                 else if (postType === "Event") {
                     //return (<EventDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    return null;
                 }
                 else if (postType === "Challenge") {
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a challenge", postMessageSet: true});
                     }
-                    return (<ChallengeDetailCard postID={this.state.postID}/>);
+                    // return (<ChallengeDetailCard postID={this.state.postID}/>);
+                    return null;
                 }
                 else if (postType === "Invite") {
                     //return (<InviteDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    return null;
                 }
                 else if (postType === "Post") {
                     return (<PostDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "submission") {
                     //return (<SubmissionDetailCard postID={this.state.postID}/>);
+                    return null;
                 }
             }
         }
-        else if(itemType) {
+        else if (itemType) {
             //alert("POSTID: " + this.state.postID);
-            return (<PostDetailCard postID={this.state.postID}/>);
+            // return (<PostDetailCard postID={this.state.postID}/>);
+            return null;
         }
         return (<div/>);
     }

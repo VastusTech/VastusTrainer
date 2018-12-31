@@ -133,7 +133,7 @@ class SearchBarProp extends Component {
     //             searchQuery
     //         });
     //         this.setState({clientsLoading: true});
-    //         QL.queryClients(["id", "item_type", "name", "username", "email"], filter, this.state.clientsLimit, this.state.nextClientQueryToken,
+    //         QL.queryClientsOld(["id", "item_type", "name", "username", "email"], filter, this.state.clientsLimit, this.state.nextClientQueryToken,
     //             (data) => {
     //                 console.log("Received clients query: " + JSON.stringify(data));
     //                 if (data.items && data.items.length) {

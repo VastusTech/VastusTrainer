@@ -5,7 +5,13 @@ import ChallengeCard from "../components/ChallengeCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
-import {fetchChallenge, putClientQuery, putChallenge, putChallengeQuery} from "../redux_helpers/actions/cacheActions";
+import {
+    fetchChallenge,
+    putClientQuery,
+    putChallenge,
+    putChallengeQuery,
+    fetchChallengeQuery
+} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 // import CreateEventProp from "./CreateEvent";
 import CreateChallengeProp from "./CreateChallenge"
@@ -89,7 +95,8 @@ class ChallengeFeed extends Component {
             // QL.queryChallenges(["id", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "restriction", "tags", "prize"], QL.generateFilter("and",
             //     {"ifCompleted": "eq"}, {"ifCompleted": "false"}), this.state.challengeFeedLength,
             //     this.state.nextToken, (data) => {
-            QL.queryChallenges(["id", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "restriction", "tags", "prize", "submissions"],
+            this.props.fetchChallengeQuery(["id", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "restriction", "tags", "prize", "submissions"],
+            // QL.queryChallengesOld(["id", "title", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "goal", "access", "restriction", "tags", "prize", "submissions"],
                 filter, this.state.challengeFeedLength, this.state.nextToken, (data) => {
                     if (!data.nextToken) {
                         this.setState({ifFinished: true});
@@ -207,6 +214,9 @@ const mapDispatchToProps = (dispatch) => {
         putChallengeQuery: (queryString, queryResult) => {
             dispatch(putChallengeQuery(queryString, queryResult));
         },
+        fetchChallengeQuery: (variablesList, filter, limit, nextToken, dataHandler, failureHandler) => {
+            dispatch(fetchChallengeQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler));
+        }
     }
 };
 

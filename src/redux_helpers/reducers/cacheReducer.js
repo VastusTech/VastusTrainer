@@ -172,112 +172,124 @@ export default (state = initialState, action) => {
             // TODO Connect these to LRU Handlers... important especially as we scale
         case FETCH_CLIENT_QUERY:
             // state = addObjectToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload);
-            state = {
-                ...state,
-                clientQueries: {
-                    ...state.clientQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     clientQueries: {
+            //         ...state.clientQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_TRAINER_QUERY:
-            state = {
-                ...state,
-                trainerQueries: {
-                    ...state.trainerQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "trainerQueries", trainerQueryCacheSize, "trainerQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     trainerQueries: {
+            //         ...state.trainerQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_GYM_QUERY:
-            state = {
-                ...state,
-                gymQueries: {
-                    ...state.gymQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "gymQueries", gymQueryCacheSize, "gymQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     gymQueries: {
+            //         ...state.gymQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_WORKOUT_QUERY:
-            state = {
-                ...state,
-                workoutQueries: {
-                    ...state.workoutQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "workoutQueries", workoutQueryCacheSize, "workoutQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     workoutQueries: {
+            //         ...state.workoutQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_REVIEW_QUERY:
-            state = {
-                ...state,
-                reviewQueries: {
-                    ...state.reviewQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "reviewQueries", reviewQueryCacheSize, "reviewQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     reviewQueries: {
+            //         ...state.reviewQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_EVENT_QUERY:
-            state = {
-                ...state,
-                eventQueries: {
-                    ...state.eventQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "eventQueries", eventQueryCacheSize, "eventQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     eventQueries: {
+            //         ...state.eventQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_CHALLENGE_QUERY:
-            state = {
-                ...state,
-                challengeQueries: {
-                    ...state.challengeQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "challengeQueries", challengeQueryCacheSize, "challengeQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     challengeQueries: {
+            //         ...state.challengeQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_INVITE_QUERY:
-            state = {
-                ...state,
-                inviteQueries: {
-                    ...state.inviteQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "inviteQueries", inviteQueryCacheSize, "inviteQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     inviteQueries: {
+            //         ...state.inviteQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_POST_QUERY:
-            state = {
-                ...state,
-                postQueries: {
-                    ...state.postQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "postQueries", postQueryCacheSize, "postQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     postQueries: {
+            //         ...state.postQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_GROUP_QUERY:
-            state = {
-                ...state,
-                groupQueries: {
-                    ...state.groupQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "groupQueries", groupQueryCacheSize, "groupQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     groupQueries: {
+            //         ...state.groupQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_COMMENT_QUERY:
-            state = {
-                ...state,
-                commentQueries: {
-                    ...state.commentQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "commentQueries", commentQueryCacheSize, "commentQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     commentQueries: {
+            //         ...state.commentQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case FETCH_SPONSOR_QUERY:
-            state = {
-                ...state,
-                sponsorQueries: {
-                    ...state.sponsorQueries,
-                    [action.payload.queryString]: action.payload.queryResult
-                }
-            };
+            state = addObjectToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            // state = {
+            //     ...state,
+            //     sponsorQueries: {
+            //         ...state.sponsorQueries,
+            //         [action.payload.queryString]: action.payload.queryResult
+            //     }
+            // };
             break;
         case CLEAR_CLIENT_QUERY:
             state = {
@@ -312,7 +324,7 @@ export default (state = initialState, action) => {
         case CLEAR_CHALLENGE_QUERY:
             state = {
                 ...state,
-                eventQueries: {}
+                challengeQueries: {}
             };
             break;
         case CLEAR_INVITE_QUERY:
@@ -348,7 +360,7 @@ export default (state = initialState, action) => {
         case CLEAR_SPONSOR_QUERY:
             state = {
                 ...state,
-                Queries: {}
+                sponsorQueries: {}
             };
             break;
         default:
