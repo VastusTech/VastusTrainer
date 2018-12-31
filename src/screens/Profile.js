@@ -3,6 +3,7 @@ import React, {  } from 'react'
 import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider, Image, Grid} from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
 import BuddyListProp from "./BuddyList";
+import SubscriberListProp from "./SubscriberList";
 import _ from 'lodash';
 import ReactSwipe from 'react-swipe';
 // import TrophyCaseProp from "./TrophyCase";
@@ -38,12 +39,14 @@ class Profile extends React.PureComponent {
         checked: false,
         sentRequest: false,
         buddyModalOpen: false,
+        subscriberModalOpen: false,
         scheduledModalOpen: false,
         ownedModalOpen: false,
         portalModalOpen: false,
         galleryNum: 0,
         galleryURLS: [],
-        error: null
+        error: null,
+        numSubscribers: 0
     };
 
     toggle = () => this.setState({ checked: !this.state.checked });
@@ -289,6 +292,8 @@ class Profile extends React.PureComponent {
 
     openBuddyModal = () => { this.setState({buddyModalOpen: true}); };
     closeBuddyModal = () => { this.setState({buddyModalOpen: false}); };
+    openSubscriberModal = () => { this.setState({subscriberModalOpen: true}); };
+    closeSubscriberModal = () => { this.setState({subscriberModalOpen: false}); };
     openScheduledModal = () => { this.setState({scheduledModalOpen: true}); };
     closeScheduledModal = () => { this.setState({scheduledModalOpen: false}); };
     openCompletedModal = () => { this.setState({completedModalOpen: true}); };
@@ -358,6 +363,14 @@ class Profile extends React.PureComponent {
                             <Modal basic size='mini' open={this.state.buddyModalOpen} onClose={this.closeBuddyModal.bind(this)} closeIcon>
                                 <Modal.Content image>
                                     <BuddyListProp/>
+                                </Modal.Content>
+                            </Modal>
+                        </List.Item>
+                        <List.Item>
+                            <Button primary fluid size="large" onClick={this.openSubscriberModal.bind(this)}>{this.state.numSubscribers} Subscribers</Button>
+                            <Modal basic size='mini' open={this.state.subscriberModalOpen} onClose={this.closeSubscriberModal.bind(this)} closeIcon>
+                                <Modal.Content image>
+                                    <SubscriberListProp/>
                                 </Modal.Content>
                             </Modal>
                         </List.Item>
