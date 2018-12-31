@@ -1,8 +1,10 @@
 import React, {  } from 'react'
 // import { Player } from 'video-react';
-import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider } from 'semantic-ui-react'
+import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider, Image, Grid} from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
 import BuddyListProp from "./BuddyList";
+import _ from 'lodash';
+import ReactSwipe from 'react-swipe';
 // import TrophyCaseProp from "./TrophyCase";
 // import { S3Image } from 'aws-amplify-react';
 // import ChallengeManagerProp from "./ManageChallenges";
@@ -39,6 +41,8 @@ class Profile extends React.PureComponent {
         scheduledModalOpen: false,
         ownedModalOpen: false,
         portalModalOpen: false,
+        galleryNum: 0,
+        galleryURLS: [],
         error: null
     };
 
@@ -139,31 +143,95 @@ class Profile extends React.PureComponent {
         }
     }
 
+    setGalleryPicture(event) {
+        //alert("This is calling set gallery picture");
+        if (this.props.user.id) {
+            //alert(this.state.galleryNum);
+            const path = "/ClientFiles/" + this.props.user.id + "/galleryImages" + this.state.galleryNum;
+            //console.log("Calling storage put");
+            //console.log("File = " + JSON.stringify(event.target.files[0]));
+            Storage.put(path, event.target.files[0], { contentType: "image/*" }).then((result) => {
+                // Now we update the database object to reflect this
+                //console.log("resulttt:" + JSON.stringify(result));
+                //console.log("Successfully put the image, now putting the data into the database!");
+                ClientFunctions.addProfileImagePath(this.props.user.id, this.props.user.id, path,
+                    (data) => {
+                        //console.log("successfully editted client");
+                        //console.log(JSON.stringify(data));
+                        this.props.forceFetchUserAttributes(["profileImagePaths"]);
+                        this.setURLS(this.props.user.profileImagePaths);
+                        this.setState({isLoading: true});
+                    }, (error) => {
+                        console.log("Failed edit client attribute");
+                        console.log(JSON.stringify(error));
+                    });
+                this.setState({isLoading: true});
+            }).catch((error) => {
+                console.log("failed storage put");
+                console.log(error);
+            });
+        }
+    }
+
+    setURLS(paths) {
+        //alert("Setting URLS");
+        if(paths) {
+            for (let i = 0; i < paths.length; i++) {
+                if (this.state.galleryURLS) {
+                    Storage.get(paths[i]).then((url) => {
+                        let tempGal = this.state.galleryURLS;
+                        tempGal[i] = url;
+                        this.setState({galleryURLS: tempGal});
+                        //alert(JSON.stringify(this.state.galleryURLS));
+                    }).catch((error) => {
+                        console.error("ERROR IN GETTING VIDEO FOR COMMENT");
+                        console.error(error);
+                    });
+                }
+            }
+        }
+    }
+
     profilePicture() {
         if (this.props.user.profilePicture) {
-            // if (this.state.ifS3) {
-            //     // <S3Image size='medium' imgKey={this.state.profilePicture} circular/>
-            //     return(
-            //         <Item.Image size='medium' src={this.state.profilePicture} circular/>
-            //     );
-            // }
-            /*return(
-                <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
+            let reactSwipeEl;
+            return (
+                <div>
+                    <Modal closeIcon trigger={
+                        <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
+                        </div>}>
+                        <div>
+                            <ReactSwipe
+                                className="carousel"
+                                swipeOptions={{ continuous: false }}
+                                ref={el => (reactSwipeEl = el)}
+                            >
+                                {this.setURLS(this.props.user.profileImagePaths)}
+                                {this.imageGallery()}
+                                <div>
+                                    <Label size='massive' as="label" htmlFor="galleryUpload" circular className="u-bg--primaryGradient">
+                                        <Icon name="plus" className='u-margin-right--0' size="large" inverted/>
+                                    </Label>
+                                    Add new picture to gallery
+                                    <input type="file" accept="image/*" id="galleryUpload" hidden={true}
+                                           onChange={this.setGalleryPicture} onClick={this.setState({galleryNum: this.state.galleryURLS.length})}/>
+                                </div>
+                            </ReactSwipe>
+                            <Grid>
+                                <Grid.Column floated='left' width={2}>
+                                    <Button align="left" icon="caret left" primary onClick={() => reactSwipeEl.prev()}/>
+                                </Grid.Column>
+                                <Grid.Column floated='right' width={2}>
+                                    <Button align="right" icon="caret right" primary onClick={() => reactSwipeEl.next()}/>
+                                </Grid.Column>
+                            </Grid>
+                        </div>
+                    </Modal>
                     <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
                         <Icon name="upload" className='u-margin-right--0' size="large" inverted />
                     </Label>
-                    <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setPicture}/>
-                </div>
-            );*/
-            //console.log("PROPICIMAGE!!!!: " + this.props.user.profilePicture);
-            return (
-                <div>
-                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
-                        <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
-                            <Icon name="upload" className='u-margin-right--0' size="large" inverted />
-                        </Label>
-                        <input type="file" accept="image/*" id="proPicUpload" hidden={true} onChange={this.setPicture}/>
-                    </div>
+                    <input type="file" accept="image/*" id="proPicUpload" hidden={true} onChange={this.setPicture}
+                           onClick={this.setState()}/>
                 </div>
             );
         }
@@ -173,6 +241,33 @@ class Profile extends React.PureComponent {
                     <Loader />
                 </Dimmer>
             );
+        }
+    }
+
+    imageGallery = () => {
+        if(this.props.user.profileImagePaths) {
+            //alert(JSON.stringify(this.props.user.profileImagePaths));
+            this.update();
+        }
+        //alert(JSON.stringify(this.state.galleryURLS));
+        if(this.state.galleryURLS.length > 0) {
+            //alert(JSON.stringify(this.state.galleryURLS));
+            return _.times(this.state.galleryURLS.length, i => (
+                <div>
+                    <Image src={this.state.galleryURLS[i]} align='center' style={{height: 500,
+                        width: 500, display: 'block',
+                        margin: 'auto'}}>
+                        {/*this.state.galleryURLS[i] + " Num: " + i*/}
+                        {this.setState({galleryNum: i})}
+                    </Image>
+                    <Label size='small' as="label" htmlFor="galleryUpload" circular className="u-bg--primaryGradient">
+                        <Icon name="plus" className='u-margin-right--0' size="large" inverted/>
+                    </Label>
+                    Change Picture
+                    <input type="file" accept="image/*" id="galleryUpload" hidden={true}
+                           onChange={this.setGalleryPicture} onClick={this.setState({galleryNum: i})}/>
+                </div>
+            ));
         }
     }
 
@@ -252,6 +347,12 @@ class Profile extends React.PureComponent {
                     <Card.Header as="h2" style={{"margin": "12px 0 0"}}>{this.props.user.name}</Card.Header>
                     <Card.Meta>Event Wins: {numChallengesWon(this.props.user.challengesWon)}</Card.Meta>
                     <List id = "profile buttons">
+                        <Divider/>
+                        <List.Item>
+                            <Button primary fluid size="large" onClick={this.openPortalModal}><Icon name="world" /> Portal</Button>
+                            <TrainerPortalModal trainerID={this.props.user.id} open={this.state.portalModalOpen} onClose={this.closePortalModal}/>
+                        </List.Item>
+                        <Divider />
                         <List.Item>
                             <Button primary fluid size="large" onClick={this.openBuddyModal.bind(this)}><Icon name="users" /> Buddy List</Button>
                             <Modal basic size='mini' open={this.state.buddyModalOpen} onClose={this.closeBuddyModal.bind(this)} closeIcon>
@@ -285,12 +386,6 @@ class Profile extends React.PureComponent {
                                 </Modal.Content>
                             </Modal>
                         </List.Item>
-                        <Divider/>
-                        <List.Item>
-                            <Button primary fluid size="large" onClick={this.openPortalModal}><Icon name="world" /> Portal</Button>
-                            <TrainerPortalModal trainerID={this.props.user.id} open={this.state.portalModalOpen} onClose={this.closePortalModal}/>
-                        </List.Item>
-                        <Divider />
                         <List.Item>
                             <Button fluid inverted size="large" onClick={this.handleLogOut.bind(this)} width={5}>Log Out</Button>
                         </List.Item>

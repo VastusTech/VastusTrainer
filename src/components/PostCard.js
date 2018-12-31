@@ -195,7 +195,7 @@ class PostCard extends Component {
             }
         }
         else if(itemType) {
-            alert("POSTID: " + this.state.postID);
+            //alert("POSTID: " + this.state.postID);
             return (<PostDetailCard postID={this.state.postID}/>);
         }
         return (<div/>);

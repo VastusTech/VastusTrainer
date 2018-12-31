@@ -7147,6 +7147,11 @@ lodash.isarray@^3.0.0:
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
   integrity sha1-eeTriMNqgSKvhvhEqpvNhRtfu1U=
 
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
 lodash.isobject@~2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/lodash.isobject/-/lodash.isobject-2.4.1.tgz#5a2e47fe69953f1ee631a7eba1fe64d2d06558f5"
@@ -9542,6 +9547,15 @@ react-scripts@2.1.1:
   optionalDependencies:
     fsevents "1.2.4"
 
+react-swipe@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-swipe/-/react-swipe-6.0.3.tgz#ee0f783cedcf9da595c9f04d6e62b99d87756460"
+  integrity sha512-dJJufzNVliiG1uhtJ1M5ST1XBb9j8inT3mKs9NdDOftqcB0mCb8cKXWsfPnui+pbt0MtVW5Y1oEZapk//5pouw==
+  dependencies:
+    lodash.isequal "^4.5.0"
+    prop-types "^15.6.0"
+    swipe-js-iso "^2.1.4"
+
 react@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
@@ -10847,6 +10861,11 @@ svgo@^1.0.0, svgo@^1.0.5:
     stable "~0.1.6"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+swipe-js-iso@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/swipe-js-iso/-/swipe-js-iso-2.1.4.tgz#172dec43a5cbc13d0a3a4a68284119c267b31990"
+  integrity sha512-MoTwEkDFb9cFqLDROJ/fV8QPk7dwDKuI46t7sLeELRRxJ3h9Cx7fQ1hNdNtvXGCwsVgqhwOcBQR3MC3NZP6+Cg==
 
 symbol-observable@^1.2.0:
   version "1.2.0"
