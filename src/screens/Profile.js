@@ -3,6 +3,7 @@ import React, {  } from 'react'
 import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider, Image, Grid} from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
 import BuddyListProp from "./BuddyList";
+import SubscriberListProp from "./SubscriberList";
 import _ from 'lodash';
 import ReactSwipe from 'react-swipe';
 // import TrophyCaseProp from "./TrophyCase";
@@ -38,12 +39,14 @@ class Profile extends React.PureComponent {
         checked: false,
         sentRequest: false,
         buddyModalOpen: false,
+        subscriberModalOpen: false,
         scheduledModalOpen: false,
         ownedModalOpen: false,
         portalModalOpen: false,
         galleryNum: 0,
         galleryURLS: [],
-        error: null
+        error: null,
+        numSubscribers: 0
     };
 
     toggle = () => this.setState({ checked: !this.state.checked });
@@ -289,6 +292,8 @@ class Profile extends React.PureComponent {
 
     openBuddyModal = () => { this.setState({buddyModalOpen: true}); };
     closeBuddyModal = () => { this.setState({buddyModalOpen: false}); };
+    openSubscriberModal = () => { this.setState({subscriberModalOpen: true}); };
+    closeSubscriberModal = () => { this.setState({subscriberModalOpen: false}); };
     openScheduledModal = () => { this.setState({scheduledModalOpen: true}); };
     closeScheduledModal = () => { this.setState({scheduledModalOpen: false}); };
     openCompletedModal = () => { this.setState({completedModalOpen: true}); };
@@ -361,31 +366,15 @@ class Profile extends React.PureComponent {
                                 </Modal.Content>
                             </Modal>
                         </List.Item>
+                        <List.Item>
+                            <Button primary fluid size="large" onClick={this.openSubscriberModal.bind(this)}>{this.state.numSubscribers} Subscribers</Button>
+                            <Modal basic size='mini' open={this.state.subscriberModalOpen} onClose={this.closeSubscriberModal.bind(this)} closeIcon>
+                                <Modal.Content image>
+                                    <SubscriberListProp/>
+                                </Modal.Content>
+                            </Modal>
+                        </List.Item>
                         <Divider />
-                        <List.Item>
-                            <Button primary fluid size="large" onClick={this.openOwnedModal.bind(this)}><Icon name="trophy" /> Created Challenges</Button>
-                            <Modal basic size='mini' open={this.state.ownedModalOpen} onClose={this.closeOwnedModal.bind(this)} closeIcon>
-                                <Modal.Content>
-                                    <ChallengeList challengeIDs={this.props.user.ownedChallenges}/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
-                        <List.Item>
-                            <Button primary fluid size="large" onClick={this.openScheduledModal.bind(this)}><Icon name="checked calendar" /> Scheduled Challenges</Button>
-                            <Modal basic size='mini' open={this.state.scheduledModalOpen} onClose={this.closeScheduledModal.bind(this)} closeIcon>
-                                <Modal.Content>
-                                    <ChallengeList challengeIDs={this.props.user.challenges}/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
-                        <List.Item>
-                            <Button fluid size="large" onClick={this.openCompletedModal.bind(this)}><Icon name="bookmark outline" />Completed Challenges</Button>
-                            <Modal basic size='mini' open={this.state.completedModalOpen} onClose={this.closeCompletedModal.bind(this)} closeIcon>
-                                <Modal.Content>
-                                    <ChallengeList challengeIDs={this.props.user.completedChallenges}/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
                         <List.Item>
                             <Button fluid inverted size="large" onClick={this.handleLogOut.bind(this)} width={5}>Log Out</Button>
                         </List.Item>
