@@ -376,30 +376,6 @@ class Profile extends React.PureComponent {
                         </List.Item>
                         <Divider />
                         <List.Item>
-                            <Button primary fluid size="large" onClick={this.openOwnedModal.bind(this)}><Icon name="trophy" /> Created Challenges</Button>
-                            <Modal basic size='mini' open={this.state.ownedModalOpen} onClose={this.closeOwnedModal.bind(this)} closeIcon>
-                                <Modal.Content>
-                                    <ChallengeList challengeIDs={this.props.user.ownedChallenges}/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
-                        <List.Item>
-                            <Button primary fluid size="large" onClick={this.openScheduledModal.bind(this)}><Icon name="checked calendar" /> Scheduled Challenges</Button>
-                            <Modal basic size='mini' open={this.state.scheduledModalOpen} onClose={this.closeScheduledModal.bind(this)} closeIcon>
-                                <Modal.Content>
-                                    <ChallengeList challengeIDs={this.props.user.challenges}/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
-                        <List.Item>
-                            <Button fluid size="large" onClick={this.openCompletedModal.bind(this)}><Icon name="bookmark outline" />Completed Challenges</Button>
-                            <Modal basic size='mini' open={this.state.completedModalOpen} onClose={this.closeCompletedModal.bind(this)} closeIcon>
-                                <Modal.Content>
-                                    <ChallengeList challengeIDs={this.props.user.completedChallenges}/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
-                        <List.Item>
                             <Button fluid inverted size="large" onClick={this.handleLogOut.bind(this)} width={5}>Log Out</Button>
                         </List.Item>
                     </List>       
