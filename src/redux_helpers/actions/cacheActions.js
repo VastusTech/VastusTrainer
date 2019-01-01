@@ -449,11 +449,11 @@ export function fetchEvent(id, variablesList, dataHandler, failureHandler) {
 export function fetchChallenge(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, variablesList, "challenges", "getChallenge", "FETCH_CHALLENGE", dataHandler, failureHandler);
 }
+export function fetchPost(id, variablesList, dataHandler, failureHandler) {
+    return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler, failureHandler);
+}
 export function fetchInvite(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler, failureHandler);
-}
-export default function fetchPost(id, variablesList, dataHandler, failureHandler) {
-    return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler, failureHandler);
 }
 export function fetchGroup(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, variablesList, "groups", "getGroup", "FETCH_GROUP", dataHandler, failureHandler);

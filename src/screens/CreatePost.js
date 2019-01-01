@@ -417,7 +417,8 @@ import {Grid, Button, Message, Image, Modal, Card, Icon, Form, Container, TextAr
 import { Storage } from 'aws-amplify';
 import {connect} from "react-redux";
 import {setError} from "../redux_helpers/actions/infoActions";
-import fetchPost, {
+import {
+    fetchPost,
     clearChallengeQuery,
     fetchChallenge,
     putChallenge,

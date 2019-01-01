@@ -1,7 +1,7 @@
 import { API, graphqlOperation} from 'aws-amplify';
 import { ifDebug } from "./Constants";
 import _ from 'lodash';
-import ItemType, {switchReturnItemType} from "./logic/ItemType";
+import {switchReturnItemType} from "./logic/ItemType";
 
 class GraphQL {
     // Gives back function with parameters (id, variablesList, successHandler, failureHandler)
@@ -341,54 +341,6 @@ class GraphQL {
     static querySponsors(queryString, successHandler, failureHandler) {
         GraphQL.execute(queryString, "querySponsors", successHandler, failureHandler);
     }
-    // static queryClientsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryClientCache, putCacheQueryClient) {
-    //     GraphQL.execute(GraphQL.constructClientQuery(variableList, filter, limit, nextToken),
-    //         "queryClients", successHandler, failureHandler, queryClientCache, putCacheQueryClient);
-    // }
-    // static queryTrainersOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryTrainerCache, putCacheQueryTrainer) {
-    //     GraphQL.execute(GraphQL.constructTrainerQuery(variableList, filter, limit, nextToken),
-    //         "queryTrainers", successHandler, failureHandler, queryTrainerCache, putCacheQueryTrainer);
-    // }
-    // static queryGymsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryGymCache, putCacheQueryGym) {
-    //     GraphQL.execute(GraphQL.constructGymQuery(variableList, filter, limit, nextToken),
-    //         "queryGyms", successHandler, failureHandler, queryGymCache, putCacheQueryGym);
-    // }
-    // static queryWorkoutsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryWorkoutCache, putCacheQueryWorkout) {
-    //     GraphQL.execute(GraphQL.constructWorkoutQuery(variableList, filter, limit, nextToken),
-    //         "queryWorkouts", successHandler, failureHandler, queryWorkoutCache, putCacheQueryWorkout);
-    // }
-    // static queryReviewsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryReviewCache, putCacheQueryReview) {
-    //     GraphQL.execute(GraphQL.constructReviewQuery(variableList, filter, limit, nextToken),
-    //         "queryReviews", successHandler, failureHandler, queryReviewCache, putCacheQueryReview);
-    // }
-    // static queryEventsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryEventCache, putCacheQueryEvent) {
-    //     GraphQL.execute(GraphQL.constructEventQuery(variableList, filter, limit, nextToken),
-    //         "queryEvents", successHandler, failureHandler, queryEventCache, putCacheQueryEvent);
-    // }
-    // static queryChallengesOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryChallengeCache, putCacheQueryChallenge) {
-    //     GraphQL.execute(GraphQL.constructChallengeQuery(variableList, filter, limit, nextToken),
-    //         "queryChallenges", successHandler, failureHandler, queryChallengeCache, putCacheQueryChallenge);
-    // }
-    // static queryInvitesOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryInviteCache, putCacheQueryInvite) {
-    //     GraphQL.execute(GraphQL.constructInviteQuery(variableList, filter, limit, nextToken),
-    //         "queryInvites", successHandler, failureHandler, queryInviteCache, putCacheQueryInvite);
-    // }
-    // static queryPostsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryPostCache, putCacheQueryPost) {
-    //     GraphQL.execute(GraphQL.constructPostQuery(variableList, filter, limit, nextToken),
-    //         "queryPosts", successHandler, failureHandler, queryPostCache, putCacheQueryPost);
-    // }
-    // static queryGroupsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryGroupCache, putCacheQueryGroup) {
-    //     GraphQL.execute(GraphQL.constructGroupQuery(variableList, filter, limit, nextToken),
-    //         "queryGroups", successHandler, failureHandler, queryGroupCache, putCacheQueryGroup);
-    // }
-    // static queryCommentsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, queryCommentCache, putCacheQueryComment) {
-    //     GraphQL.execute(GraphQL.constructCommentQuery(variableList, filter, limit, nextToken),
-    //         "queryComments", successHandler, failureHandler, queryCommentCache, putCacheQueryComment);
-    // }
-    // static querySponsorsOld(variableList, filter, limit, nextToken, successHandler, failureHandler, querySponsorCache, putCacheQuerySponsor) {
-    //     GraphQL.execute(GraphQL.constructSponsorQuery(variableList, filter, limit, nextToken),
-    //         "querySponsors", successHandler, failureHandler, querySponsorCache, putCacheQuerySponsor);
-    // }
 
     /**
      *
@@ -449,14 +401,20 @@ class GraphQL {
     // TODO Make GraphQL more resilient to an empty filter?
     static constructQuery(queryName, queryFunction, inputVariables, outputVariables, filter = null, ifBatch = false, ifQuery = false) {
         let query = '';
-        var finalInputVariables;
+        // Filter out the null'ed variables
+        let finalInputVariables;
         if (filter) {
             finalInputVariables = {...inputVariables, ...filter.parameters};
         }
         else {
             finalInputVariables = inputVariables;
         }
-        var ifFirst = true;
+        for (const key in finalInputVariables) {
+            if (finalInputVariables.hasOwnProperty(key) && (finalInputVariables[key] === null || finalInputVariables[key] === undefined)) {
+                delete finalInputVariables[key];
+            }
+        }
+        let ifFirst = true;
         query += 'query ' + queryName;
         if (!_.isEmpty(finalInputVariables)) {
             query += '(';
@@ -469,10 +427,19 @@ class GraphQL {
                     query += 'Int';
                 }
                 else if (variable === "ids") {
-                    query += '[String]!';
+                    query += '[String]';
+                    if (finalInputVariables.hasOwnProperty(variable) && finalInputVariables[variable] !== null) {
+                        query += '!';
+                    }
                 }
                 else {
-                    query += 'String!';
+                    query += 'String';
+                    if (finalInputVariables.hasOwnProperty(variable) && finalInputVariables[variable] !== null) {
+                        if (variable === "nextToken") {
+                            alert(JSON.stringify(finalInputVariables[variable]));
+                        }
+                        query += '!';
+                    }
                 }
                 ifFirst = false;
             }
