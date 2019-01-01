@@ -3,10 +3,11 @@ import { Card } from 'semantic-ui-react';
 import PostDescriptionModal from './PostDescriptionModal';
 import {Player} from "video-react";
 import { connect } from 'react-redux';
-import fetchPost , {fetchChallenge} from "../redux_helpers/actions/cacheActions";
+import { fetchPost, fetchChallenge} from "../redux_helpers/actions/cacheActions";
 import { convertFromISO } from "../logic/TimeHelper";
 import ItemType from "../logic/ItemType";
 import { Storage } from "aws-amplify";
+import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
 import ChallengeDetailCard from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
@@ -190,12 +191,12 @@ class PostCard extends Component {
                     return (<PostDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "submission") {
-                    //return (<SubmissionDetailCard postID={this.state.postID}/>);
+                    return (<SubmissionDetailCard postID={this.state.postID}/>);
                 }
             }
         }
         else if(itemType) {
-            //alert("POSTID: " + this.state.postID);
+            //alert("Item Type: " + itemType);
             return (<PostDetailCard postID={this.state.postID}/>);
         }
         return (<div/>);

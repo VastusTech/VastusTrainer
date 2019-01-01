@@ -5,7 +5,8 @@ import PostCard from "../components/PostCard";
 import QL from "../GraphQL";
 import {connect} from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
-import fetchPost, {
+import {
+    fetchPost,
     fetchTrainer,
     forceFetchTrainer,
     putClientQuery,

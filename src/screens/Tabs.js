@@ -7,6 +7,7 @@ import LeaderBoard from "./Leaderboard";
 import NotificationBellProp from "../components/NotificationBell";
 // import ChallengeFeed from "./ChallengeFeed";
 import PostFeed from "./PostFeed";
+import Calendar from "./Calendar";
 import OrganizationalScreen from "./OrganizationalScreen";
 // import SearchScreen from "./SearchScreen";
 
@@ -52,7 +53,7 @@ export default () => (
                         <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <OrganizationalScreen />
+                    <Calendar />
                 </Tab.Pane>
             },
             {

@@ -5,14 +5,7 @@ import PostCard from "../components/PostCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
 // import ScheduledEventsList from "./ScheduledEventList";
-import fetchPost, {
-    putChallengeQuery,
-    putPost,
-    putPostQuery,
-    fetchChallenge,
-    putChallenge,
-    fetchClient
-} from "../redux_helpers/actions/cacheActions";
+import {fetchPost, putChallengeQuery, putPost, putPostQuery, fetchChallenge, putChallenge, fetchClient} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 // import CreateEventProp from "./CreateEvent";
 import CreateChallengeProp from "./CreateChallenge";

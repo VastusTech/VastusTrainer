@@ -412,7 +412,7 @@ export function fetchChallenge(id, variablesList, dataHandler) {
 export function fetchInvite(id, variablesList, dataHandler) {
     return fetch(id, variablesList, "invites", "getInvite", "FETCH_INVITE", dataHandler);
 }
-export default function fetchPost(id, variablesList, dataHandler) {
+export function fetchPost(id, variablesList, dataHandler) {
     return fetch(id, variablesList, "posts", "getPost", "FETCH_POST", dataHandler);
 }
 export function fetchGroup(id, variablesList, dataHandler) {
