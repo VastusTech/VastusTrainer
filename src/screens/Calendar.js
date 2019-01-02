@@ -40,11 +40,13 @@ class Calendar extends React.Component {
   //Function displays the days of the week
   renderDays() {
   
-  const dateFormat = "dddd";
+  const dateFormat = "ddd";
   const days = [];
   
+  //startDate is the first day of that particular month
   let startDate = dateFns.startOfWeek(this.state.currentMonth);
-  
+  	
+  	//for loop for an array of that week
   	for (let i = 0; i < 7; i++) {
     	days.push(
       		<div className="col col-center" key={i}>
