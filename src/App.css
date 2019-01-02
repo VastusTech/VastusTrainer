@@ -174,7 +174,8 @@ main {
   position: relative;
   width: 100%;
   background: var(--neutral-color);
-  border: 1px solid var(--border-color); 
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
 }
 
 /* header */
@@ -287,6 +288,5 @@ main {
 }
 
 .calendar .body .current {
-
 color: red;
 }
