@@ -119,7 +119,7 @@ class Profile extends React.PureComponent {
     }
 
     setPicture(event) {
-        //console.log(JSON.stringify(this.props));
+        //alert("This is calling regular set picture");
         if (this.props.user.id) {
             const path = "/ClientFiles/" + this.props.user.id + "/profileImage";
             //console.log("Calling storage put");
