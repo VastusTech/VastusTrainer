@@ -4,17 +4,12 @@
 
 // TODO This will be for a post that is sharing an existing Post with your friends!
 
-// TODO These detail cards are going to be embedded into the PostCard component when it is applicable. Reference
-// TODO Facebook's little cards within posts when you share something for what I am imagining.
-
-// TODO This will be for a post that is sharing an existing Post with your friends!
-
 import React, { Component } from 'react';
 import {Card, Modal, Button, Header, List, Divider, Image, Message} from 'semantic-ui-react';
 // import EventMemberList from "../screens/EventMemberList";
 import { connect } from 'react-redux';
 // import QL from '../GraphQL';
-import {fetchClient, fetchPost, forceFetchPost} from "../../redux_helpers/actions/cacheActions";
+import { fetchClient, forceFetchPost, fetchPost } from "../../redux_helpers/actions/cacheActions";
 // import CompleteChallengeModal from "../screens/CompleteChallengeModal";
 import { convertFromISO } from "../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../redux_helpers/actions/userActions";
@@ -71,7 +66,12 @@ class PostDetailCard extends Component {
 
     constructor(props) {
         super(props);
+        // this.handleJoinChallengeButton = this.handleJoinChallengeButton.bind(this);
+        // this.handleLeaveChallengeButton = this.handleLeaveChallengeButton.bind(this);
         this.handleDeletePostButton = this.handleDeletePostButton.bind(this);
+        // this.handleLeave = this.handleLeave.bind(this);
+        // this.handleJoin = this.handleJoin.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
         this.isOwned = this.isOwned.bind(this);
         this.getDisplayMedia = this.getDisplayMedia.bind(this);
         this.getPostAttribute = this.getPostAttribute.bind(this);
@@ -128,7 +128,8 @@ class PostDetailCard extends Component {
     }
 
     handleDeletePostButton() {
-        this.setState({isDeleteLoading: true});
+        //console.log("Handling deleting the event");
+        this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), (data) => {
             this.forceUpdate(data.id);
             // console.log(JSON.stringify(data));
@@ -141,6 +142,11 @@ class PostDetailCard extends Component {
 
     isOwned() {
         this.setState({isOwned: this.props.user.id === this.getPostAttribute("by")});
+    }
+
+    handleDelete() {
+        this.setState({isDeleteLoading: true});
+        this.handleDeleteEventButton();
     }
 
     openClientModal() { this.setState({clientModalOpen: true}); }
@@ -249,8 +255,7 @@ class PostDetailCard extends Component {
                 <div>
                     {this.getDisplayMedia()}
                 </div>
-                {/*createCorrectButton(this.isOwned, this.handleDeletePostButton, this.state.isDeleteLoading)*/}
-                <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={() =>this.handleDeletePostButton()}>Delete</Button>
+                {createCorrectButton(this.isOwned, this.handleDeletePostButton, this.state.isDeleteLoading)}
             </Card>
         );
     }

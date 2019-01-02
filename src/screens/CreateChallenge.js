@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import _ from 'lodash';
-import {Grid, Button, Message, Image, Modal, Label, Icon, Form, Container, TextArea, Checkbox, Rating} from 'semantic-ui-react';
+import {Grid, Button, Message, Image, Modal, Card, Icon, Form, Container, TextArea, Checkbox, Header} from 'semantic-ui-react';
 import CreateEventProp from "./CreateEvent";
 import VTLogo from "../img/vt_new.svg"
 import {connect} from "react-redux";
@@ -292,11 +292,10 @@ class CreateChallengeProp extends Component {
     render() {
 
         return (
-            <div>
-            <Modal closeIcon trigger={<Button primary fluid size="large"> <Icon name='plus' /> Post Challenge</Button>}>
-                <Modal.Header align='center'>Challenge Builder</Modal.Header>
-                <Modal.Content align='center'>
-                    <Grid>
+            <div align='center'>
+                <Header align='center'>Challenge Builder</Header>
+                <div align='center'>
+                    <Grid align='center'>
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Button inverted={this.state.hiitPressed} basic={!this.state.hiitPressed}>
@@ -327,9 +326,10 @@ class CreateChallengeProp extends Component {
                         </Grid.Row>
                     </Grid>
 
-                    <Container>
+                    <Container align='center'>
+                        <Grid centered>
                         <Grid.Row centered>
-                            <Grid.Column width={2} className="segment centered">
+                            <Grid.Column>
                                 <Form onSubmit={this.handleSubmit}>
                                         <Form.Input width={5} label="Title" type="text" name="title" placeholder="Title" onChange={value => this.changeStateText("title", value)}/>
                                         <div className="field" width={5}>
@@ -355,12 +355,12 @@ class CreateChallengeProp extends Component {
                                 </Form>
                             </Grid.Column>
                         </Grid.Row>
+                        </Grid>
                     </Container>
-                </Modal.Content>
+                </div>
                 <Modal.Actions>
                     <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
                 </Modal.Actions>
-            </Modal>
             {this.createSuccessLabel()}</div>
         );
     }

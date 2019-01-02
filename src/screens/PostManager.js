@@ -1,14 +1,12 @@
 import React, {Component, Fragment} from 'react'
-import _ from 'lodash'
-import {Visibility, Header, Grid} from 'semantic-ui-react'
+import {Menu, Icon, Tab, Modal, Button} from 'semantic-ui-react'
 import PostCard from "../components/PostCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
 import {fetchPost, putChallengeQuery, putPost, putPostQuery, fetchChallenge, putChallenge, fetchClient} from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
-import NextChallengeProp from "../components/NextChallenge";
-import { Tab } from "semantic-ui-react/dist/commonjs/modules/Tab/Tab";
-import PostManager from './PostManager'
+import CreateChallengeProp from "./CreateChallenge";
+import CreatePostProp from "./CreatePost";
 
 /**
  * Event Feed
@@ -16,8 +14,8 @@ import PostManager from './PostManager'
  * This is the main feed in the home page, it currently displays all public events inside of the database for
  * the user to see.
  */
-class PostFeedProp extends Component {
-    state = {
+class PostManager extends Component {
+    /*state = {
         isLoading: true,
         userID: null,
         posts: [],
@@ -32,14 +30,14 @@ class PostFeedProp extends Component {
             topVisible: false,
             bottomVisible: false
         },
-    };
+    };*/
 
     constructor(props) {
         super(props);
-        this.forceUpdate = this.forceUpdate.bind(this);
-        this.queryPosts = this.queryPosts.bind(this);
+        /*this.forceUpdate = this.forceUpdate.bind(this);
+        this.queryPosts = this.queryPosts.bind(this);*/
     }
-
+    /*
     componentDidMount() {
         // this.componentWillReceiveProps(this.props);
         // if (this.props.userID) {
@@ -120,60 +118,37 @@ class PostFeedProp extends Component {
                     this.setState({isLoading: false, error: error});
                 }, this.props.cache.postQueries, this.props.putPostQuery);
         }
-    }
-
-    /**
-     *
-     * @param e
-     * @param calculations
-     */
-    handleUpdate = (e, { calculations }) => {
-        this.setState({ calculations });
-        // console.log(calculations.bottomVisible);
-        if (calculations.bottomVisible) {
-            console.log("Next Token: " + this.state.nextToken);
-            this.queryPosts();
-        }
-    };
-
-    forceUpdate = () => {
-        this.props.forceFetchUserAttributes(["Posts"]);
-    };
+    }*/
 
     render() {
-        /**
-         * This function takes in a list of Posts and displays them in a list of Event Card views.
-         * @param Posts
-         * @returns {*}
-         */
-        function rows(Posts) {
-            // if(Posts != null && Posts.length > 0)
-            //     console.log(JSON.stringify(Posts[0].id));
-            // console.log("EVENTS TO PRINT: ");
-            // console.log(JSON.stringify(Posts));
-            return _.times(Posts.length, i => (
-                <Fragment key={i + 1}>
-                    {/*alert(JSON.stringify(Posts[i].id))*/}
-                    <PostCard postID={Posts[i].id}/>
-                </Fragment>
-            ));
-        }
-
-        //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
-        //is hit by the user.
-        return (
-            <Visibility onUpdate={this.handleUpdate}>
-                <Grid className='ui center aligned'>
-                    <Grid.Column floated='center' width={15}>
-                        <PostManager queryChallenges={this.queryChallenges} queryPosts={this.queryPosts}/>
-                    </Grid.Column>
-                </Grid>
-                <Header sub>Your Next Challenge:</Header>
-                <NextChallengeProp/>
-                <Header sub>Upcoming Posts:</Header>
-                {rows(this.state.posts)}
-            </Visibility>
-        );
+        return(
+            <Modal trigger={<Button primary fluid><Icon name='plus'/> Create Post</Button>}>
+                <Modal.Content>
+        <Tab menu={{fixed: "top", widths: 3, size: "small", inverted: true}} panes={
+            [
+                {
+                    menuItem:
+                        (<Menu.Item key={0}>
+                            Make Challenge
+                        </Menu.Item>),
+                    render: () =>
+                        <Tab.Pane basic attached={false}>
+                            <CreateChallengeProp queryChallenges={this.props.queryChallenges} queryPosts={this.props.queryPosts}/>
+                        </Tab.Pane>
+                },
+                {
+                    menuItem: (
+                        <Menu.Item key={1}>
+                            Make Post
+                        </Menu.Item>),
+                    render: () => <Tab.Pane basic attached={false}>
+                        <CreatePostProp queryPosts={this.props.queryPosts}/>
+                    </Tab.Pane>
+                },
+            ]
+        }/>
+                </Modal.Content>
+            </Modal>);
     }
 }
 
@@ -212,4 +187,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostFeedProp);
+export default connect(mapStateToProps, mapDispatchToProps)(PostManager);

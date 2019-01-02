@@ -168,8 +168,8 @@ main {
 
 /* Calendar */
 
-/*colors top portion of calendar*/
-.calendar {
+/*colors top portion of Calendar*/
+.calendar_view {
   display: block;
   position: relative;
   width: 100%;
@@ -179,7 +179,7 @@ main {
 }
 
 /* header */
-.calendar .header {
+.calendar_view .header {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 115%;
@@ -187,28 +187,28 @@ main {
   border-bottom: 1px solid var(--border-color);
 }
 
-.calendar .header .icon {
+.calendar_view .header .icon {
   cursor: pointer;
   transition: .15s ease-out;
 }
 
-.calendar .header .icon:hover {
+.calendar_view .header .icon:hover {
   transform: scale(1.75);
   transition: .25s ease-out;
   color: var(--main-color);
 }
 
-.calendar .header .icon:first-of-type {
+.calendar_view .header .icon:first-of-type {
   margin-left: 1em;
 }
 
-.calendar .header .icon:last-of-type {
+.calendar_view .header .icon:last-of-type {
   margin-right: 1em;
 }
 
 /*days*/
 
-.calendar .days {
+.calendar_view .days {
   text-transform: uppercase;
   font-weight: 400;
   color: var(--text-color-light);
@@ -217,7 +217,7 @@ main {
   border-bottom: 1px solid var(--border-color);
 }
 
-.calendar .body .cell {
+.calendar_view .body .cell {
   position: relative;
   height: 5em;
   border-right: 1px solid var(--border-color);
@@ -226,28 +226,28 @@ main {
   background: var(--neutral-color);
 }
 
-.calendar .body .cell:hover {
+.calendar_view .body .cell:hover {
   background: var(--bg-color);
 }
 
-.calendar .body .selected {
+.calendar_view .body .selected {
   border-left: 10px solid transparent;
   border-image-slice: 1;
 }
 
-.calendar .body .row {
+.calendar_view .body .row {
   border-bottom: 1px solid var(--border-color);
 }
 
-.calendar .body .row:last-child {
+.calendar_view .body .row:last-child {
   border-bottom: none;
 }
 
-.calendar .body .cell:last-child {
+.calendar_view .body .cell:last-child {
   border-right: none;
 }
 
-.calendar .body .cell .number {
+.calendar_view .body .cell .number {
   
   position: absolute;
   font-size: 82.5%;
@@ -258,12 +258,12 @@ main {
   color: var(--border-color)
 }
 
-.calendar .body .cell .disabled {
+.calendar_view .body .cell .disabled {
   
   color: var(--text-color-light);
 }
 
-.calendar .body .cell .bg {
+.calendar_view .body .cell .bg {
   font-weight: 700;
   line-height: 1;
   color: var(--main-color);
@@ -276,17 +276,17 @@ main {
   letter-spacing: -.07em;
 }
 
-.calendar .body .cell:hover .bg, .calendar .body .selected .bg  {
+.calendar_view .body .cell:hover .bg, .calendar_view .body .selected .bg  {
   
   opacity: 0.05; 
 }
 
-.calendar .body .col {
+.calendar_view .body .col {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
 }
 
-.calendar .body .current {
+.calendar_view .body .current {
 color: red;
 }
