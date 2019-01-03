@@ -1,4 +1,5 @@
 import Lambda from "../Lambda";
+import S3 from "../S3Storage";
 import { getItemTypeFromID } from "../logic/ItemType";
 
 class UserFunctions {
@@ -7,12 +8,21 @@ class UserFunctions {
     // Create Functions ============================================================
 
     // Update Functions ============================================================
-    // TODO Test to see if this actually works!!!!!!
-    static addProfileImagePath(fromID, userID, profileImagePath, successHandler, failureHandler) {
-        this.updateAdd(fromID, userID, "profileImagePaths", profileImagePath, successHandler, failureHandler);
+    static addProfileImage(fromID, userID, image, profileImagePath, successHandler, failureHandler) {
+        S3.putImage(profileImagePath, image, () => {
+            this.updateAdd(fromID, userID, "profileImagePaths", profileImagePath, successHandler, (error) => {
+                // Try your best to fix S3, then give up...
+                S3.delete(profileImagePath);
+                failureHandler(error);
+            });
+        });
     }
-    static removeProfileImagePath(fromID, userID, profileImagePath, successHandler, failureHandler) {
-        this.updateRemove(fromID, userID, "profileImagePaths", profileImagePath, successHandler, failureHandler);
+    static removeProfileImage(fromID, userID, profileImagePath, successHandler, failureHandler) {
+        this.updateRemove(fromID, userID, "profileImagePaths", profileImagePath, (data) => {
+            S3.delete(profileImagePath, () => {
+                successHandler(data);
+            }, failureHandler);
+        }, failureHandler);
     }
     static addFriend(fromID, userID, friendID, successHandler, failureHandler) {
         this.updateAdd(fromID, userID, "friends", friendID, successHandler, failureHandler);

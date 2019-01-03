@@ -98,34 +98,27 @@ class CreatePostProp extends Component {
         }
     };
 
-    getPicturePaths = () => {
-        const picturePaths = [];
-        console.log("Pictures: " + this.state.pictures.length);
+    getPictures() {
+        const pictures = {};
         for (let i = 0; i < this.state.pictures.length; i++) {
-            const path = "pictures/" + i;
-            picturePaths.push(path);
-            alert("Added: " + path);
+            pictures["pictures/" + i] = this.state.pictures[i];
         }
-        if (picturePaths.length > 0) {
-            return picturePaths;
+        if (this.state.pictures.length > 0) {
+            return pictures;
         }
         return null;
-    };
+    }
 
-    getVideoPaths = () => {
-        const videoPaths = [];
-        console.log("Videos: " + this.state.videos.length);
+    getVideos() {
+        const videos = {};
         for (let i = 0; i < this.state.videos.length; i++) {
-            const path = "videos/" + i;
-
-            videoPaths.push(path);
-            alert("Added: " + path);
+            videos["videos/" + i] = this.state.videos[i];
         }
-        if (videoPaths.length > 0) {
-            return videoPaths;
+        if (this.state.videos.length > 0) {
+            return videos;
         }
         return null;
-    };
+    }
 
     setVideo = (event) => {
         const index = this.state.videos.length;
@@ -203,60 +196,65 @@ class CreatePostProp extends Component {
         this.setState({isSubmitLoading: true});
 
         // TODO Check to see if valid inputs!
-        this.getPicturePaths();
-        this.getVideoPaths();
         if (this.state.description) {
-            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
+            PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPictures(), this.getVideos(), (returnValue) => {
                 alert("Successfully Created Post!");
                 alert(JSON.stringify(returnValue));
-                const id = returnValue.data;
-                let numPicturesLoaded = 0;
-                let picturesLength = this.state.pictures.length;
-                for (let i = 0; i < picturesLength; i++) {
-                    const picturePath = id + "/pictures/" + i;
-                    Storage.put(picturePath, this.state.pictures[i], { contentType: "video/*;image/*" }).then((result) => {
-                        numPicturesLoaded++;
-                        alert(result);
-                        if (numPicturesLoaded >= picturesLength) {
-                            this.setState({videosLoading: false});
-                        }
-                    }).catch((error) => {
-                        numPicturesLoaded++;
-                        alert(error);
-                        if (numPicturesLoaded >= picturesLength) {
-                            this.setState({videosLoading: false});
-                        }
-                    });
-                }
-                let numVideosLoaded = 0;
-                let videosLength = this.state.videos.length;
-                for (let i = 0; i < videosLength; i++) {
-                    Storage.put(id + "/videos/" + i, this.state.videos[i], { contentType: "video/*;image/*" }).then((result) => {
-                        numVideosLoaded++;
-                        alert(result);
-                        if (numVideosLoaded >= videosLength) {
-                            this.setState({videosLoading: false});
-                        }
-                    }).catch((error) => {
-                        numVideosLoaded++;
-                        alert(error);
-                        if (numVideosLoaded >= videosLength) {
-                            this.setState({videosLoading: false});
-                        }
-                    });
-                }
-                // Storage.put(id + "/")
-                this.setState({isSubmitLoading: false});
-                this.setState({showSuccessLabel: true});
-                this.setState({showModal: false});
             }, (error) => {
                 console.error(error);
-                this.setState({submitError: "*" + JSON.stringify(error)});
-                this.setState({isSubmitLoading: false});
             });
-        }
-        else {
-            this.setState({isSubmitLoading: false, submitError: "All fields need to be filled out!"});
+            //     PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
+            //         alert("Successfully Created Post!");
+            //         alert(JSON.stringify(returnValue));
+            //         const id = returnValue.data;
+            //         let numPicturesLoaded = 0;
+            //         let picturesLength = this.state.pictures.length;
+            //         for (let i = 0; i < picturesLength; i++) {
+            //             const picturePath = id + "/pictures/" + i;
+            //             Storage.put(picturePath, this.state.pictures[i], { contentType: "video/*;image/*" }).then((result) => {
+            //                 numPicturesLoaded++;
+            //                 alert(result);
+            //                 if (numPicturesLoaded >= picturesLength) {
+            //                     this.setState({videosLoading: false});
+            //                 }
+            //             }).catch((error) => {
+            //                 numPicturesLoaded++;
+            //                 alert(error);
+            //                 if (numPicturesLoaded >= picturesLength) {
+            //                     this.setState({videosLoading: false});
+            //                 }
+            //             });
+            //         }
+            //         let numVideosLoaded = 0;
+            //         let videosLength = this.state.videos.length;
+            //         for (let i = 0; i < videosLength; i++) {
+            //             Storage.put(id + "/videos/" + i, this.state.videos[i], { contentType: "video/*;image/*" }).then((result) => {
+            //                 numVideosLoaded++;
+            //                 alert(result);
+            //                 if (numVideosLoaded >= videosLength) {
+            //                     this.setState({videosLoading: false});
+            //                 }
+            //             }).catch((error) => {
+            //                 numVideosLoaded++;
+            //                 alert(error);
+            //                 if (numVideosLoaded >= videosLength) {
+            //                     this.setState({videosLoading: false});
+            //                 }
+            //             });
+            //         }
+            //         // Storage.put(id + "/")
+            //         this.setState({isSubmitLoading: false});
+            //         this.setState({showSuccessLabel: true});
+            //         this.setState({showModal: false});
+            //     }, (error) => {
+            //         console.error(error);
+            //         this.setState({submitError: "*" + JSON.stringify(error)});
+            //         this.setState({isSubmitLoading: false});
+            //     });
+            // }
+            // else {
+            //     this.setState({isSubmitLoading: false, submitError: "All fields need to be filled out!"});
+            // }
         }
     };
 
@@ -298,62 +296,61 @@ class CreatePostProp extends Component {
 
         return (
             <div align='center'>
-                    <Header align='center'>Write New Post</Header>
-                    <div align='center'>
-                        <Container align='center'>
-                            <Grid centered>
-                            <Grid.Row>
-                                <Grid.Column width={12} className="segment centered" align='center'>
-                                    <Form align='center' onSubmit={this.handleSubmit}>
-                                        <TextArea fluid label="Description" type="text" name="description" placeholder="Write post description here..." onChange={value => this.changeStateText("description", value)}/>
-                                        {/*<Form.Field>
-                                            <div className="field" width={5}>
-                                                <label>Difficulty</label>
-                                                <Rating icon='star' defaultRating={1} maxRating={3} />
-                                            </div>
-                                        </Form.Field>*/}
-                                        <Form.Field width={12}>
-                                            <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.state.access} />
-                                        </Form.Field>
-                                        <div>{this.displayError()}{this.createSuccessLabel()}</div>
-                                    </Form>
-                                </Grid.Column>
-                            </Grid.Row>
-                            </Grid>
-                        </Container>
-                        <Card align='center'>
-                            <Card.Header align='center' className="u-bg--bg">Add photo or video to post</Card.Header>
-                            <div align='center' className="u-bg--bg">
-                                {this.displayCurrentVideo()}
-                                {this.displayCurrentImage()}
-                                <Fragment align='center'>
-                                    <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
-                                        <div floated="center">
-                                            <Button primary fluid as="label" htmlFor="vidUpload" className="u-bg--primaryGradient">
-                                                <Icon name="camera" className='u-margin-right--0' inverted />
-                                                Upload Video
-                                            </Button>
-                                            <input type="file" accept="video/*;capture=camcorder" id="vidUpload" hidden={true} onChange={this.setVideo}/>
+                <Header align='center'>Write New Post</Header>
+                <div align='center'>
+                    <Container align='center'>
+                        <Grid centered>
+                        <Grid.Row>
+                            <Grid.Column width={12} className="segment centered" align='center'>
+                                <Form align='center' onSubmit={this.handleSubmit}>
+                                    <TextArea fluid label="Description" type="text" name="description" placeholder="Write post description here..." onChange={value => this.changeStateText("description", value)}/>
+                                    {/*<Form.Field>
+                                        <div className="field" width={5}>
+                                            <label>Difficulty</label>
+                                            <Rating icon='star' defaultRating={1} maxRating={3} />
                                         </div>
+                                    </Form.Field>*/}
+                                    <Form.Field width={12}>
+                                        <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.state.access} />
+                                    </Form.Field>
+                                    <div>{this.displayError()}{this.createSuccessLabel()}</div>
+                                </Form>
+                            </Grid.Column>
+                        </Grid.Row>
+                        </Grid>
+                    </Container>
+                    <Card align='center'>
+                        <Card.Header align='center' className="u-bg--bg">Add photo or video to post</Card.Header>
+                        <div align='center' className="u-bg--bg">
+                            {this.displayCurrentVideo()}
+                            {this.displayCurrentImage()}
+                            <Fragment align='center'>
+                                <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
+                                    <div floated="center">
+                                        <Button primary fluid as="label" htmlFor="vidUpload" className="u-bg--primaryGradient">
+                                            <Icon name="camera" className='u-margin-right--0' inverted />
+                                            Upload Video
+                                        </Button>
+                                        <input type="file" accept="video/*;capture=camcorder" id="vidUpload" hidden={true} onChange={this.setVideo}/>
                                     </div>
-                                    <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
-                                        <div floated="center">
-                                            <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">
-                                                <Icon name="camera" className='u-margin-right--0' inverted />
-                                                Upload Photo
-                                            </Button>
-                                            <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
-                                        </div>
+                                </div>
+                                <div className="uploadImage u-flex u-flex-align--center u-margin-top--2" align='center'>
+                                    <div floated="center">
+                                        <Button primary fluid as="label" htmlFor="picUpload" className="u-bg--primaryGradient">
+                                            <Icon name="camera" className='u-margin-right--0' inverted />
+                                            Upload Photo
+                                        </Button>
+                                        <input type="file" accept="image/*;capture=camcorder" id="picUpload" hidden={true} onChange={this.setPicture}/>
                                     </div>
-                                </Fragment>
-                            </div>
-                            <div>{this.displaySubmission()}</div>
-                        </Card>
-                    </div>
-                <div floated="bottom">
-                    <Button floated="center" loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
+                                </div>
+                            </Fragment>
+                        </div>
+                        <div>{this.displaySubmission()}</div>
+                    </Card>
                 </div>
-                {this.createSuccessLabel()}</div>
+                <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
+                {this.createSuccessLabel()}
+            </div>
         );
     }
 }

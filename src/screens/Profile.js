@@ -6,6 +6,7 @@ import BuddyListProp from "./BuddyList";
 import SubscriberListProp from "./SubscriberList";
 import _ from 'lodash';
 import ReactSwipe from 'react-swipe';
+import TrainerFunctions from "../databaseFunctions/TrainerFunctions";
 // import TrophyCaseProp from "./TrophyCase";
 // import { S3Image } from 'aws-amplify-react';
 // import ChallengeManagerProp from "./ManageChallenges";
@@ -128,7 +129,7 @@ class Profile extends React.PureComponent {
                 // Now we update the database object to reflect this
                 //console.log("resulttt:" + JSON.stringify(result));
                 //console.log("Successfully put the image, now putting the data into the database!");
-                ClientFunctions.updateProfileImagePath(this.props.user.id, this.props.user.id, path,
+                TrainerFunctions.updateProfileImagePath(this.props.user.id, this.props.user.id, path,
                     (data) => {
                         //console.log("successfully editted client");
                         //console.log(JSON.stringify(data));
@@ -153,26 +154,35 @@ class Profile extends React.PureComponent {
             const path = "/ClientFiles/" + this.props.user.id + "/galleryImages" + this.state.galleryNum;
             //console.log("Calling storage put");
             //console.log("File = " + JSON.stringify(event.target.files[0]));
-            Storage.put(path, event.target.files[0], { contentType: "image/*" }).then((result) => {
+            TrainerFunctions.addProfileImage(this.props.user.id, this.props.user.id, event.target.files[0], path, (data) => {
+                this.props.forceFetchUserAttributes(["profileImagePaths"]);
+                this.setURLS(this.props.user.profileImagePaths);
+                this.setState({isLoading: true});
+            }, (error) => {
+                console.log("Failed edit client attribute");
+                console.log(JSON.stringify(error));
+            });
+
+            // Storage.put(path, event.target.files[0], { contentType: "image/*" }).then((result) => {
                 // Now we update the database object to reflect this
                 //console.log("resulttt:" + JSON.stringify(result));
                 //console.log("Successfully put the image, now putting the data into the database!");
-                ClientFunctions.addProfileImagePath(this.props.user.id, this.props.user.id, path,
-                    (data) => {
-                        //console.log("successfully editted client");
-                        //console.log(JSON.stringify(data));
-                        this.props.forceFetchUserAttributes(["profileImagePaths"]);
-                        this.setURLS(this.props.user.profileImagePaths);
-                        this.setState({isLoading: true});
-                    }, (error) => {
-                        console.log("Failed edit client attribute");
-                        console.log(JSON.stringify(error));
-                    });
-                this.setState({isLoading: true});
-            }).catch((error) => {
-                console.log("failed storage put");
-                console.log(error);
-            });
+            //     TrainerFunctions.addProfileImagePath(this.props.user.id, this.props.user.id, path,
+            //         (data) => {
+            //             //console.log("successfully editted client");
+            //             //console.log(JSON.stringify(data));
+            //             this.props.forceFetchUserAttributes(["profileImagePaths"]);
+            //             this.setURLS(this.props.user.profileImagePaths);
+            //             this.setState({isLoading: true});
+            //         }, (error) => {
+            //             console.log("Failed edit client attribute");
+            //             console.log(JSON.stringify(error));
+            //         });
+            //     this.setState({isLoading: true});
+            // }).catch((error) => {
+            //     console.log("failed storage put");
+            //     console.log(error);
+            // });
         }
     }
 

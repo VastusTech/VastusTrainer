@@ -55,83 +55,80 @@ class CreateSubmissionModal extends Component {
     }
 
     createSubmission(finishHandler) {
-        PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
-            this.setState({picturesLoading: (this.state.pictures.length > 0), videosLoading: (this.state.videos.length > 0)});
-            console.log(JSON.stringify(returnValue));
-            const id = returnValue.data;
-            let numPicturesLoaded = 0;
-            let picturesLength = this.state.pictures.length;
-            for (let i = 0; i < picturesLength; i++) {
-                const picturePath = "/" + id + "/pictures/" + i;
-                Storage.put(picturePath, this.state.pictures[i], { contentType: "video/*;image/*" }).then((result) => {
-                    numPicturesLoaded++;
-                    if (numPicturesLoaded >= picturesLength) {
-                        this.state.picturesLoading = false;
-                        if (!this.state.videosLoading) {
-                            finishHandler();
-                        }
-                    }
-                }).catch((error) => {
-                    numPicturesLoaded++;
-                    if (numPicturesLoaded >= picturesLength) {
-                        this.state.picturesLoading = false;
-                        if (!this.state.videosLoading) {
-                            finishHandler();
-                        }
-                    }
-                });
-            }
-            let numVideosLoaded = 0;
-            let videosLength = this.state.videos.length;
-            for (let i = 0; i < videosLength; i++) {
-                Storage.put(id + "/videos/" + i, this.state.videos[i], { contentType: "video/*;image/*" }).then((result) => {
-                    numVideosLoaded++;
-                    if (numVideosLoaded >= videosLength) {
-                        this.state.videosLoading = false;
-                        if (!this.state.picturesLoading) {
-                            finishHandler();
-                        }
-                    }
-                }).catch((error) => {
-                    numVideosLoaded++;
-                    if (numVideosLoaded >= videosLength) {
-                        this.state.videosLoading = false;
-                        if (!this.state.picturesLoading) {
-                            finishHandler();
-                        }
-                    }
-                });
-            }
-            // Storage.put(id + "/")
-        }, (error) => {
+        PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPictures(), this.getVideos(), finishHandler, (error) => {
             console.error(error);
         });
+        // PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
+        //     this.setState({picturesLoading: (this.state.pictures.length > 0), videosLoading: (this.state.videos.length > 0)});
+        //     console.log(JSON.stringify(returnValue));
+        //     const id = returnValue.data;
+        //     let numPicturesLoaded = 0;
+        //     let picturesLength = this.state.pictures.length;
+        //     for (let i = 0; i < picturesLength; i++) {
+        //         const picturePath = "/" + id + "/pictures/" + i;
+        //         Storage.put(picturePath, this.state.pictures[i], { contentType: "video/*;image/*" }).then((result) => {
+        //             numPicturesLoaded++;
+        //             if (numPicturesLoaded >= picturesLength) {
+        //                 this.state.picturesLoading = false;
+        //                 if (!this.state.videosLoading) {
+        //                     finishHandler();
+        //                 }
+        //             }
+        //         }).catch((error) => {
+        //             numPicturesLoaded++;
+        //             if (numPicturesLoaded >= picturesLength) {
+        //                 this.state.picturesLoading = false;
+        //                 if (!this.state.videosLoading) {
+        //                     finishHandler();
+        //                 }
+        //             }
+        //         });
+        //     }
+        //     let numVideosLoaded = 0;
+        //     let videosLength = this.state.videos.length;
+        //     for (let i = 0; i < videosLength; i++) {
+        //         Storage.put(id + "/videos/" + i, this.state.videos[i], { contentType: "video/*;image/*" }).then((result) => {
+        //             numVideosLoaded++;
+        //             if (numVideosLoaded >= videosLength) {
+        //                 this.state.videosLoading = false;
+        //                 if (!this.state.picturesLoading) {
+        //                     finishHandler();
+        //                 }
+        //             }
+        //         }).catch((error) => {
+        //             numVideosLoaded++;
+        //             if (numVideosLoaded >= videosLength) {
+        //                 this.state.videosLoading = false;
+        //                 if (!this.state.picturesLoading) {
+        //                     finishHandler();
+        //                 }
+        //             }
+        //         });
+        //     }
+        //     // Storage.put(id + "/")
+        // }, (error) => {
+        //     console.error(error);
+        // });
     }
 
-    getPicturePaths() {
-        const picturePaths = [];
-        console.log("Pictures: " + this.state.pictures.length);
+    getPictures() {
+        const pictures = {};
         for (let i = 0; i < this.state.pictures.length; i++) {
-            const path = "pictures/" + i;
-            picturePaths.push(path);
-            console.log("Added: " + path);
+            pictures["pictures/" + i] = this.state.pictures[i];
         }
-        if (picturePaths.length > 0) {
-            return picturePaths;
+        if (this.state.pictures.length > 0) {
+            return pictures;
         }
         return null;
     }
 
-    getVideoPaths() {
-        const videoPaths = [];
-        console.log("Videos: " + this.state.videos.length);
+    getVideos() {
+        const videos = {};
         for (let i = 0; i < this.state.videos.length; i++) {
-            const path = "videos/" + i;
-            videoPaths.push(path);
-            console.log("Added: " + path);
+            videos["videos/" + i] = this.state.videos[i];
         }
-        if (videoPaths.length > 0) {
-            return videoPaths;
+        if (this.state.videos.length > 0) {
+            return videos;
         }
         return null;
     }
