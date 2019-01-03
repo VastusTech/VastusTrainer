@@ -32,7 +32,7 @@ export function convertFromIntervalISO(dateTime) {
         days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     return days[fromDate.getDay()]+', '+months[fromDate.getMonth()]+' '+fromDate.getDate()+', '+fromDate.getFullYear()+' '+fromhours+':'+fromminutes+fromampm + ' - '+tohours+':'+tominutes+toampm;
 }
-function parseISOString(s) {
+export function parseISOString(s) {
     const b = s.split(/\D+/);
     return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
 }
