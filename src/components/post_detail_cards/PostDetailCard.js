@@ -4,17 +4,12 @@
 
 // TODO This will be for a post that is sharing an existing Post with your friends!
 
-// TODO These detail cards are going to be embedded into the PostCard component when it is applicable. Reference
-// TODO Facebook's little cards within posts when you share something for what I am imagining.
-
-// TODO This will be for a post that is sharing an existing Post with your friends!
-
 import React, { Component } from 'react';
 import {Card, Modal, Button, Header, List, Divider, Image, Message} from 'semantic-ui-react';
 // import EventMemberList from "../screens/EventMemberList";
 import { connect } from 'react-redux';
 // import QL from '../GraphQL';
-import {fetchClient, forceFetchPost, fetchPost} from "../../redux_helpers/actions/cacheActions";
+import { fetchClient, forceFetchPost, fetchPost } from "../../redux_helpers/actions/cacheActions";
 // import CompleteChallengeModal from "../screens/CompleteChallengeModal";
 import { convertFromISO } from "../../logic/TimeHelper";
 import { forceFetchUserAttributes } from "../../redux_helpers/actions/userActions";
@@ -260,7 +255,7 @@ class PostDetailCard extends Component {
                 <div>
                     {this.getDisplayMedia()}
                 </div>
-                {/*createCorrectButton(this.isOwned, this.handleDeletePostButton, this.state.isDeleteLoading)*/}
+                {createCorrectButton(this.isOwned, this.handleDeletePostButton, this.state.isDeleteLoading)}
             </Card>
         );
     }

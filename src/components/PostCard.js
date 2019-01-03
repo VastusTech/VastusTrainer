@@ -3,10 +3,11 @@ import { Card } from 'semantic-ui-react';
 import PostDescriptionModal from './PostDescriptionModal';
 import {Player} from "video-react";
 import { connect } from 'react-redux';
-import {fetchChallenge, fetchPost} from "../redux_helpers/actions/cacheActions";
+import { fetchPost, fetchChallenge} from "../redux_helpers/actions/cacheActions";
 import { convertFromISO } from "../logic/TimeHelper";
 import ItemType from "../logic/ItemType";
 import { Storage } from "aws-amplify";
+import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
 import ChallengeDetailCard from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
@@ -160,88 +161,56 @@ class PostCard extends Component {
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a user profile", postMessageSet: true});
                     }
-                    return (<ClientDetailCard postID={this.state.postID}/>);
+                    return (<ClientDetailCard postID={this.props.postID}/>);
                 }
                 else if (postType === "Trainer") {
                     //return (<TrainerDetailCard displayMedia = {this.getDisplayMedia}/>);
-                    return null;
                 }
                 else if (postType === "Gym") {
                     //return (<GymDetailCard displayMedia = {this.getDisplayMedia}/>);
-                    return null;
                 }
                 else if (postType === "Workout") {
                     //return (<WorkoutDetailCard displayMedia = {this.getDisplayMedia}/>);
-                    return null;
                 }
                 else if (postType === "Review") {
                     //return (<ReviewDetailCard displayMedia = {this.getDisplayMedia}/>);
-                    return null;
                 }
                 else if (postType === "Event") {
                     //return (<EventDetailCard displayMedia = {this.getDisplayMedia}/>);
-                    return null;
                 }
                 else if (postType === "Challenge") {
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a challenge", postMessageSet: true});
                     }
-                    // return (<ChallengeDetailCard postID={this.state.postID}/>);
-                    return null;
+                    return (<ChallengeDetailCard postID={this.props.postID}/>);
                 }
                 else if (postType === "Invite") {
                     //return (<InviteDetailCard displayMedia = {this.getDisplayMedia}/>);
-                    return null;
                 }
                 else if (postType === "Post") {
-                    return (<PostDetailCard postID={this.state.postID}/>);
+                    return (<PostDetailCard postID={this.props.postID}/>);
                 }
                 else if (postType === "submission") {
-                    //return (<SubmissionDetailCard postID={this.state.postID}/>);
-                    return null;
+                    return (<SubmissionDetailCard postID={this.props.postID}/>);
                 }
             }
         }
-        else if (itemType) {
-            //alert("POSTID: " + this.state.postID);
-            // return (<PostDetailCard postID={this.state.postID}/>);
-            return null;
+        else if(itemType) {
+            //alert("Item Type: " + itemType);
+            return (<PostDetailCard postID={this.state.postID}/>);
         }
         return (<div/>);
     }
 
     render() {
-        // function convertFromISO(dateTime) {
-        //     let dateTimeString = String(dateTime);
-        //     let dateTimes = String(dateTimeString).split("_");
-        //     let fromDateString = dateTimes[0];
-        //     let toDateString = dateTimes[1];
-        //     let fromDate = new Date(fromDateString);
-        //     let toDate = new Date(toDateString);
-        //
-        //     // Display time logic came from stack over flow
-        //     // https://stackoverflow.com/a/18537115
-        //     const fromHourInt = fromDate.getHours() > 12 ? fromDate.getHours() - 12 : fromDate.getHours();
-        //     const toHourInt = toDate.getHours() > 12 ? toDate.getHours() - 12 : toDate.getHours();
-        //     const fromminutes = fromDate.getMinutes().toString().length === 1 ? '0'+ fromDate.getMinutes() : fromDate.getMinutes(),
-        //         fromhours = fromHourInt.toString().length === 1 ? '0'+ fromHourInt : fromHourInt,
-        //         fromampm = fromDate.getHours() >= 12 ? 'PM' : 'AM',
-        //         tominutes = toDate.getMinutes().toString().length === 1 ? '0'+ toDate.getMinutes() : toDate.getMinutes(),
-        //         tohours = toHourInt.toString().length === 1 ? '0'+ toHourInt : toHourInt,
-        //         toampm = toDate.getHours() >= 12 ? 'PM' : 'AM',
-        //         months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        //         days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        //     return days[fromDate.getDay()]+', '+months[fromDate.getMonth()]+' '+fromDate.getDate()+', '+fromDate.getFullYear()+' '+fromhours+':'+fromminutes+fromampm + ' - '+tohours+':'+tominutes+toampm;
-        // }
-
         if (!this.getPostAttribute("id")) {
-            return(
+            return (
                 <Card fluid raised>
                     <h1>Loading...</h1>
                 </Card>
             );
         }
-        return(
+        return (
             // This is displays a few important pieces of information about the challenge for the feed view.
             <Card fluid raised>
                 <Card.Header textAlign = 'center'>{this.getOwnerName()} {this.state.postMessage}</Card.Header>

@@ -4,29 +4,12 @@ import {Visibility, Header, Grid} from 'semantic-ui-react'
 import PostCard from "../components/PostCard";
 import QL from "../GraphQL";
 import { connect } from 'react-redux';
-// import ScheduledEventsList from "./ScheduledEventList";
-import {
-    putChallengeQuery,
-    putPost,
-    putPostQuery,
-    fetchPostQuery,
-    fetchChallenge,
-    putChallenge,
-    fetchClient,
-    fetchPost
-} from "../redux_helpers/actions/cacheActions";
+import {fetchPost, putChallengeQuery, putPost, putPostQuery, fetchChallenge, putChallenge, fetchClient} from "../redux_helpers/actions/cacheActions";
+import { fetchPostQuery } from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
-// import CreateEventProp from "./CreateEvent";
-import CreateChallengeProp from "./CreateChallenge";
-import CreatePostProp from "./CreatePost";
-// import NextEventProp from "../components/NextEvent";
 import NextChallengeProp from "../components/NextChallenge";
 import { Tab } from "semantic-ui-react/dist/commonjs/modules/Tab/Tab";
-// import * as AWS from "aws-sdk";
-
-// AWS.config.update({region: 'REGION'});
-// AWS.config.credentials = new AWS.CognitoIdentityCredentials(
-//     {IdentityPoolId: 'us-east-1:d9a16b98-4393-4ff6-9e4b-5e738fef1222'});
+import PostManager from './PostManager'
 
 /**
  * Post Feed
@@ -56,6 +39,7 @@ class PostFeedProp extends Component {
         super(props);
         this.forceUpdate = this.forceUpdate.bind(this);
         this.queryPosts = this.queryPosts.bind(this);
+        this.queryChallenges = this.queryChallenges.bind(this);
     }
 
     componentDidMount() {
@@ -251,10 +235,7 @@ class PostFeedProp extends Component {
             <Visibility onUpdate={this.handleUpdate}>
                 <Grid className='ui center aligned'>
                     <Grid.Column floated='center' width={15}>
-                        <CreateChallengeProp queryChallenges={this.queryChallenges} queryPosts={this.queryPosts}/>
-                    </Grid.Column>
-                    <Grid.Column floated='center' width={15}>
-                        <CreatePostProp queryPosts={this.queryPosts}/>
+                        <PostManager queryChallenges={this.queryChallenges} queryPosts={this.queryPosts}/>
                     </Grid.Column>
                 </Grid>
                 <Header sub>Your Next Challenge:</Header>
