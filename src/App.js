@@ -7,11 +7,13 @@ import { updateAuth } from "./redux_helpers/actions/authActions";
 import AuthApp from './AuthApp';
 import UnauthApp from './UnauthApp';
 import AWSConfig from './AppConfig';
+import FirebaseConfig from "./FirebaseConfig";
 // import ItemType, { getItemTypeFromID } from "./ItemType";
 
 // const myServiceWorker = await ServiceWorker.register("/service-worker.js", "/");
 
 AWSConfig();
+FirebaseConfig();
 
 function requestNotificationPermission() {
     // Some browsers don't support Notification yet. I'm looking at you iOS Safari

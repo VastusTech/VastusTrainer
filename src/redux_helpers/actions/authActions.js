@@ -1,6 +1,7 @@
 import { Auth } from "aws-amplify";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {fetchUser, clearUser, setUser, forceSetUser} from "./userActions";
+import { firebaseSignIn, firebaseSignOut } from "./firebaseActions";
 import QL from "../../GraphQL";
 // import Lambda from "../../Lambda";
 import TrainerFunctions from "../../databaseFunctions/TrainerFunctions";
@@ -43,6 +44,7 @@ export function logIn(username, password) {
                 else {
                     dispatch(setUser(user));
                 }
+                dispatch(firebaseSignIn(user.id));
                 dispatch(setIsNotLoading());
             }, (error) => {
                 console.log("REDUX: Could not fetch the client");
@@ -60,9 +62,11 @@ export function logIn(username, password) {
 export function logOut() {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
+        const userID = getStore().user.id;
         Auth.signOut({global: true}).then((data) => {
             console.log("REDUX: Successfully logged out!");
             // dispatch(clearUser());
+            if (userID) { dispatch(firebaseSignOut(userID)); }
             dispatch(authLogOut());
             dispatch(setIsNotLoading());
         }).catch((error) => {
