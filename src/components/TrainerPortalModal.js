@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 // import AWSSetup from "../AppConfig";
 // import {logOut} from "../redux_helpers/actions/authActions";
 import ClientFunctions from "../databaseFunctions/ClientFunctions";
+import TrainerFunctions from "../databaseFunctions/TrainerFunctions";
 import {calculateAge} from "../logic/TimeHelper";
 import TrainerPostFeed from "../screens/TrainerPostFeed";
 import EventList from "./EventList";
@@ -273,7 +274,7 @@ class TrainerPortalModal extends React.PureComponent<Props> {
          */
         return(
             <Modal open={this.props.open} onClose={this.props.onClose} closeIcon>
-                <Card fluid raised className="u-margin-top--2">
+                <Card color='purple' fluid raised className="u-margin-top--2">
                     <Card.Content textAlign="center">
                         {this.profilePicture()}
                         <Card.Header as="h2" style={{"margin": "12px 0 0"}}>{this.props.user.name}</Card.Header>

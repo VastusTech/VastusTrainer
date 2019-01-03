@@ -58,14 +58,14 @@ class EventCard extends Component<Props> {
     render() {
         if (!this.getEventAttribute("id")) {
             return(
-                <Card fluid raised>
+                <Card color='purple' fluid raised>
                     <h1>Loading...</h1>
                 </Card>
             );
         }
         return(
             // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised onClick={this.openEventModal.bind(this)}>
+            <Card color='purple' fluid raised onClick={this.openEventModal.bind(this)}>
                 <Card.Content>
                     <Card.Header textAlign = 'center'>{this.getEventAttribute("title")}</Card.Header>
                     <Card.Meta textAlign = 'center' >{this.convertFromISO(this.getEventAttribute("time"))}</Card.Meta>

@@ -80,7 +80,7 @@ class InviteToScheduledEventsModalProp extends Component {
                 if (events.hasOwnProperty(i) === true) {
                     rowProps.push(
                         <Fragment>
-                            <Card fluid raised>
+                            <Card color='purple' fluid raised>
                                 <Card.Content>
                                     <EventCard eventID={events[i]}/>
                                     <Button loading={isInviteLoading} primary fluid onClick={() => {eventInviteHandler(events[i])}}>Invite to Challenge</Button>

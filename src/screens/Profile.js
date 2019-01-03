@@ -356,7 +356,7 @@ class Profile extends React.PureComponent {
         //This displays some basic user information, a profile picture, buttons to modify some user related attributes,
         //and a switch to set the privacy for the user.
         return(
-            <Card fluid raised className="u-margin-top--2">
+            <Card color='purple' fluid raised className="u-margin-top--2">
                 <Card.Content textAlign="center">
                     {this.profilePicture()}
                     <Card.Header as="h2" style={{"margin": "12px 0 0"}}>{this.props.user.name}</Card.Header>

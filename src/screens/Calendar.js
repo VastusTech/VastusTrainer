@@ -107,50 +107,6 @@ class Calendar extends React.Component {
       return "Nothing today";
   };
 
-    displayTagIcons(tags) {
-        if(tags) {
-            alert("Running tags!");
-            if (tags.length === 1) {
-                return (
-                    <Image avatar src={require('../img/' + tags[0] + '_icon.png')}/>
-                );
-            }
-            else if (tags.length === 2) {
-                return (
-                    <div>
-                        <Image avatar src={require('../img/' + tags[0] + '_icon.png')}/>
-                        <Image avatar src={require('../img/' + tags[1] + '_icon.png')}/>
-                    </div>
-                );
-            }
-            else if (tags.length === 3) {
-                return(
-                    <div>
-                        <Image avatar src={require('../img/' + tags[0] + '_icon.png')}/>
-                        <Image avatar src={require('../img/' + tags[1] + '_icon.png')}/>
-                        <Image avatar src={require('../img/' + tags[2] + '_icon.png')}/>
-                    </div>
-                );
-            }
-            else if (tags.length === 4) {
-                return(
-                    <div>
-                        <Image avatar src={require('../img/' + tags[0] + '_icon.png')}/>
-                        <Image avatar src={require('../img/' + tags[1] + '_icon.png')}/>
-                        <Image avatar src={require('../img/' + tags[2] + '_icon.png')}/>
-                        <Image avatar src={require('../img/' + tags[3] + '_icon.png')}/>
-                    </div>
-                );
-            }
-        }
-        else {
-            return (
-                // "There ain't no tags round these parts partner " + tags
-                null
-            );
-        }
-    }
-
     displayChallenges = (date) => {
         //return convertToISOString(date).substr(0, 10);
         if (this.props.user.challenges) {
@@ -174,33 +130,33 @@ class Calendar extends React.Component {
                 let tags = this.getChallengeAttribute("tags", dayChallenges[0]);
                 if (tags.length === 1) {
                     return (
-                        <Image size='mini' src={require('../img/' + tags[0] + '_icon.png')}/>
+                        <Image style={{height: '20px', width: '20px'}} size='mini' src={require('../img/' + tags[0] + '_icon.png')}/>
                     );
                 }
                 else if (tags.length === 2) {
                     return (
                         <div>
-                            <Image size='mini' src={require('../img/' + tags[0] + '_icon.png')}/>
-                            <Image size='mini' src={require('../img/' + tags[1] + '_icon.png')}/>
+                            <Image style={{height: '20px', width: '20px'}} src={require('../img/' + tags[0] + '_icon.png')}/>
+                            <Image style={{height: '20px', width: '20px'}} src={require('../img/' + tags[1] + '_icon.png')}/>
                         </div>
                     );
                 }
                 else if (tags.length === 3) {
                     return(
                         <div>
-                            <Image size='mini' src={require('../img/' + tags[0] + '_icon.png')}/>
-                            <Image size='mini' src={require('../img/' + tags[1] + '_icon.png')}/>
-                            <Image size='mini' src={require('../img/' + tags[2] + '_icon.png')}/>
+                            <Image style={{height: '20px', width: '20px'}} src={require('../img/' + tags[0] + '_icon.png')}/>
+                            <Image style={{height: '20px', width: '20px'}} src={require('../img/' + tags[1] + '_icon.png')}/>
+                            <Image style={{height: '20px', width: '20px'}} src={require('../img/' + tags[2] + '_icon.png')}/>
                         </div>
                     );
                 }
                 else if (tags.length === 4) {
                     return(
                         <div>
-                            <Image size='mini' src={require('../img/' + tags[0] + '_icon.png')}/>
-                            <Image size='mini' src={require('../img/' + tags[1] + '_icon.png')}/>
-                            <Image size='mini' src={require('../img/' + tags[2] + '_icon.png')}/>
-                            <Image size='mini' src={require('../img/' + tags[3] + '_icon.png')}/>
+                            <Image style={{height: '19px', width: '19px'}} src={require('../img/' + tags[0] + '_icon.png')}/>
+                            <Image style={{height: '19px', width: '19px'}} src={require('../img/' + tags[1] + '_icon.png')}/>
+                            <Image style={{height: '19px', width: '19px'}} src={require('../img/' + tags[2] + '_icon.png')}/>
+                            <Image style={{height: '19px', width: '19px'}} src={require('../img/' + tags[3] + '_icon.png')}/>
                         </div>
                     );
                 }

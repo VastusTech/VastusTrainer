@@ -205,14 +205,14 @@ class PostCard extends Component {
     render() {
         if (!this.getPostAttribute("id")) {
             return (
-                <Card fluid raised>
+                <Card color='purple' fluid raised>
                     <h1>Loading...</h1>
                 </Card>
             );
         }
         return (
             // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised>
+            <Card color='purple' fluid raised>
                 <Card.Header textAlign = 'center'>{this.getOwnerName()} {this.state.postMessage}</Card.Header>
                 <Card.Content>
                     <div align='center'>
