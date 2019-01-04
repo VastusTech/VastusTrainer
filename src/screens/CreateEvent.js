@@ -226,7 +226,7 @@ class CreateEventProp extends Component<Props> {
             <div>{this.createSuccessLabel()}</div>
             <Segment raised inverted>
                 {/*Modal trigger={<Button primary fluid size="large" closeIcon>+ Create Event</Button>} closeIcon>*/}
-                <Modal closeIcon onClose={this.closeModal} open={this.state.showModal} trigger={<div>
+                <Modal onClose={this.closeModal} open={this.state.showModal} trigger={<div>
                     <Button primary fluid size="large" onClick={() => this.setState({ showModal: true })}>{<Image src={VTLogo} avatar />}Custom Challenge</Button></div>}>
                     <Modal.Header align='center'>Challenge Builder</Modal.Header>
                     <Modal.Content>
