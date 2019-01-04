@@ -71,8 +71,14 @@ class PostFunctions {
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
     static create(fromID, by, description, access, postType, about, pictures, videos, successHandler, failureHandler) {
-        const picturePaths = pictures.keys() ? pictures : null;
-        const videoPaths = videos.keys() ? videos : null;
+        let picturePaths = null;
+        let videoPaths = null;
+        if(pictures) {
+            picturePaths = Object.keys(pictures);
+        }
+        if(videos) {
+            videoPaths = Object.keys(videos);
+        }
         let numPictures = 0;
         let numVideos = 0;
         if (picturePaths) { numPictures = picturePaths.length; }
@@ -86,7 +92,8 @@ class PostFunctions {
             picturePaths,
             videoPaths,
         }, (data) => {
-            const id = data.id;
+            //alert("Data: " + JSON.stringify(data));
+            const id = data.data;
             const numVideosAndPictures = numPictures + numVideos;
             let numFinished = 0;
             function finish() {
@@ -98,6 +105,7 @@ class PostFunctions {
                 PostFunctions.delete(fromID, id);
                 failureHandler(error);
             }
+            //alert(id);
             if (numVideosAndPictures === 0) {
                 successHandler(data);
             }
