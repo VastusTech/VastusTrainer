@@ -310,7 +310,12 @@ class SearchBarProp extends Component {
                                 resultcontent: result
                             },
                             null,
-                            null);
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            "Handle search result type not implemented!");
 
                         if (formattedResult) {
                             // TODO Insertsort this? By what basis though?
