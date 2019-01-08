@@ -324,7 +324,7 @@ class NotificationCard extends Component {
         else {
             if (this.getInviteAttribute("inviteType") === "friendRequest") {
                 return (
-                    <Card fluid raised centered>
+                    <Card color='purple' fluid raised centered>
                         <div className="u-container">
                         <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profilePicture")})`}}></div>
                         </div>
@@ -354,7 +354,7 @@ class NotificationCard extends Component {
             }
             else if (this.getInviteAttribute("inviteType") === "eventInvite") {
                 return (
-                    <Card fluid raised>
+                    <Card color='purple' fluid raised>
                         <Card.Content>
                             <Feed>
                                 <Feed.Event>

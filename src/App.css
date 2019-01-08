@@ -83,9 +83,9 @@ body {
 :root {
   --main-color: #7F47AE;
   --text-color: #eee;
-  --text-color-light: #696969	;
-  --border-color: #eee; 
-  --bg-color: #7F47AE;
+  --text-color-light: #696969;
+  --border-color: #7F47AE;
+  --bg-color: #eee;
   --neutral-color: #000;
 }
 

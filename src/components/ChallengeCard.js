@@ -169,7 +169,7 @@ class ChallengeCard extends Component {
     render() {
         if (!this.getChallengeAttribute("id")) {
             return(
-                <Card fluid raised>
+                <Card color='purple' fluid raised>
                     <h1>Loading...</h1>
                 </Card>
             );
@@ -180,7 +180,7 @@ class ChallengeCard extends Component {
         // }
         return(
             // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised onClick={this.openChallengeModal.bind(this)}>
+            <Card color='purple' fluid raised onClick={this.openChallengeModal.bind(this)}>
                 <Card.Content textAlign = 'center'>
                     <Card.Header textAlign = 'center'>{this.getChallengeAttribute("title")}</Card.Header>
                     <Card.Meta textAlign = 'center' >{this.getDaysLeft()/*this.getDaysLeft(Date.daysBetween(this.getTodayDateString(), this.getChallengeAttribute("endTime")))*/} days left</Card.Meta>

@@ -17,7 +17,7 @@ import OrganizationalScreen from "./OrganizationalScreen";
 * The app is currently split up into three sections: home, profile, and notifications.
  */
 export default () => (
-    <Tab menu={{fixed: "bottom", widths: 5, size: "small", inverted: true}} panes={
+    <Tab menu={{fixed: "bottom", widths: 4, size: "medium", inverted: true}} panes={
         [
             {
                 menuItem:
@@ -38,7 +38,7 @@ export default () => (
                     <ProfileProp/>
                 </Tab.Pane>
             },
-            {
+            /*{
                 menuItem: (
                     <Menu.Item key={2}>
                         <Icon name='world' size='large' />
@@ -46,10 +46,10 @@ export default () => (
                 render: () => <Tab.Pane basic attached={false}>
                     <ProfileProp/>
                 </Tab.Pane>
-            },
+            },*/
             {
                 menuItem: (
-                    <Menu.Item key={3}>
+                    <Menu.Item key={2}>
                         <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
@@ -58,7 +58,7 @@ export default () => (
             },
             {
                 menuItem: (
-                    <Menu.Item key={4}>
+                    <Menu.Item key={3}>
                         <NotificationBellProp/>
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>

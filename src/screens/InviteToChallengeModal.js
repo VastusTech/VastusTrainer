@@ -86,7 +86,7 @@ class InviteToChallengeModalProp extends Component {
                 if (challenges.hasOwnProperty(i) === true) {
                     rowProps.push(
                         <Fragment key={i+1}>
-                            <Card fluid raised>
+                            <Card color='purple' fluid raised>
                                 <Card.Content>
                                     <ChallengeCard challengeID={challenges[i]}/>
                                     <Button loading={isInviteLoading} primary fluid onClick={() => {challengeInviteHandler(challenges[i])}}>Invite to Challenge</Button>

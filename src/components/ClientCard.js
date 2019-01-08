@@ -89,14 +89,14 @@ class ClientCard extends Component<Props> {
         const { rank } = this.props;
         if (!this.getClientAttribute("id")) {
             return(
-                <Card fluid raised>
+                <Card color='purple' fluid raised>
                     <h1>Loading...</h1>
                 </Card>
             );
         }
         return(
             // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card fluid raised onClick={this.openClientModal}>
+            <Card color='purple' fluid raised onClick={this.openClientModal}>
                 <Card.Content>
                     {/* If no rank */}
                     {!rank && (

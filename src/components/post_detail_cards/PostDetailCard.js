@@ -5,7 +5,7 @@
 // TODO This will be for a post that is sharing an existing Post with your friends!
 
 import React, { Component } from 'react';
-import {Card, Modal, Button, Header, List, Divider, Image, Message} from 'semantic-ui-react';
+import {Card, Modal, Button, Header, Icon, Divider, Image, Message} from 'semantic-ui-react';
 // import EventMemberList from "../screens/EventMemberList";
 import { connect } from 'react-redux';
 // import QL from '../GraphQL';
@@ -131,7 +131,9 @@ class PostDetailCard extends Component {
         //console.log("Handling deleting the event");
         this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), (data) => {
-            this.forceUpdate(data.id);
+            alert("Data information: " + JSON.stringify(data));
+            //this.forceUpdate(data.id);
+            this.props.forceFetchPost(this.getPostAttribute("id"), ["time_created", "by", "description", "about", "access", "postType", "picturePaths", "videoPaths"]);
             // console.log(JSON.stringify(data));
             this.setState({isDeleteLoading: false, event: null, isOwned: false});
         }, (error) => {
@@ -151,11 +153,6 @@ class PostDetailCard extends Component {
 
     openClientModal() { this.setState({clientModalOpen: true}); }
     closeClientModal() { this.setState({clientModalOpen: false}); }
-
-    forceUpdate = (postID) => {
-        this.props.forceFetchPost(postID, ["time_created", "by", "description", "about", "access", "postType", "picturePaths", "videoPaths"]);
-    };
-
     displayError() {
         if(this.state.error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
             return (<Message negative>
@@ -238,7 +235,7 @@ class PostDetailCard extends Component {
                 // TODO This should also link the choose winner button
                 return(
                     <div>
-                        <Button loading={isDeleteLoading} fluid negative size="large" disabled={isDeleteLoading} onClick={deleteHandler}>Delete</Button>
+                        <Button loading={isDeleteLoading} primary fluid size="tiny" disabled={isDeleteLoading} onClick={deleteHandler}><Icon name='delete'/></Button>
                     </div>
                 );
             }

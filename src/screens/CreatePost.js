@@ -319,7 +319,7 @@ class CreatePostProp extends Component {
                         </Grid.Row>
                         </Grid>
                     </Container>
-                    <Card align='center'>
+                    <Card color='purple' align='center'>
                         <Card.Header align='center' className="u-bg--bg">Add photo or video to post</Card.Header>
                         <div align='center' className="u-bg--bg">
                             {this.displayCurrentVideo()}

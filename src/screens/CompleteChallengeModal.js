@@ -51,7 +51,7 @@ class CompleteChallengeModal extends Component {
             const rowProps = [];
             for (let i = 0; i < members.length; i++) {
                 rowProps.push(
-                    <Card raised key={members[i]}>
+                    <Card color='purple' raised key={members[i]}>
                         <Card.Content>
                             <ClientCard clientID={members[i]} />
                             <Button primary fluid onClick={() => {buttonHandler(members[i])}}>Select</Button>

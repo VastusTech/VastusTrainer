@@ -122,31 +122,32 @@ class PostManager extends Component {
 
     render() {
         return(
-            <Modal trigger={<Button primary fluid><Icon name='plus'/> Create Post</Button>}>
+            <Modal trigger={<Button primary fluid><Icon name='plus'/> Create Post</Button>} closeIcon>
+                <Modal.Header>Post Manager</Modal.Header>
                 <Modal.Content>
-        <Tab menu={{fixed: "top", widths: 3, size: "small", inverted: true}} panes={
-            [
-                {
-                    menuItem:
-                        (<Menu.Item key={0}>
-                            Make Challenge
-                        </Menu.Item>),
-                    render: () =>
-                        <Tab.Pane basic attached={false}>
-                            <CreateChallengeProp queryChallenges={this.props.queryChallenges} queryPosts={this.props.queryPosts}/>
-                        </Tab.Pane>
-                },
-                {
-                    menuItem: (
-                        <Menu.Item key={1}>
-                            Make Post
-                        </Menu.Item>),
-                    render: () => <Tab.Pane basic attached={false}>
-                        <CreatePostProp queryPosts={this.props.queryPosts}/>
-                    </Tab.Pane>
-                },
-            ]
-        }/>
+                    <Tab menu={{attached: "top", widths: 3, size: "small", inverted: true}} panes={
+                        [
+                            {
+                                menuItem:
+                                    (<Menu.Item key={0}>
+                                        Make Challenge
+                                    </Menu.Item>),
+                                render: () =>
+                                    <Tab.Pane basic attached={false}>
+                                        <CreateChallengeProp queryChallenges={this.props.queryChallenges} queryPosts={this.props.queryPosts}/>
+                                    </Tab.Pane>
+                            },
+                            {
+                                menuItem: (
+                                    <Menu.Item key={1}>
+                                        Make Post
+                                    </Menu.Item>),
+                                render: () => <Tab.Pane basic attached={false}>
+                                    <CreatePostProp queryPosts={this.props.queryPosts}/>
+                                </Tab.Pane>
+                            },
+                        ]
+                    }/>
                 </Modal.Content>
             </Modal>);
     }
