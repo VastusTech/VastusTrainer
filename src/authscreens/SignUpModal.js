@@ -20,8 +20,8 @@ class SignUpModal extends Component {
         password: "",
         confirmPassword: "",
         name: "",
-        gender: "",
-        birthday: "",
+        gender: "-",
+        birthday: "0000-12-31",
         email: "",
         confirmationCode: "",
     };
@@ -43,8 +43,8 @@ class SignUpModal extends Component {
     fieldsAreFilledCorrectly() {
         // console.log("Setting state with isConfirming is true");
         // TODO Do extra checking for the specifications of the account!
-        if (this.authState.username && this.authState.password && this.authState.confirmPassword && this.authState.name &&
-            this.authState.birthday && this.authState.gender && this.authState.email) {
+        if (this.authState.username && this.authState.password && this.authState.confirmPassword && this.authState.name
+            && this.authState.email) {
             if (this.authState.password !== this.authState.confirmPassword) {
                 this.props.setError(new Error("Password and confirm password do not match!"));
             }
@@ -59,6 +59,7 @@ class SignUpModal extends Component {
                 this.props.setError(new Error("Password must be longer than 8 characters, must need a number, a lower case letter, and an upper case letter"));
             }
             else {
+                //alert("No field restrictions");
                 return true;
             }
         }
@@ -150,9 +151,6 @@ class SignUpModal extends Component {
                         <Form.Input type="password" iconPosition='left' icon='lock' name="confirmPassword" placeholder="Confirm Password" onChange={value => this.changeStateText("confirmPassword", value)}/>
                         <Divider />
                         <Form.Input type="text" iconPosition='left' icon='user circle' name="name" placeholder="Name" onChange={value => this.changeStateText("name", value)}/>
-                        <Form.Input type="text" iconPosition='left' icon='male' name="gender" placeholder="Gender" onChange={value => this.changeStateText("gender", value)}/>
-                        <Divider />
-                        <Form.Input type="date" iconPosition='left' icon='calendar alternate outline' name="birthdate" onChange={value => this.changeStateText("birthday", value)}/>
                         <Form.Input type="text" iconPosition='left' icon='mail' name="email" placeholder="Email" onChange={value => this.changeStateText("email", value)}/>
                         <div className="u-flex u-flex-justify--space-between u-padding-y--2 u-margin-top--2">
                             <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
