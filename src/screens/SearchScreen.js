@@ -92,9 +92,12 @@ class SearchScreen extends Component {
                     null,
                     <EventCard eventID={result.id}/>,
                     <ChallengeCard challengeID={result.id}/>,
-                    null,
                     <PostCard postID={result.id}/>,
-                        "Result type not implemented!")}
+                    null,
+                    null,
+                    null,
+                    null,
+                    "Result type not implemented!")}
                 </List.Item>
             );
         }

@@ -16,6 +16,7 @@ const FETCH_POST = 'FETCH_POST';
 const FETCH_GROUP = 'FETCH_GROUP';
 const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
+const FETCH_MESSAGE = 'FETCH_MESSAGE';
 
 const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
 const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
@@ -29,6 +30,7 @@ const FETCH_POST_QUERY = 'FETCH_POST_QUERY';
 const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
 const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
 const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
+const FETCH_MESSAGE_QUERY = 'FETCH_MESSAGE_QUERY';
 
 const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
 const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
@@ -42,6 +44,7 @@ const CLEAR_POST_QUERY = 'CLEAR_POST_QUERY';
 const CLEAR_GROUP_QUERY = 'CLEAR_GROUP_QUERY';
 const CLEAR_COMMENT_QUERY = 'CLEAR_COMMENT_QUERY';
 const CLEAR_SPONSOR_QUERY = 'CLEAR_SPONSOR_QUERY';
+const CLEAR_MESSAGE_QUERY = 'CLEAR_MESSAGE_QUERY';
 
 function addProfilePictureToData(data, callback) {
     if (data && data.hasOwnProperty("profileImagePath")) {
@@ -345,7 +348,7 @@ function batchOverwriteFetch(ids, variablesList, cacheSet, QLFunctionName, fetch
     }
 }
 // TODO This is almost finished, I'm just in a lapse
-export function fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+export function fetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler, board=null) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         if (!variablesList.includes("id")) {
@@ -359,7 +362,13 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         // variablesList = variablesList.sort();
 
         // const fetchQueryDispatchType = getFetchQueryType(itemType);
-        const queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        let queryString;
+        if (board) {
+            queryString = QL.getConstructQueryFunction(itemType)(board, variablesList, filter, limit, nextToken);
+        }
+        else {
+            queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        }
         const queryResult = getCache(itemType, getStore)[queryString];
         // const queryResult = getStore().cache[cacheSet][queryString];
         if (queryResult) {
@@ -377,7 +386,7 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         }
     };
 }
-export function forceFetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+export function forceFetchQuery(itemType, variablesList, filter, limit, nextToken, dataHandler, failureHandler, board=null) {
     return (dispatch) => {
         dispatch(setIsLoading());
         if (!variablesList.includes("id")) {
@@ -390,7 +399,13 @@ export function forceFetchQuery(itemType, variablesList, filter, limit, nextToke
         // TODO Make this sort alphabetically, so that it's deterministic
         // variablesList = variablesList.sort();
 
-        const queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit);
+        let queryString;
+        if (board) {
+            queryString = QL.getConstructQueryFunction(itemType)(board, variablesList, filter, limit, nextToken);
+        }
+        else {
+            queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
+        }
         // const queryString = QL[QLFunctionName](variablesList, filter, limit, nextToken);
         overwriteFetchQuery(itemType, queryString, dataHandler, failureHandler, dispatch);
     };
@@ -608,6 +623,9 @@ export function fetchCommentQuery(variablesList, filter, limit, nextToken, dataH
 export function fetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return fetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
+export function fetchMessageQuery(board, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return fetchQuery("Message", variablesList, filter, limit, nextToken, dataHandler, failureHandler, board)
+}
 export function forceFetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
@@ -643,6 +661,9 @@ export function forceFetchCommentQuery(variablesList, filter, limit, nextToken, 
 }
 export function forceFetchSponsorQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
     return forceFetchQuery("Sponsor", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
+}
+export function forceFetchMessageQuery(board, variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
+    return forceFetchQuery("Message", variablesList, filter, limit, nextToken, dataHandler, failureHandler, board)
 }
 // TODO Consider how this might scale? Another LRU Cache here?
 export function putClientQuery(queryString, queryResult) {
@@ -751,6 +772,15 @@ export function putSponsorQuery(queryString, queryResult) {
         }
     };
 }
+export function putMessageQuery(queryString, queryResult) {
+    return {
+        type: "FETCH_MESSAGE_QUERY",
+        payload: {
+            queryString,
+            queryResult
+        }
+    };
+}
 export function clearClientQuery() {
     return {
         type: "CLEAR_CLIENT_QUERY",
@@ -809,6 +839,11 @@ export function clearCommentQuery() {
 export function clearSponsorQuery() {
     return {
         type: "CLEAR_SPONSOR_QUERY",
+    };
+}
+export function clearMessageQuery() {
+    return {
+        type: "CLEAR_MESSAGE_QUERY",
     };
 }
 function putQuery(queryString, queryResult, actionType) {
@@ -966,41 +1001,43 @@ export function putSponsor(sponsor) {
 }
 export function getFetchType(itemType) {
     return switchReturnItemType(itemType, FETCH_CLIENT, FETCH_TRAINER, FETCH_GYM, FETCH_WORKOUT, FETCH_REVIEW,
-        FETCH_EVENT, FETCH_CHALLENGE, FETCH_POST, FETCH_INVITE, FETCH_GROUP, FETCH_COMMENT, FETCH_SPONSOR, "Retrieve fetch type not implemented for type.")
+        FETCH_EVENT, FETCH_CHALLENGE, FETCH_POST, FETCH_INVITE, FETCH_GROUP, FETCH_COMMENT, FETCH_SPONSOR,
+        FETCH_MESSAGE, "Retrieve fetch type not implemented for type.")
 }
 export function getFetchQueryType(itemType) {
     return switchReturnItemType(itemType, FETCH_CLIENT_QUERY, FETCH_TRAINER_QUERY, FETCH_GYM_QUERY, FETCH_WORKOUT_QUERY,
         FETCH_REVIEW_QUERY, FETCH_EVENT_QUERY, FETCH_CHALLENGE_QUERY, FETCH_POST_QUERY, FETCH_INVITE_QUERY, FETCH_GROUP_QUERY,
-        FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, "Retrieve fetch query type not implemented for type");
+        FETCH_COMMENT_QUERY, FETCH_SPONSOR_QUERY, FETCH_MESSAGE_QUERY, "Retrieve fetch query type not implemented for type");
 }
 export function getCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clients, cache.trainers, cache.gyms, cache.workouts, cache.reviews,
-        cache.events, cache.challenges, cache.invites, cache.posts, cache.groups, cache.comments, cache.sponsors, "Retrieve cache not implemented");
+        cache.events, cache.challenges, cache.invites, cache.posts, cache.groups, cache.comments, cache.sponsors,
+        cache.messages, "Retrieve cache not implemented");
 }
 export function getQueryCache(itemType, getStore) {
     const cache = getStore().cache;
     return switchReturnItemType(itemType, cache.clientQueries, cache.trainerQueries, cache.gymQueries, cache.workoutQueries,
-        cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries, cache.postQueries, cache.groupQueries, cache.commentQueries, cache.sponsorQueries,
-        "Retrieve query cache not implemented");
+        cache.reviewQueries, cache.eventQueries, cache.challengeQueries, cache.inviteQueries, cache.postQueries, cache.groupQueries,
+        cache.commentQueries, cache.sponsorQueries, cache.messageQueries, "Retrieve query cache not implemented");
 }
 export function getPutItemFunction(itemType) {
     return switchReturnItemType(itemType, putClient, putTrainer, putGym, putWorkout, putReview, putEvent, putChallenge,
-        putPost, putGroup, putComment, putSponsor, "Retrieve put item function item type not implemented");
+        putPost, putGroup, putComment, putSponsor, null, "Retrieve put item function item type not implemented");
 }
 export function getFetchQueryFunction(itemType) {
     return switchReturnItemType(itemType, fetchClientQuery, fetchTrainerQuery, fetchGymQuery, fetchWorkoutQuery,
         fetchReviewQuery, fetchEventQuery, fetchChallengeQuery, fetchPostQuery, fetchInviteQuery, fetchGroupQuery,
-        fetchCommentQuery, fetchSponsorQuery, "Retrieve fetch query function item type not implemented");
+        fetchCommentQuery, fetchSponsorQuery, fetchMessageQuery, "Retrieve fetch query function item type not implemented");
 
 }
 export function getPutQueryFunction(itemType) {
     return switchReturnItemType(itemType, putClientQuery, putTrainerQuery, putGymQuery, putWorkoutQuery, putReviewQuery,
         putEventQuery, putChallengeQuery, putInviteQuery, putPostQuery, putGroupQuery, putCommentQuery, putSponsorQuery,
-        "Retrieve Put Query Function not implemented");
+        putMessageQuery, "Retrieve Put Query Function not implemented");
 }
 export function getClearQueryFunction(itemType) {
     return switchReturnItemType(itemType, clearClientQuery, clearTrainerQuery, clearGymQuery, clearWorkoutQuery, clearReviewQuery,
         clearEventQuery, clearChallengeQuery, clearInviteQuery, clearPostQuery, clearGroupQuery, clearCommentQuery, clearSponsorQuery,
-        "Retrieve Clear Query Function not implemented");
+        clearMessageQuery, "Retrieve Clear Query Function not implemented");
 }
