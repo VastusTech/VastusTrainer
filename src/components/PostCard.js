@@ -4,13 +4,13 @@ import PostDescriptionModal from './PostDescriptionModal';
 import {Player} from "video-react";
 import { connect } from 'react-redux';
 import { fetchPost, fetchChallenge} from "../redux_helpers/actions/cacheActions";
-import { convertFromISO } from "../logic/TimeHelper";
 import ItemType from "../logic/ItemType";
 import { Storage } from "aws-amplify";
 import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
 import ChallengeDetailCard from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
+import TrainerDetailCard from "./post_detail_cards/TrainerDetailCard";
 
 type Props = {
     postID: string
@@ -157,14 +157,18 @@ class PostCard extends Component {
             if (postType) {
                 //alert("Post Type: " + postType);
                 // TODO Switch the post types
-                if (itemType === "Client") {
+                if (postType === "Client") {
+                    //alert("Client Share Post Spotted!");
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a user profile", postMessageSet: true});
                     }
-                    return (<ClientDetailCard postID={this.props.postID}/>);
+                    return (<ClientDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "Trainer") {
-                    //return (<TrainerDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    if(!this.state.postMessageSet) {
+                        this.setState({postMessage: "shared a trainer profile", postMessageSet: true});
+                    }
+                    return (<TrainerDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "Gym") {
                     //return (<GymDetailCard displayMedia = {this.getDisplayMedia}/>);
@@ -182,16 +186,16 @@ class PostCard extends Component {
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a challenge", postMessageSet: true});
                     }
-                    return (<ChallengeDetailCard postID={this.props.postID}/>);
+                    return (<ChallengeDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "Invite") {
                     //return (<InviteDetailCard displayMedia = {this.getDisplayMedia}/>);
                 }
                 else if (postType === "Post") {
-                    return (<PostDetailCard postID={this.props.postID}/>);
+                    return (<PostDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "submission") {
-                    return (<SubmissionDetailCard postID={this.props.postID}/>);
+                    return (<SubmissionDetailCard postID={this.state.postID}/>);
                 }
             }
         }
