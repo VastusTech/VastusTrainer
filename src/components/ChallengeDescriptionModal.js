@@ -333,6 +333,7 @@ class ChallengeDescriptionModal extends Component<Props> {
             // TODO This should also link the choose winner button
             return (
                 <Fragment>
+                    <Button primary fluid className='u-margin-bottom--1' onClick={this.openSubmitModal}>Submit Your Entry</Button>
                     <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={this.handleDeleteChallengeButton}>Delete</Button>
                     <Button primary fluid size="large" onClick={this.openCompleteModal}>Select Winner</Button>
                     <Divider className='u-margin-top--4' />

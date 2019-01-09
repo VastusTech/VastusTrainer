@@ -198,8 +198,10 @@ class CreatePostProp extends Component {
         // TODO Check to see if valid inputs!
         if (this.state.description) {
             PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPictures(), this.getVideos(), (returnValue) => {
-                alert("Successfully Created Post!");
+                //alert("Successfully Created Post!");
                 alert(JSON.stringify(returnValue));
+                this.setState({isSubmitLoading: false});
+                this.setState({showSuccessLabel: true});
             }, (error) => {
                 console.error(error);
             });
@@ -313,7 +315,7 @@ class CreatePostProp extends Component {
                                     <Form.Field width={12}>
                                         <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.state.access} />
                                     </Form.Field>
-                                    <div>{this.displayError()}{this.createSuccessLabel()}</div>
+                                    <div>{this.displayError()}</div>
                                 </Form>
                             </Grid.Column>
                         </Grid.Row>
@@ -345,7 +347,6 @@ class CreatePostProp extends Component {
                                 </div>
                             </Fragment>
                         </div>
-                        <div>{this.displaySubmission()}</div>
                     </Card>
                 </div>
                 <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>

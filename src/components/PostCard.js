@@ -222,10 +222,10 @@ class PostCard extends Component {
                 </Card.Content>
                 <Card.Content extra onClick={this.openPostModal}>
                     {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
+                    {this.getPostAttribute("time_created")}
                     <PostDescriptionModal open={this.state.postModalOpen} onClose={this.closePostModal} postID={this.state.postID}/>
                 </Card.Content>
                 <Card.Content extra>
-                    <Card.Meta>{this.state.event.time_created}</Card.Meta>
                     <Card.Meta textAlign = 'center'>
                         {this.getPostAttribute("access")}
                     </Card.Meta>

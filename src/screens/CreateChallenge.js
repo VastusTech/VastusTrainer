@@ -351,7 +351,7 @@ class CreateChallengeProp extends Component {
                                     <Form.Field width={12}>
                                         <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
                                     </Form.Field>
-                                    <div>{this.displayError()}{this.createSuccessLabel()}</div>
+                                    <div>{this.displayError()}</div>
                                 </Form>
                             </Grid.Column>
                         </Grid.Row>

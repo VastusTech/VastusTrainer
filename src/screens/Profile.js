@@ -207,39 +207,10 @@ class Profile extends React.PureComponent {
 
     profilePicture() {
         if (this.props.user.profilePicture) {
-            let reactSwipeEl;
             return (
                 <div>
-                    <Modal closeIcon trigger={
-                        <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
-                        </div>}>
-                        <div>
-                            <ReactSwipe
-                                className="carousel"
-                                swipeOptions={{ continuous: false }}
-                                ref={el => (reactSwipeEl = el)}
-                            >
-                                {this.setURLS(this.props.user.profileImagePaths)}
-                                {this.imageGallery()}
-                                <div>
-                                    <Label size='massive' as="label" htmlFor="galleryUpload" circular className="u-bg--primaryGradient">
-                                        <Icon name="plus" className='u-margin-right--0' size="large" inverted/>
-                                    </Label>
-                                    Add new picture to gallery
-                                    <input type="file" accept="image/*" id="galleryUpload" hidden={true}
-                                           onChange={this.setGalleryPicture} onClick={this.setState({galleryNum: this.state.galleryURLS.length})}/>
-                                </div>
-                            </ReactSwipe>
-                            <Grid>
-                                <Grid.Column floated='left' width={2}>
-                                    <Button align="left" icon="caret left" primary onClick={() => reactSwipeEl.prev()}/>
-                                </Grid.Column>
-                                <Grid.Column floated='right' width={2}>
-                                    <Button align="right" icon="caret right" primary onClick={() => reactSwipeEl.next()}/>
-                                </Grid.Column>
-                            </Grid>
-                        </div>
-                    </Modal>
+                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
+                    </div>
                     <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
                         <Icon name="upload" className='u-margin-right--0' size="large" inverted />
                     </Label>
@@ -353,6 +324,7 @@ class Profile extends React.PureComponent {
             )
         }
 
+        let reactSwipeEl;
         //This displays some basic user information, a profile picture, buttons to modify some user related attributes,
         //and a switch to set the privacy for the user.
         return(
@@ -363,6 +335,36 @@ class Profile extends React.PureComponent {
                     <Card.Meta>Event Wins: {numChallengesWon(this.props.user.challengesWon)}</Card.Meta>
                     <List id = "profile buttons">
                         <Divider/>
+                        <List.Item>
+                            <Modal closeIcon trigger={<Button primary fluid size="large"><Icon name="picture" /> Photo Gallery</Button>}>
+                                <div>
+                                    <ReactSwipe
+                                        className="carousel"
+                                        swipeOptions={{ continuous: false }}
+                                        ref={el => (reactSwipeEl = el)}
+                                    >
+                                        {this.setURLS(this.props.user.profileImagePaths)}
+                                        {this.imageGallery()}
+                                        <div>
+                                            <Label size='massive' as="label" htmlFor="galleryUpload" circular className="u-bg--primaryGradient">
+                                                <Icon name="plus" className='u-margin-right--0' size="large" inverted/>
+                                            </Label>
+                                            Add new picture to gallery
+                                            <input type="file" accept="image/*" id="galleryUpload" hidden={true}
+                                                   onChange={this.setGalleryPicture} onClick={this.setState({galleryNum: this.state.galleryURLS.length})}/>
+                                        </div>
+                                    </ReactSwipe>
+                                    <Grid>
+                                        <Grid.Column floated='left' width={2}>
+                                            <Button align="left" icon="caret left" primary onClick={() => reactSwipeEl.prev()}/>
+                                        </Grid.Column>
+                                        <Grid.Column floated='right' width={2}>
+                                            <Button align="right" icon="caret right" primary onClick={() => reactSwipeEl.next()}/>
+                                        </Grid.Column>
+                                    </Grid>
+                                </div>
+                            </Modal>
+                        </List.Item>
                         <List.Item>
                             <Button primary fluid size="large" onClick={this.openPortalModal}><Icon name="world" /> Portal</Button>
                             <TrainerPortalModal trainerID={this.props.user.id} open={this.state.portalModalOpen} onClose={this.closePortalModal}/>

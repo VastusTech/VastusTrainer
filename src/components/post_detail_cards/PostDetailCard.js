@@ -248,11 +248,15 @@ class PostDetailCard extends Component {
         //console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card>
-                {this.getPostAttribute("description")}
-                <div>
+                <Card.Content>
+                    <Card.Description>
+                    {this.getPostAttribute("description")}
+                    </Card.Description>
                     {this.getDisplayMedia()}
-                </div>
-                {createCorrectButton(this.isOwned, this.handleDeletePostButton, this.state.isDeleteLoading)}
+                </Card.Content>
+                <Card.Content extra>
+                    {createCorrectButton(this.isOwned, this.handleDeletePostButton, this.state.isDeleteLoading)}
+                </Card.Content>
             </Card>
         );
     }
