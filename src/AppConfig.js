@@ -2,14 +2,14 @@ import Amplify from "aws-amplify";
 
 function setupAWS() {
     Amplify.configure({
-        'aws_appsync_authenticationType': 'AMAZON_COGNITO_USER_POOLS',
+        'aws_appsync_authenticationType': 'AWS_IAM',
     });
 // Storage.configure({ level: 'private' });
 
     Amplify.configure({
         API: {
-            graphql_endpoint: 'https://tb3ntbccxnevxoi7z5honbayca.appsync-api.us-east-1.amazonaws.com/graphql',
-            graphql_endpoint_iam_region: 'us-east-1'
+            graphql_endpoint: 'https://ferhxllitvaypgfmlu75ra22su.appsync-api.us-east-1.amazonaws.com/graphql',
+            graphql_endpoint_iam_region: 'us-east-1',
         },
         Auth: {
             // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID

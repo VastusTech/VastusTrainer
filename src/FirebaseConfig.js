@@ -1,13 +1,14 @@
 import firebase from "firebase";
 
 export default function configFirebase() {
+    // Initialize Firebase
     const config = {
-        apiKey: "AIzaSyC6jSlO2wclwzmMJbTmUz2iGjzGg6IkQfM",
-        authDomain: "testfirebaseproject-3c457.firebaseapp.com",
-        databaseURL: "https://testfirebaseproject-3c457.firebaseio.com",
-        projectId: "testfirebaseproject-3c457",
-        storageBucket: "testfirebaseproject-3c457.appspot.com",
-        messagingSenderId: "716504991782"
+        apiKey: "AIzaSyBqng9IIgG21Od6-M7hQorsXvuXvsOQIIM",
+        authDomain: "vastus-fit.firebaseapp.com",
+        databaseURL: "https://vastus-fit.firebaseio.com",
+        projectId: "vastus-fit",
+        storageBucket: "vastus-fit.appspot.com",
+        messagingSenderId: "308108761903"
     };
     firebase.initializeApp(config);
 }
