@@ -11,6 +11,7 @@ import ChallengeDetailCard from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
 import TrainerDetailCard from "./post_detail_cards/TrainerDetailCard";
+import {convertFromISO} from "../logic/TimeHelper";
 
 type Props = {
     postID: string
@@ -46,6 +47,7 @@ class PostCard extends Component {
         this.getDisplayMedia = this.getDisplayMedia.bind(this);
         this.getPostAttribute = this.getPostAttribute.bind(this);
         this.getCorrectDetailCard = this.getCorrectDetailCard.bind(this);
+        this.getOwnerName = this.getOwnerName.bind(this);
     }
 
     // componentDidMount() {
@@ -131,11 +133,20 @@ class PostCard extends Component {
 
     getOwnerName() {
         const owner = this.getPostAttribute("by");
-        //alert(owner);
-        if (owner) {
+        //alert(owner.substr(0, 2));
+        if (owner.substr(0, 2) === "CL") {
             if (this.props.cache.clients[owner]) {
                 //alert(JSON.stringify(this.props.cache.clients[owner]));
-                return this.props.cache.clients[owner].name
+                return this.props.cache.clients[owner].name;
+            }
+            // else if (!this.props.info.isLoading) {
+            //     this.props.fetchClient(owner, ["name"]);
+            // }
+        }
+        else if (owner.substr(0, 2) === "TR") {
+            if (this.props.cache.trainers[owner]) {
+                //alert(JSON.stringify(this.props.cache.clients[owner]));
+                return this.props.cache.trainers[owner].name;
             }
             // else if (!this.props.info.isLoading) {
             //     this.props.fetchClient(owner, ["name"]);
@@ -192,6 +203,9 @@ class PostCard extends Component {
                     //return (<InviteDetailCard displayMedia = {this.getDisplayMedia}/>);
                 }
                 else if (postType === "Post") {
+                    if(!this.state.postMessageSet) {
+                        this.setState({postMessage: "posted", postMessageSet: true});
+                    }
                     return (<PostDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "submission") {
@@ -226,7 +240,9 @@ class PostCard extends Component {
                 </Card.Content>
                 <Card.Content extra onClick={this.openPostModal}>
                     {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
-                    {this.getPostAttribute("time_created")}
+                    <div align="center">
+                        {convertFromISO(this.getPostAttribute("time_created")).substr(5, 12)}
+                    </div>
                     <PostDescriptionModal open={this.state.postModalOpen} onClose={this.closePostModal} postID={this.state.postID}/>
                 </Card.Content>
                 <Card.Content extra>
