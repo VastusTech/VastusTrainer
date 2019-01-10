@@ -166,7 +166,7 @@ class PostFeedProp extends Component {
                             //alert(JSON.stringify("")
                             this.props.fetchChallenge(data.items[i].about, ["title", "endTime", "tags", "time_created", "capacity", "members"]);
                             this.props.fetchClient(data.items[i].about, ["id", "profileImagePath", "name"]);
-                            this.props.fetchPost(data.items[i].about, ["about", "by", "description", "picturePaths", "videoPaths"]);
+                            this.props.fetchPost(data.items[i].about, ["time_created", "about", "by", "description", "picturePaths", "videoPaths"]);
                             newlyQueriedPosts.push(post);
                         }
                         // console.error(JSON.stringify(this.state.posts) + "\n" + JSON.stringify(newlyQueriedPosts));

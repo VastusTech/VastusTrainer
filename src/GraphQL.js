@@ -7,8 +7,8 @@ class GraphQL {
     // Gives back function with parameters (id, variablesList, successHandler, failureHandler)
     static getGetByIDFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClient, GraphQL.getTrainer, GraphQL.getGym, GraphQL.getWorkout, GraphQL.getReview,
-            GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getPost, GraphQL.getInvite, GraphQL.getGroup, GraphQL.getComment,
-            GraphQL.getSponsor, "GraphQL get Fetch function function not implemented");
+            GraphQL.getEvent, GraphQL.getChallenge, GraphQL.getInvite, GraphQL.getPost, GraphQL.getGroup, GraphQL.getComment,
+            GraphQL.getSponsor, GraphQL.getMessage, "GraphQL get Fetch function function not implemented");
     }
     // Gives back function with parameters (username, variablesList, successHandler, failureHandler)
     static getGetByUsernameFunction(itemType) {
@@ -23,14 +23,14 @@ class GraphQL {
     // Gives back function with parameters (ids, variablesList, successHandler, failureHandler)
     static getBatchGetFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.getClients, GraphQL.getTrainers, GraphQL.getGyms, GraphQL.getWorkouts,
-            GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getPosts, GraphQL.getInvites,
+            GraphQL.getReviews, GraphQL.getEvents, GraphQL.getChallenges, GraphQL.getInvites, GraphQL.getPosts,
             GraphQL.getGroups, GraphQL.getComments, GraphQL.getSponsors, GraphQL.getMessages, "GraphQL get Batch Fetch function function not implemented");
     }
     // Gives back function with parameters (variablesList, filter, limit, nextToken)
     static getConstructQueryFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.constructClientQuery, GraphQL.constructTrainerQuery, GraphQL.constructGymQuery,
             GraphQL.constructWorkoutQuery, GraphQL.constructReviewQuery, GraphQL.constructEventQuery, GraphQL.constructChallengeQuery,
-            GraphQL.constructPostQuery, GraphQL.constructInviteQuery, GraphQL.constructGroupQuery, GraphQL.constructCommentQuery,
+            GraphQL.constructInviteQuery, GraphQL.constructPostQuery, GraphQL.constructGroupQuery, GraphQL.constructCommentQuery,
             GraphQL.constructSponsorQuery, GraphQL.constructMessageQuery, "GraphQL get construct Query function not implemented");
     }
     // static getOldQueryFunction(itemType) {
@@ -41,7 +41,7 @@ class GraphQL {
     // Gives back function with parameters (queryString, successHandler, failureHandler)
     static getQueryFunction(itemType) {
         return switchReturnItemType(itemType, GraphQL.queryClients, GraphQL.queryTrainers, GraphQL.queryGyms, GraphQL.queryWorkouts,
-            GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryPosts, GraphQL.queryInvites,
+            GraphQL.queryReviews, GraphQL.queryEvents, GraphQL.queryChallenges, GraphQL.queryInvites, GraphQL.queryPosts,
             GraphQL.queryGroups, GraphQL.queryComments, GraphQL.querySponsors, GraphQL.queryMessages, "GraphQL get Query function function not implemented for type");
     }
     static getItem(itemType, id, variablesList, successHandler, failureHandler) {
@@ -508,6 +508,52 @@ class GraphQL {
         return {
             query: query,
             variables: finalInputVariables
+        };
+    }
+    static getNextTokenString(nextToken) { return nextToken ? nextToken : "null"; }
+    static getNormalizedQuery(query) {
+        return {
+            ...query,
+            variables: {
+                ...query.variables,
+                nextToken: "not_defined"
+            }
+        };
+    }
+    static getQueryFromNormalizedQuery(normalizedQuery, nextToken) {
+        return {
+            ...normalizedQuery,
+            variables: {
+                ...normalizedQuery.variables,
+                nextToken
+            }
+        };
+    }
+    static getCompressedFromQueryResult(queryResult) {
+        const items = queryResult.items;
+        const ids = [];
+        if (items) {
+            for (let i = 0; i < items.length; i++) {
+                ids.push(items[i].id);
+            }
+        }
+        return {
+            ids,
+            nextToken: queryResult.nextToken
+        };
+    }
+    static getQueryResultFromCompressed(compressedResult, itemTypeCache) {
+        const ids = compressedResult.ids;
+        const items = [];
+        for (let i = 0; i < ids.length; i++) {
+            const item = itemTypeCache[ids[i]];
+            if (item) {
+                items.push(item);
+            }
+        }
+        return {
+            items,
+            nextToken: compressedResult.nextToken
         };
     }
     static execute(query, queryFunctionName, successHandler, failureHandler, queryCache, putQuery) {

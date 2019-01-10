@@ -68,7 +68,7 @@ export function performAllQueries(searchQuery, dispatch, getStore, dataHandler) 
         }
     }
     else {
-
+        // TODO What to do if we trying to do this? Set is not loading?
     }
 }
 function performQuery(itemType, dispatch, getStore, successHandler, failureHandler) {
@@ -84,9 +84,15 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
         const limit = typeQuery.limit;
         const nextToken = typeQuery.nextToken;
         const ifFirst = typeQuery.ifFirst;
+        console.log("nextToken = " + nextToken);
         if (nextToken || ifFirst) {
             const putItemFunction = getPutItemFunction(itemType);
-            getFetchQueryFunction(itemType)(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+            const fetchQueryFunction = getFetchQueryFunction(itemType);
+            // alert(JSON.stringify(getFetchQueryFunction));
+            // if (!fetchQueryFunction) { alert("problem"); }
+            // else { alert(JSON.stringify(fetchQueryFunction)); }
+            fetchQueryFunction(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
+                // alert("Ay lmao it came back");
                 if (data) {
                     dispatch(setTypeNextToken(itemType, data.nextToken));
                     successHandler(data);
@@ -101,19 +107,7 @@ function performQuery(itemType, dispatch, getStore, successHandler, failureHandl
                 }
             }, (error) => {
                 if (failureHandler) { failureHandler(error); }
-            });
-            // QL.getOldQueryFunction(itemType)(variableList, QL.generateFilter(filterJSON, filterParameters), limit, nextToken, (data) => {
-            //     dispatch(setTypeNextToken(itemType, nextToken));
-            //     successHandler(data);
-            //     if (data && data.items) {
-            //         for (let i = 0; i < data.items.length; i++) {
-            //             dispatch(putItemFunction(data.items[i]));
-            //         }
-            //     }
-            // }, (error) => {
-            //     dispatch(setError(error));
-            //     failureHandler();
-            // }, getQueryCache(itemType, getStore), getPutQueryFunction(itemType, getStore));
+            })(dispatch, getStore);
         }
         else {
             successHandler({items: [], nextToken: null});
