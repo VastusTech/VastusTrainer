@@ -4,13 +4,14 @@ import PostDescriptionModal from './PostDescriptionModal';
 import {Player} from "video-react";
 import { connect } from 'react-redux';
 import { fetchPost, fetchChallenge} from "../redux_helpers/actions/cacheActions";
-import { convertFromISO } from "../logic/TimeHelper";
 import ItemType from "../logic/ItemType";
 import { Storage } from "aws-amplify";
 import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
 import ChallengeDetailCard from "./post_detail_cards/ChallengeDetailCard";
 import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
+import TrainerDetailCard from "./post_detail_cards/TrainerDetailCard";
+import {convertFromISO} from "../logic/TimeHelper";
 
 type Props = {
     postID: string
@@ -46,6 +47,7 @@ class PostCard extends Component {
         this.getDisplayMedia = this.getDisplayMedia.bind(this);
         this.getPostAttribute = this.getPostAttribute.bind(this);
         this.getCorrectDetailCard = this.getCorrectDetailCard.bind(this);
+        this.getOwnerName = this.getOwnerName.bind(this);
     }
 
     // componentDidMount() {
@@ -131,11 +133,20 @@ class PostCard extends Component {
 
     getOwnerName() {
         const owner = this.getPostAttribute("by");
-        //alert(owner);
-        if (owner) {
+        //alert(owner.substr(0, 2));
+        if (owner.substr(0, 2) === "CL") {
             if (this.props.cache.clients[owner]) {
                 //alert(JSON.stringify(this.props.cache.clients[owner]));
-                return this.props.cache.clients[owner].name
+                return this.props.cache.clients[owner].name;
+            }
+            // else if (!this.props.info.isLoading) {
+            //     this.props.fetchClient(owner, ["name"]);
+            // }
+        }
+        else if (owner.substr(0, 2) === "TR") {
+            if (this.props.cache.trainers[owner]) {
+                //alert(JSON.stringify(this.props.cache.clients[owner]));
+                return this.props.cache.trainers[owner].name;
             }
             // else if (!this.props.info.isLoading) {
             //     this.props.fetchClient(owner, ["name"]);
@@ -157,14 +168,18 @@ class PostCard extends Component {
             if (postType) {
                 //alert("Post Type: " + postType);
                 // TODO Switch the post types
-                if (itemType === "Client") {
+                if (postType === "Client") {
+                    //alert("Client Share Post Spotted!");
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a user profile", postMessageSet: true});
                     }
-                    return (<ClientDetailCard postID={this.props.postID}/>);
+                    return (<ClientDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "Trainer") {
-                    //return (<TrainerDetailCard displayMedia = {this.getDisplayMedia}/>);
+                    if(!this.state.postMessageSet) {
+                        this.setState({postMessage: "shared a trainer profile", postMessageSet: true});
+                    }
+                    return (<TrainerDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "Gym") {
                     //return (<GymDetailCard displayMedia = {this.getDisplayMedia}/>);
@@ -182,21 +197,27 @@ class PostCard extends Component {
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a challenge", postMessageSet: true});
                     }
-                    return (<ChallengeDetailCard postID={this.props.postID}/>);
+                    return (<ChallengeDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "Invite") {
                     //return (<InviteDetailCard displayMedia = {this.getDisplayMedia}/>);
                 }
                 else if (postType === "Post") {
-                    return (<PostDetailCard postID={this.props.postID}/>);
+                    if(!this.state.postMessageSet) {
+                        this.setState({postMessage: "posted", postMessageSet: true});
+                    }
+                    return (<PostDetailCard postID={this.state.postID}/>);
                 }
                 else if (postType === "submission") {
-                    return (<SubmissionDetailCard postID={this.props.postID}/>);
+                    return (<SubmissionDetailCard postID={this.state.postID}/>);
                 }
             }
         }
         else if(itemType) {
             //alert("Item Type: " + itemType);
+            if(!this.state.postMessageSet) {
+                this.setState({postMessage: "posted", postMessageSet: true});
+            }
             return (<PostDetailCard postID={this.state.postID}/>);
         }
         return (<div/>);
@@ -222,10 +243,12 @@ class PostCard extends Component {
                 </Card.Content>
                 <Card.Content extra onClick={this.openPostModal}>
                     {/*<Card.Meta textAlign = 'center'>{this.getPostAttribute("description")}</Card.Meta>*/}
+                    <div align="center">
+                        {convertFromISO(this.getPostAttribute("time_created")).substr(5, 12)}
+                    </div>
                     <PostDescriptionModal open={this.state.postModalOpen} onClose={this.closePostModal} postID={this.state.postID}/>
                 </Card.Content>
                 <Card.Content extra>
-                    <Card.Meta>{this.state.event.time_created}</Card.Meta>
                     <Card.Meta textAlign = 'center'>
                         {this.getPostAttribute("access")}
                     </Card.Meta>
