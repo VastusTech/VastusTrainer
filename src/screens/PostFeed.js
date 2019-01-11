@@ -13,6 +13,7 @@ import {
     fetchChallenge,
     putChallenge,
     fetchClient,
+    fetchTrainer,
     fetchPostQuery
 } from "../redux_helpers/actions/cacheActions";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
@@ -203,6 +204,7 @@ class PostFeedProp extends Component {
                             //alert(JSON.stringify("")
                             this.props.fetchChallenge(data.items[i].about, ["title", "endTime", "tags", "time_created", "capacity", "members"]);
                             this.props.fetchClient(data.items[i].about, ["id", "profileImagePath", "name"]);
+                            this.props.fetchTrainer(data.items[i].about, ["id", "profileImagePath", "name"]);
                             this.props.fetchPost(data.items[i].about, ["about", "by", "description", "picturePaths", "videoPaths"]);
                             newlyQueriedPosts.push(post);
                         }
@@ -306,6 +308,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchClient: (variablesList, dataHandler) => {
             dispatch(fetchClient(variablesList, dataHandler));
+        },
+        fetchTrainer: (variablesList, dataHandler) => {
+            dispatch(fetchTrainer(variablesList, dataHandler));
         },
         fetchPost: (id, variablesList) => {
             dispatch(fetchPost(id, variablesList));
