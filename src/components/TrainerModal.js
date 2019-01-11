@@ -277,8 +277,6 @@ class TrainerModal extends React.PureComponent<Props> {
                     <Card.Content textAlign="center">
                         {this.profilePicture()}
                         <Card.Header as="h2" style={{"margin": "12px 0 0"}}>{this.getTrainerAttribute("name")}</Card.Header>
-                        <Card.Meta>Age: {calculateAge(this.getTrainerAttribute("birthday"))}</Card.Meta>
-                        <Card.Meta>Event Wins: {this.getTrainerAttribute("challengesWonLength")}</Card.Meta>
                         <List id = "profile buttons">
                             <List.Item>
                                 <Button primary fluid size="large" onClick={this.openOwnedModal.bind(this)}><Icon name="trophy" /> Current Challenges</Button>
