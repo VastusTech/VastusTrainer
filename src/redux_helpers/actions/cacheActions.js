@@ -150,7 +150,7 @@ function fetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, d
 function forceFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
-        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, dispatch, failureHandler, getStore);
+        overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore);
     };
 }
 function overwriteFetch(id, variablesList, cacheSet, QLFunctionName, fetchDispatchType, dataHandler, failureHandler, dispatch, getStore) {
