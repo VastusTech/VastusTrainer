@@ -15,6 +15,20 @@ const FETCH_COMMENT = 'FETCH_COMMENT';
 const FETCH_SPONSOR = 'FETCH_SPONSOR';
 const FETCH_MESSAGE = 'FETCH_MESSAGE';
 
+const REMOVE_CLIENT =    'REMOVE_CLIENT';
+const REMOVE_TRAINER =   'REMOVE_TRAINER';
+const REMOVE_GYM =       'REMOVE_GYM';
+const REMOVE_WORKOUT =   'REMOVE_WORKOUT';
+const REMOVE_REVIEW =    'REMOVE_REVIEW';
+const REMOVE_EVENT =     'REMOVE_EVENT';
+const REMOVE_CHALLENGE = 'REMOVE_CHALLENGE';
+const REMOVE_INVITE =    'REMOVE_INVITE';
+const REMOVE_POST =      'REMOVE_POST';
+const REMOVE_GROUP =     'REMOVE_GROUP';
+const REMOVE_COMMENT =   'REMOVE_COMMENT';
+const REMOVE_SPONSOR =   'REMOVE_SPONSOR';
+const REMOVE_MESSAGE =   'REMOVE_MESSAGE';
+
 const FETCH_CLIENT_QUERY = 'FETCH_CLIENT_QUERY';
 const FETCH_TRAINER_QUERY = 'FETCH_TRAINER_QUERY';
 const FETCH_GYM_QUERY = 'FETCH_GYM_QUERY';
@@ -28,6 +42,20 @@ const FETCH_GROUP_QUERY = 'FETCH_GROUP_QUERY';
 const FETCH_COMMENT_QUERY = 'FETCH_COMMENT_QUERY';
 const FETCH_SPONSOR_QUERY = 'FETCH_SPONSOR_QUERY';
 const FETCH_MESSAGE_QUERY = 'FETCH_MESSAGE_QUERY';
+
+const CLEAR_NORMALIZED_CLIENT_QUERY =    'CLEAR_NORMALIZED_CLIENT_QUERY';
+const CLEAR_NORMALIZED_TRAINER_QUERY =   'CLEAR_NORMALIZED_TRAINER_QUERY';
+const CLEAR_NORMALIZED_GYM_QUERY =       'CLEAR_NORMALIZED_GYM_QUERY';
+const CLEAR_NORMALIZED_WORKOUT_QUERY =   'CLEAR_NORMALIZED_WORKOUT_QUERY';
+const CLEAR_NORMALIZED_REVIEW_QUERY =    'CLEAR_NORMALIZED_REVIEW_QUERY';
+const CLEAR_NORMALIZED_EVENT_QUERY =     'CLEAR_NORMALIZED_EVENT_QUERY';
+const CLEAR_NORMALIZED_CHALLENGE_QUERY = 'CLEAR_NORMALIZED_CHALLENGE_QUERY';
+const CLEAR_NORMALIZED_INVITE_QUERY =    'CLEAR_NORMALIZED_INVITE_QUERY';
+const CLEAR_NORMALIZED_POST_QUERY =      'CLEAR_NORMALIZED_POST_QUERY';
+const CLEAR_NORMALIZED_GROUP_QUERY =     'CLEAR_NORMALIZED_GROUP_QUERY';
+const CLEAR_NORMALIZED_COMMENT_QUERY =   'CLEAR_NORMALIZED_COMMENT_QUERY';
+const CLEAR_NORMALIZED_SPONSOR_QUERY =   'CLEAR_NORMALIZED_SPONSOR_QUERY';
+const CLEAR_NORMALIZED_MESSAGE_QUERY =   'CLEAR_NORMALIZED_MESSAGE_QUERY';
 
 const CLEAR_CLIENT_QUERY = 'CLEAR_CLIENT_QUERY';
 const CLEAR_TRAINER_QUERY = 'CLEAR_TRAINER_QUERY';
@@ -59,19 +87,19 @@ const sponsorCacheSize = 100;
 const messageCacheSize = 10000;
 
 // TODO The query cache sizes might be important if the user is searching for a lot
-const clientQueryCacheSize = 0;
-const trainerQueryCacheSize = 0;
-const gymQueryCacheSize = 0;
-const workoutQueryCacheSize = 0;
-const reviewQueryCacheSize = 0;
+const clientQueryCacheSize = 5;
+const trainerQueryCacheSize = 5;
+const gymQueryCacheSize = 5;
+const workoutQueryCacheSize = 5;
+const reviewQueryCacheSize = 5;
 const eventQueryCacheSize = 10;
-const challengeQueryCacheSize = 0;
-const inviteQueryCacheSize = 0;
-const postQueryCacheSize = 0;
-const groupQueryCacheSize = 0;
-const commentQueryCacheSize = 0;
-const sponsorQueryCacheSize = 0;
-const messageQueryCacheSize = 0;
+const challengeQueryCacheSize = 5;
+const inviteQueryCacheSize = 5;
+const postQueryCacheSize = 5;
+const groupQueryCacheSize = 5;
+const commentQueryCacheSize = 5;
+const sponsorQueryCacheSize = 5;
+const messageQueryCacheSize = 5;
 
 const initialState = {
     // ID --> DatabaseObject
@@ -181,123 +209,162 @@ export default (state = initialState, action) => {
         case FETCH_MESSAGE:
             state = addObjectToCache(state, "messages", messageCacheSize, "messageLRUHandler", action.payload);
             break;
+        case REMOVE_CLIENT:
+            state = removeItem(state, "clients", action.payload);
+            break;
+        case REMOVE_TRAINER:
+            state = removeItem(state, "trainers", action.payload);
+            break;
+        case REMOVE_GYM:
+            state = removeItem(state, "gyms", action.payload);
+            break;
+        case REMOVE_WORKOUT:
+            state = removeItem(state, "workouts", action.payload);
+            break;
+        case REMOVE_REVIEW:
+            state = removeItem(state, "reviews", action.payload);
+            break;
+        case REMOVE_EVENT:
+            state = removeItem(state, "events", action.payload);
+            break;
+        case REMOVE_CHALLENGE:
+            state = removeItem(state, "challenges", action.payload);
+            break;
+        case REMOVE_INVITE:
+            state = removeItem(state, "invites", action.payload);
+            break;
+        case REMOVE_POST:
+            state = removeItem(state, "posts", action.payload);
+            break;
+        case REMOVE_GROUP:
+            state = removeItem(state, "groups", action.payload);
+            break;
+        case REMOVE_COMMENT:
+            state = removeItem(state, "comments", action.payload);
+            break;
+        case REMOVE_SPONSOR:
+            state = removeItem(state, "sponsors", action.payload);
+            break;
+        case REMOVE_MESSAGE:
+            state = removeItem(state, "messages", action.payload);
+            break;
             // Connected these to LRU Handlers... important especially as we scale
         case FETCH_CLIENT_QUERY:
-            state = addObjectToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "clientQueries", clientQueryCacheSize, "clientQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_TRAINER_QUERY:
-            state = addObjectToCache(state, "trainerQueries", trainerQueryCacheSize, "trainerQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "trainerQueries", trainerQueryCacheSize, "trainerQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_GYM_QUERY:
-            state = addObjectToCache(state, "gymQueries", gymQueryCacheSize, "gymQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "gymQueries", gymQueryCacheSize, "gymQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_WORKOUT_QUERY:
-            state = addObjectToCache(state, "workoutQueries", workoutQueryCacheSize, "workoutQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "workoutQueries", workoutQueryCacheSize, "workoutQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_REVIEW_QUERY:
-            state = addObjectToCache(state, "reviewQueries", reviewQueryCacheSize, "reviewQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "reviewQueries", reviewQueryCacheSize, "reviewQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_EVENT_QUERY:
-            state = addObjectToCache(state, "eventQueries", eventQueryCacheSize, "eventQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "eventQueries", eventQueryCacheSize, "eventQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_CHALLENGE_QUERY:
-            state = addObjectToCache(state, "challengeQueries", challengeQueryCacheSize, "challengeQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "challengeQueries", challengeQueryCacheSize, "challengeQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_INVITE_QUERY:
-            state = addObjectToCache(state, "inviteQueries", inviteQueryCacheSize, "inviteQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "inviteQueries", inviteQueryCacheSize, "inviteQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_POST_QUERY:
-            state = addObjectToCache(state, "postQueries", postQueryCacheSize, "postQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "postQueries", postQueryCacheSize, "postQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_GROUP_QUERY:
-            state = addObjectToCache(state, "groupQueries", groupQueryCacheSize, "groupQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "groupQueries", groupQueryCacheSize, "groupQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_COMMENT_QUERY:
-            state = addObjectToCache(state, "commentQueries", commentQueryCacheSize, "commentQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "commentQueries", commentQueryCacheSize, "commentQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_SPONSOR_QUERY:
-            state = addObjectToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "sponsorQueries", sponsorQueryCacheSize, "sponsorQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
             break;
         case FETCH_MESSAGE_QUERY:
-            state = addObjectToCache(state, "messageQueries", messageQueryCacheSize, "messageQueryLRUHandler", {id: action.payload.queryString, data: action.payload.queryResult});
+            state = addQueryToCache(state, "messageQueries", messageQueryCacheSize, "messageQueryLRUHandler", action.payload.normalizedQueryString, action.payload.nextToken, action.payload.queryResult);
+            break;
+        case CLEAR_NORMALIZED_CLIENT_QUERY:
+            state = clearNormalizedCache(state, "clientQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_TRAINER_QUERY:
+            state = clearNormalizedCache(state, "trainerQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_GYM_QUERY:
+            state = clearNormalizedCache(state, "gymQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_WORKOUT_QUERY:
+            state = clearNormalizedCache(state, "workoutQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_REVIEW_QUERY:
+            state = clearNormalizedCache(state, "reviewQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_EVENT_QUERY:
+            state = clearNormalizedCache(state, "eventQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_CHALLENGE_QUERY:
+            state = clearNormalizedCache(state, "challengeQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_INVITE_QUERY:
+            state = clearNormalizedCache(state, "inviteQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_POST_QUERY:
+            state = clearNormalizedCache(state, "postQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_GROUP_QUERY:
+            state = clearNormalizedCache(state, "groupQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_COMMENT_QUERY:
+            state = clearNormalizedCache(state, "commentQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_SPONSOR_QUERY:
+            state = clearNormalizedCache(state, "sponsorQueries", action.payload);
+            break;
+        case CLEAR_NORMALIZED_MESSAGE_QUERY:
+            state = clearNormalizedCache(state, "messageQueries", action.payload);
             break;
         case CLEAR_CLIENT_QUERY:
-            state = {
-                ...state,
-                clientQueries: {}
-            };
+            state = clearCache(state, "clientQueries");
             break;
         case CLEAR_TRAINER_QUERY:
-            state = {
-                ...state,
-                trainerQueries: {}
-            };
+            state = clearCache(state, "trainerQueries");
             break;
         case CLEAR_GYM_QUERY:
-            state = {
-                ...state,
-                gymQueries: {}
-            };
+            state = clearCache(state, "gymQueries");
             break;
         case CLEAR_WORKOUT_QUERY:
-            state = {
-                ...state,
-                workoutQueries: {}
-            };
-            break;
-        case CLEAR_EVENT_QUERY:
-            state = {
-                ...state,
-                eventQueries: {}
-            };
-            break;
-        case CLEAR_CHALLENGE_QUERY:
-            state = {
-                ...state,
-                challengeQueries: {}
-            };
-            break;
-        case CLEAR_INVITE_QUERY:
-            state = {
-                ...state,
-                inviteQueries: {}
-            };
+            state = clearCache(state, "workoutQueries");
             break;
         case CLEAR_REVIEW_QUERY:
-            state = {
-                ...state,
-                reviewQueries: {}
-            };
+            state = clearCache(state, "reviewQueries");
+            break;
+        case CLEAR_EVENT_QUERY:
+            state = clearCache(state, "eventQueries");
+            break;
+        case CLEAR_CHALLENGE_QUERY:
+            state = clearCache(state, "challengeQueries");
+            break;
+        case CLEAR_INVITE_QUERY:
+            state = clearCache(state, "inviteQueries");
             break;
         case CLEAR_POST_QUERY:
-            state = {
-                ...state,
-                postQueries: {}
-            };
+            state = clearCache(state, "postQueries");
             break;
         case CLEAR_GROUP_QUERY:
-            state = {
-                ...state,
-                groupQueries: {}
-            };
+            state = clearCache(state, "groupQueries");
             break;
         case CLEAR_COMMENT_QUERY:
-            state = {
-                ...state,
-                commentQueries: {}
-            };
+            state = clearCache(state, "commentQueries");
             break;
         case CLEAR_SPONSOR_QUERY:
-            state = {
-                ...state,
-                sponsorQueries: {}
-            };
+            state = clearCache(state, "sponsorQueries");
             break;
         case CLEAR_MESSAGE_QUERY:
-            state = {
-                ...state,
-                messageQueries: {}
-            };
+            state = clearCache(state, "messageQueries");
             break;
         default:
             state = {
@@ -308,49 +375,103 @@ export default (state = initialState, action) => {
     return state;
 };
 
+function addQueryToCache(state, cacheName, maxCacheSize, LRUHandlerName, normalizedQueryString, nextToken, queryResult) {
+    state = {
+        ...state
+    };
+    if (!state[cacheName][normalizedQueryString]) {
+        state[cacheName][normalizedQueryString] = {};
+    }
+    if (!state[cacheName][normalizedQueryString][nextToken]) {
+        // It's not in the cache yet
+        const cache = state[cacheName][normalizedQueryString];
+        const LRUHandler = state[LRUHandlerName];
+        LRUHandler.unshift({normalizedQueryString, nextToken});
+        cache[nextToken] = queryResult;
+        if (LRUHandler.length >= maxCacheSize) {
+            // Then we have to pop something out
+            const entry = LRUHandler.pop();
+            delete state[cacheName][entry.normalizedQueryString][entry.nextToken];
+        }
+        return state;
+    }
+    else {
+        // Update the object
+        let LRUHandler = state[LRUHandlerName];
+        let addingEntry = {normalizedQueryString, nextToken};
+        let index = -1;
+        for (let i = 0; i < LRUHandler.length; i++) {
+            const entry = LRUHandler[i];
+            if (entry.normalizedQueryString === normalizedQueryString && entry.nextToken === nextToken) {
+                index = i;
+                break;
+            }
+        }
+        if (index > -1) {
+            LRUHandler.splice(index, 1);
+        }
+        LRUHandler.unshift(addingEntry);
+        // Then we update the object with the additional fields that it may have (if this came from the other function)
+        state[cacheName][normalizedQueryString][nextToken] = queryResult;
+        return state;
+    }
+}
 function addObjectToCache(state, cacheName, maxCacheSize, LRUHandlerName, object) {
     // TODO Check to see that this is all well-formed?
     if (!object.id) {
-        console.log("Adding object to cache does not include the id!!!");
+        console.error("Adding object to cache does not include the id!!!");
     }
+    state = {
+        ...state
+    };
     if (!state[cacheName][object.id]) {
-        state = {
-            ...state
-        };
-        const cache = { ...state[cacheName] };
-        const LRUHandler = [ ...state[LRUHandlerName] ];
+        const cache = state[cacheName];
+        const LRUHandler = state[LRUHandlerName];
         LRUHandler.unshift(object.id);
         cache[object.id] = object.data;
-        // TODO If the ID is not already in the cache
         if (LRUHandler.length >= maxCacheSize) {
             // Then we have to pop something out
             delete cache[LRUHandler.pop()];
         }
-        state[cacheName] = cache;
-        state[LRUHandlerName] = LRUHandler;
         return state;
     }
     else {
-        // TODO Update the object
-        return updateReadObject(state, cacheName, LRUHandlerName, object);
+        // Update the object
+        let LRUHandler = state[LRUHandlerName];
+        let index = LRUHandler.indexOf(object.id);
+        if (index > -1) {
+            LRUHandler.splice(index, 1);
+        }
+        LRUHandler.unshift(object.id);
+        // Then we update the object with the additional fields that it may have (if this came from the other function)
+        state[cacheName][object.id] = {
+            ...state[cacheName][object.id],
+            ...object.data
+        };
+        return state;
     }
 }
-
-function updateReadObject(state, cacheName, LRUHandlerName, object) {
-    state = {
-        ...state
+function removeItem(state, cacheName, id) {
+    return {
+        ...state,
+        [cacheName]: {
+            ...state[cacheName],
+            [id]: null
+        }
     };
-    let LRUHandler = [...state[LRUHandlerName]];
-    let index = LRUHandler.indexOf(object.id);
-    if (index > -1) {
-        LRUHandler.splice(index, 1);
+}
+function clearCache(state, cacheName) {
+    return {
+        ...state,
+        [cacheName]: {}
     }
-    LRUHandler.unshift(object.id);
-    state[LRUHandlerName] = LRUHandler;
-    // Then we update the object with the additional fields that it may have (if this came from the other function)
-    state[cacheName][object.id] = {
-        ...state[cacheName][object.id],
-        ...object.data
-    };
-    return state;
+}
+function clearNormalizedCache(state, cacheName, normalizedQuery) {
+    return {
+        ...state,
+        [cacheName]: {
+            ...state[cacheName],
+            [normalizedQuery]: {}
+        }
+    }
 }

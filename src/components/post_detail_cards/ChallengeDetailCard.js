@@ -360,7 +360,7 @@ class ChallengeDetailCard extends Component {
         //console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Card fluid>
-                {this.getPostAttribute("by")}
+                {/*this.getPostAttribute("by")*/}
                 {/*<Card.Header>
                     <Button className="u-button--flat" onClick={ () => {this.openClientModal()}}>
                         <Grid style={{marginLeft: '10px', marginTop: '10px'}}>

@@ -282,13 +282,13 @@ class PostCard extends Component {
 
     openClientModal = () => {
         if (!this.state.clientModalOpen) {
-            this.setState({clientModalOpen: true})
+            this.setState({clientModalOpen: true});
             this.props.fetchClient(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
         };
     }
     closeClientModal = () => {
         console.log("Closing client modal");
-        this.setState({clientModalOpen: false})
+        this.setState({clientModalOpen: false});
     };
 
 
