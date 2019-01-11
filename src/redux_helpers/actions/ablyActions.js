@@ -26,6 +26,19 @@ export function addHandlerToNotifications(handler) {
         dispatch(setIsNotLoading());
     };
 }
+export function removeAllHandlers() {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        const subscribedChannels = getStore().ably.subscribedChannels;
+        for (const key in subscribedChannels) {
+            if (subscribedChannels.hasOwnProperty(key)) {
+                Ably.channels.get(key).unsubscribe();
+            }
+        }
+        dispatch(clearChannels());
+        dispatch(setIsNotLoading());
+    };
+}
 function subscribeToChannelOnlyOnce(channelName, dispatch, getStore) {
     if (!getStore().ably.subscribedChannels[channelName]) {
         subscribeToChannel(channelName, dispatch, getStore);
@@ -34,14 +47,18 @@ function subscribeToChannelOnlyOnce(channelName, dispatch, getStore) {
 function subscribeToChannel(channelName, dispatch, getStore) {
     /*global Ably*/
     const channel = Ably.channels.get(channelName);
-    channel.subscribe(getMessageHandler(channelName, getStore));
-    channel.attach();
-    channel.once("attached", () => {
-        alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
+    channel.subscribe(getMessageHandler(channelName, getStore), (err) => {
+        if (err) {
+            alert("Failed to subscribe to the channel. Error = " + JSON.stringify(err));
+        }
+        else {
+            alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
+        }
     });
 }
 function getMessageHandler(channelName, getStore) {
     return (message) => {
+        console.log("RECEIVED ABLY MESSAGE = " + JSON.stringify(message));
         const handlers = getStore().ably.notificationHandlers[channelName];
         if (handlers && handlers.length > 0) {
             for (let i = 0; i < handlers.length; i++) {
@@ -59,7 +76,7 @@ function addHandler(channel, handler) {
         }
     };
 }
-function clearChannel() {
+function clearChannels() {
     return { type: CLEAR_CHANNELS };
 }
 
