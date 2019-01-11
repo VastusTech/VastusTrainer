@@ -125,7 +125,7 @@ class PostManager extends Component {
             <Modal trigger={<Button primary fluid><Icon name='plus'/> Create Post</Button>} closeIcon>
                 <Modal.Header>Post Manager</Modal.Header>
                 <Modal.Content>
-                    <Tab menu={{attached: "top", widths: 3, size: "small", inverted: true}} panes={
+                    {/*<Tab menu={{attached: "top", widths: 3, size: "small", inverted: true}} panes={
                         [
                             {
                                 menuItem:
@@ -134,10 +134,10 @@ class PostManager extends Component {
                                     </Menu.Item>),
                                 render: () =>
                                     <Tab.Pane basic attached={false}>
-                                        <CreateChallengeProp queryChallenges={this.props.queryChallenges} queryPosts={this.props.queryPosts}/>
+
                                     </Tab.Pane>
                             },
-                            {
+                            /*{
                                 menuItem: (
                                     <Menu.Item key={1}>
                                         Make Post
@@ -145,9 +145,10 @@ class PostManager extends Component {
                                 render: () => <Tab.Pane basic attached={false}>
                                     <CreatePostProp queryPosts={this.props.queryPosts}/>
                                 </Tab.Pane>
-                            },
+                            },*//*
                         ]
-                    }/>
+                    }/>*/}
+                    <CreateChallengeProp queryChallenges={this.props.queryChallenges} queryPosts={this.props.queryPosts}/>
                 </Modal.Content>
             </Modal>);
     }

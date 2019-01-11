@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {setError} from "../redux_helpers/actions/infoActions";
 import {clearChallengeQuery, fetchChallenge, putChallenge, putChallengeQuery} from "../redux_helpers/actions/cacheActions";
 import ChallengeFunctions from "../databaseFunctions/ChallengeFunctions";
+import PostFunctions from "../databaseFunctions/PostFunctions";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
@@ -123,7 +124,7 @@ class CreateChallengeProp extends Component {
     handleTag(tag) {
         if(tag === "HIIT" && !this.state.hiitPressed) {
             this.setState({tags: this.state.tags.concat(tag)},
-            () => console.log(JSON.stringify(this.state.tags)));
+                () => console.log(JSON.stringify(this.state.tags)));
             this.setState({hiitPressed: true});
         }
         else if(tag === "Performance" && !this.state.performancePressed) {
@@ -192,9 +193,17 @@ class CreateChallengeProp extends Component {
                     this.eventState.title, this.eventState.goal, "n/a",
                     "3", [], this.state.tags, this.eventState.access, this.state.restriction, this.eventState.prize, (data) => {
                         console.log("Successfully created a challenge!");
+                        //alert(data.data);
+                        PostFunctions.createNewChallengePost(this.props.user.id, this.props.user.id, this.eventState.description, this.eventState.access, data.data, (data) => {
+                            console.log("Successfully created automatic challenge Post");
+                        }, (error) => {
+                            //console.log(JSON.stringify(error));
+                            this.setState({submitError: "*" + JSON.stringify(error)});
+                            this.setState({isSubmitLoading: false});
+                        });
                         //This is the second call
-                        this.props.clearChallengeQuery();
-                        this.props.queryChallenges();
+                        //this.props.clearChallengeQuery();
+                        //this.props.queryChallenges();
                         this.setState({isSubmitLoading: false});
                         this.closeModal();
                         this.setState({showSuccessLabel: true});
@@ -300,27 +309,27 @@ class CreateChallengeProp extends Component {
                             <Grid.Column width={8}>
                                 <Button inverted={this.state.hiitPressed} basic={!this.state.hiitPressed}>
                                     <Image dark size='medium' src={require('../img/HIIT_icon.png')} onClick={() => {this.handleTag("HIIT")}}/>
-                                    HIIT
+                                    <div style={{color: 'white'}}>HIIT</div>
                                 </Button>
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.strengthPressed} basic={!this.state.strengthPressed}>
-                                <Image size='medium' src={require('../img/Strength_icon.png')} onClick={() => {this.handleTag("Strength")}}/>
-                                Strength
+                                    <Image size='medium' src={require('../img/Strength_icon.png')} onClick={() => {this.handleTag("Strength")}}/>
+                                    <div style={{color: 'white'}}>Strength</div>
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.performancePressed} basic={!this.state.performancePressed}>
-                                <Image size='medium' src={require('../img/Performance_icon.png')} onClick={() => {this.handleTag("Performance")}}/>
-                                Performance
+                                    <Image size='medium' src={require('../img/Performance_icon.png')} onClick={() => {this.handleTag("Performance")}}/>
+                                    <div style={{color: 'white'}}>Performance</div>
                                 </Button>
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.endurancePressed} basic={!this.state.endurancePressed}>
-                                <Image size='medium' src={require('../img/Endurance_icon.png')} onClick={() => {this.handleTag("Endurance")}}/>
-                                Endurance
+                                    <Image size='medium' src={require('../img/Endurance_icon.png')} onClick={() => {this.handleTag("Endurance")}}/>
+                                    <div style={{color: 'white'}}>Endurance</div>
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
@@ -328,17 +337,17 @@ class CreateChallengeProp extends Component {
 
                     <Container align='center'>
                         <Grid centered>
-                        <Grid.Row centered>
-                            <Grid.Column>
-                                <Form onSubmit={this.handleSubmit}>
-                                        <Form.Input width={5} label="Title" type="text" name="title" placeholder="Title" onChange={value => this.changeStateText("title", value)}/>
-                                        <div className="field" width={5}>
+                            <Grid.Row centered>
+                                <Grid.Column>
+                                    <Form onSubmit={this.handleSubmit}>
+                                        <Form.Input fluid label="Title" type="text" name="title" placeholder="Title" onChange={value => this.changeStateText("title", value)}/>
+                                        <div className="field" fluid>
                                             <label>End Date & Time</label>
-                                            <input width={5} type="datetime-local" name="challengeDate" onChange={value => this.changeStateText("eventDate", value)}/>
+                                            <input fluid type="datetime-local" name="challengeDate" onChange={value => this.changeStateText("eventDate", value)}/>
                                         </div>
-                                        <Form.Input width={5} label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => this.changeStateText("capacity", value)}/>
-                                        <Form.Input width={5} label="Goal" type="text" name="goal" placeholder="Criteria the victor is decided on..." onChange={value => this.changeStateText("goal", value)}/>
-                                    <Form.Input width={5} label="Prize" type="text" name="prize" placeholder="Prize for winning the event..." onChange={value => this.changeStateText("prize", value)}/>
+                                        <Form.Input fluid label="Capacity" type="text" name="capacity" placeholder="Number of allowed attendees... " onChange={value => this.changeStateText("capacity", value)}/>
+                                        <Form.Input fluid label="Goal" type="text" name="goal" placeholder="Criteria the victor is decided on..." onChange={value => this.changeStateText("goal", value)}/>
+                                        <Form.Input fluid label="Prize" type="text" name="prize" placeholder="Prize for winning the event..." onChange={value => this.changeStateText("prize", value)}/>
                                         {/*<Form.Field>
                                             <div className="field" width={5}>
                                                 <label>Difficulty</label>
@@ -348,20 +357,20 @@ class CreateChallengeProp extends Component {
                                         <Form.Field width={12}>
                                             <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.eventState.access} />
                                         </Form.Field>
-                                    <Form.Field width={12}>
-                                        <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
-                                    </Form.Field>
-                                    <div>{this.displayError()}</div>
-                                </Form>
-                            </Grid.Column>
-                        </Grid.Row>
+                                        <Form.Field width={12}>
+                                            <Checkbox toggle onClick={this.handleRestrictionSwitch} onChange={this.toggleRest} checked={this.state.checkedRest} label={this.showRestriction()} />
+                                        </Form.Field>
+                                        <div>{this.displayError()}{this.createSuccessLabel()}</div>
+                                    </Form>
+                                </Grid.Column>
+                            </Grid.Row>
                         </Grid>
                     </Container>
                 </div>
                 <Modal.Actions>
                     <Button loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} primary size="big" type='button' onClick={() => { this.handleSubmit()}}>Submit</Button>
                 </Modal.Actions>
-            {this.createSuccessLabel()}</div>
+                {this.createSuccessLabel()}</div>
         );
     }
 }

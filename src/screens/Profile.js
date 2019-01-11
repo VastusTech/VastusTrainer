@@ -336,30 +336,31 @@ class Profile extends React.PureComponent {
                     <List id = "profile buttons">
                         <Divider/>
                         <List.Item>
-                            <Modal closeIcon trigger={<Button primary fluid size="large"><Icon name="picture" /> Photo Gallery</Button>}>
+                            <Modal closeIcon trigger={<Button primary fluid size="large"><Icon name="picture" /> Photo Gallery</Button>} >
                                 <div>
-                                    <ReactSwipe
-                                        className="carousel"
-                                        swipeOptions={{ continuous: false }}
-                                        ref={el => (reactSwipeEl = el)}
-                                    >
-                                        {this.setURLS(this.props.user.profileImagePaths)}
-                                        {this.imageGallery()}
-                                        <div>
-                                            <Label size='massive' as="label" htmlFor="galleryUpload" circular className="u-bg--primaryGradient">
-                                                <Icon name="plus" className='u-margin-right--0' size="large" inverted/>
-                                            </Label>
-                                            Add new picture to gallery
-                                            <input type="file" accept="image/*" id="galleryUpload" hidden={true}
-                                                   onChange={this.setGalleryPicture} onClick={this.setState({galleryNum: this.state.galleryURLS.length})}/>
-                                        </div>
-                                    </ReactSwipe>
-                                    <Grid>
-                                        <Grid.Column floated='left' width={2}>
-                                            <Button align="left" icon="caret left" primary onClick={() => reactSwipeEl.prev()}/>
+                                    <Grid centered>
+                                        <Grid.Column width={1} style={{marginRight: "10px"}} onClick={() => reactSwipeEl.prev()}>
+                                            <Icon size='large' name="caret left" style={{marginTop: "150px"}}/>
                                         </Grid.Column>
-                                        <Grid.Column floated='right' width={2}>
-                                            <Button align="right" icon="caret right" primary onClick={() => reactSwipeEl.next()}/>
+                                        <Grid.Column width={10}>
+                                            <ReactSwipe
+                                                className="carousel"
+                                                swipeOptions={{ continuous: false }}
+                                                ref={el => (reactSwipeEl = el)}
+                                            >
+                                                {this.setURLS(this.props.user.profileImagePaths)}
+                                                {this.imageGallery()}
+                                                <div style={{width: "50px"}} align="center">
+                                                    <Button primary as="label" htmlFor="galleryUpload" circular className="u-bg--primaryGradient" style={{marginTop: "140px", marginBottom: "140px"}}>
+                                                        <Icon name='plus'/> Add New Picture
+                                                    </Button>
+                                                    <input type="file" accept="image/*" id="galleryUpload" hidden={true}
+                                                           onChange={this.setGalleryPicture} onClick={this.setState({galleryNum: this.state.galleryURLS.length})}/>
+                                                </div>
+                                            </ReactSwipe>
+                                        </Grid.Column>
+                                        <Grid.Column width={1} style={{marginRight: "10px", marginLeft: "-10px"}} onClick={() => reactSwipeEl.next()}>
+                                            <Icon size='large' name="caret right" style={{marginTop: "150px"}}/>
                                         </Grid.Column>
                                     </Grid>
                                 </div>

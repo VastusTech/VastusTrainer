@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react';
+import {Button, Card, Dimmer, Grid, Loader} from 'semantic-ui-react';
 import PostDescriptionModal from './PostDescriptionModal';
 import {Player} from "video-react";
 import { connect } from 'react-redux';
-import { fetchPost, fetchChallenge} from "../redux_helpers/actions/cacheActions";
+import { fetchPost, fetchChallenge, fetchClient} from "../redux_helpers/actions/cacheActions";
 import ItemType from "../logic/ItemType";
 import { Storage } from "aws-amplify";
 import SubmissionDetailCard from "./post_detail_cards/SubmissionDetailCard";
@@ -12,6 +12,7 @@ import PostDetailCard from "./post_detail_cards/PostDetailCard";
 import ClientDetailCard from "./post_detail_cards/ClientDetailCard";
 import TrainerDetailCard from "./post_detail_cards/TrainerDetailCard";
 import {convertFromISO} from "../logic/TimeHelper";
+import ClientModal from "./ClientModal";
 
 type Props = {
     postID: string
@@ -37,7 +38,8 @@ class PostCard extends Component {
         // capacity: null,
         postModalOpen: false,
         postMessage: "",
-        postMessageSet: false
+        postMessageSet: false,
+        clientModalOpen: false,
     };
 
     constructor(props) {
@@ -100,6 +102,16 @@ class PostCard extends Component {
         return null;
     }
 
+    getChallengeAttribute(attribute) {
+        if (this.getPostAttribute("about")) {
+            const challenge = this.props.cache.challenges[this.getPostAttribute("about")];
+            if (challenge) {
+                return challenge[attribute];
+            }
+        }
+        return null;
+    }
+
     openPostModal = () => {
         if (!this.state.postModalOpen) {
             this.setState({postModalOpen: true})
@@ -153,6 +165,51 @@ class PostCard extends Component {
             // }
         }
         return null;
+    }
+
+    profilePicture() {
+        if (this.getClientAttribute("profileImagePaths") !== [] || this.getClientAttribute("profileImagePaths") !== null) {
+            /*if(!this.state.urlsSet) {
+                console.log(JSON.stringify("Paths being passed in: " + this.props.user.profileImagePaths));
+                this.setURLS(this.getClientAttribute("profileImagePaths"));
+                console.log("Setting URLS: " + this.state.galleryURLS);
+                this.setState({urlsSet: true});
+            }*/
+            //alert(this.getClientAttribute("profilePicture"));
+            return(
+                <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`, width: '50px', height: '50px'}}></div>
+            );
+        }
+        else {
+            return(
+                <Dimmer inverted>
+                    <Loader />
+                </Dimmer>
+            );
+        }
+    }
+
+    getClientAttribute(attribute) {
+        if (this.getPostAttribute("by")) {
+            //console.log(this.getPostAttribute("by"));
+            let client = this.props.cache.clients[this.getPostAttribute("by")];
+            if (client) {
+                //alert("Found Client in Challenge");
+                if (attribute.substr(attribute.length - 6) === "Length") {
+                    attribute = attribute.substr(0, attribute.length - 6);
+                    if (client[attribute] && client[attribute].length) {
+                        return client[attribute].length;
+                    }
+                    else {
+                        return 0;
+                    }
+                }
+                return client[attribute];
+            }
+        }
+        else {
+            return null;
+        }
     }
 
     getCorrectDetailCard() {
@@ -215,10 +272,25 @@ class PostCard extends Component {
         }
         else if(itemType) {
             //alert("Item Type: " + itemType);
+            if(!this.state.postMessageSet) {
+                this.setState({postMessage: "posted", postMessageSet: true});
+            }
             return (<PostDetailCard postID={this.state.postID}/>);
         }
         return (<div/>);
     }
+
+    openClientModal = () => {
+        if (!this.state.clientModalOpen) {
+            this.setState({clientModalOpen: true})
+            this.props.fetchClient(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
+        };
+    }
+    closeClientModal = () => {
+        console.log("Closing client modal");
+        this.setState({clientModalOpen: false})
+    };
+
 
     render() {
         if (!this.getPostAttribute("id")) {
@@ -228,10 +300,26 @@ class PostCard extends Component {
                 </Card>
             );
         }
+        if (!this.getChallengeAttribute("id")) {
+            return null;
+        }
         return (
             // This is displays a few important pieces of information about the challenge for the feed view.
             <Card color='purple' fluid raised>
-                <Card.Header textAlign = 'center'>{this.getOwnerName()} {this.state.postMessage}</Card.Header>
+                {/*this.getPostAttribute("about")*/}
+                <Grid style={{marginLeft: '10px', marginTop: '2px', marginBottom: '2px'}}>
+                    <Button className="u-button--flat" onClick={ () => {this.openClientModal()}}>
+                        <Grid style={{marginLeft: '10px', marginTop: '10px'}}>
+                            <Grid.Column width={6}>
+                                {this.profilePicture()}
+                            </Grid.Column>
+                            <Grid.Column width={20} style={{marginTop: '15px'}}>
+                                {this.getOwnerName() + " "} {/*this.state.postMessage*/}
+                            </Grid.Column>
+                        </Grid>
+                        <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.getPostAttribute("by")}/>
+                    </Button>
+                </Grid>
                 <Card.Content>
                     <div align='center'>
                         {this.getCorrectDetailCard()}
@@ -268,6 +356,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchChallenge: (id, variablesList, dataHandler) => {
             dispatch(fetchChallenge(id, variablesList, dataHandler));
+        },
+        fetchClient: (id, variablesList, dataHandler) => {
+            dispatch(fetchClient(id, variablesList, dataHandler));
         },
     };
 };
