@@ -29,18 +29,18 @@ class TrainerFunctions extends UserFunctions {
             bio
         }, successHandler, failureHandler);
     }
-    static updateAdd(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
-        super.updateAdd(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
-    }
-    static updateRemove(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
-        super.updateRemove(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
-    }
-    static updateSet(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
-        super.updateSet(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
-    }
-    static delete(fromID, trainerID, successHandler, failureHandler) {
-        super.delete(fromID, itemType, trainerID, successHandler, failureHandler);
-    }
+    // static updateAdd(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
+    //     super.updateAdd(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
+    // }
+    // static updateRemove(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
+    //     super.updateRemove(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
+    // }
+    // static updateSet(fromID, trainerID, attributeName, attributeValue, successHandler, failureHandler) {
+    //     super.updateSet(fromID, itemType, trainerID, attributeName, attributeValue, successHandler, failureHandler);
+    // }
+    // static delete(fromID, trainerID, successHandler, failureHandler) {
+    //     super.delete(fromID, itemType, trainerID, successHandler, failureHandler);
+    // }
 }
 
 export default TrainerFunctions;

@@ -133,7 +133,9 @@ class Profile extends React.PureComponent {
                     (data) => {
                         //console.log("successfully editted client");
                         //console.log(JSON.stringify(data));
+                        alert("About to force fetc user attributes");
                         this.props.forceFetchUserAttributes(["profileImagePath", "profilePicture"]);
+                        alert("Got past force fetch call");
                         this.setState({isLoading: true});
                     }, (error) => {
                         console.log("Failed edit client attribute");
