@@ -5,6 +5,7 @@ import { firebaseSignIn, firebaseSignOut } from "./firebaseActions";
 import QL from "../../GraphQL";
 // import Lambda from "../../Lambda";
 import TrainerFunctions from "../../databaseFunctions/TrainerFunctions";
+import {addHandlerToNotifications} from "./ablyActions";
 
 export function updateAuth() {
     return (dispatch) => {
@@ -19,6 +20,9 @@ export function updateAuth() {
                 console.log("REDUX: Successfully updated the authentication credentials");
                 dispatch(setUser(user));
                 dispatch(authLogIn());
+                dispatch(addHandlerToNotifications((message) => {
+                    alert("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                }));
                 dispatch(setIsNotLoading());
             }, (error) => {
                 console.log("REDUX: Could not fetch the client");
@@ -45,6 +49,9 @@ export function logIn(username, password) {
                     dispatch(setUser(user));
                 }
                 dispatch(firebaseSignIn(user.id));
+                dispatch(addHandlerToNotifications((message) => {
+                    alert("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                }));
                 dispatch(setIsNotLoading());
             }, (error) => {
                 console.log("REDUX: Could not fetch the client");
