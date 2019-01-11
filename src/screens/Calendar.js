@@ -89,8 +89,8 @@ class Calendar extends React.Component {
           let dayChallenges = [];
           for (let i = 0; i < this.props.user.challenges.length; i++) {
               if (this.getChallengeAttribute("endTime", this.props.user.challenges[i])) {
-                  //alert(this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) + " vs " + convertToISOString(date).substr(0, 10));
-                  if (this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) === convertToISOString(date).substr(0, 10)) {
+                  //alert(this.getDaysLeft(this.props.user.challenges[i]));
+                  if ((this.getDaysLeft(this.props.user.challenges[i]) >= 0) && (this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) === convertToISOString(date).substr(0, 10))) {
                       //let dailyChallenges = this.state.dayChallengeIDs;
                       //alert("Before: " + dailyChallenges.push(this.props.user.challenges[i]));
                       dayChallenges.push(this.props.user.challenges[i]);
@@ -107,6 +107,44 @@ class Calendar extends React.Component {
       return "Nothing today";
   };
 
+    getTodayDateString() {
+        // This is annoying just because we need to work with time zones :(
+        const shortestTimeInterval = 5;
+        const date = new Date();
+        date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
+        return String(date);
+    }
+
+    convertMonth(month) {
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        for(let i=0; i<12; i++) {
+            //console.log(month + "vs" + months[i]);
+            if(month === months[i]) {
+                return (i + 1);
+            }
+        }
+    }
+
+    getDaysLeft(challengeID) {
+        let curDate = this.getTodayDateString();
+        let endTime = this.getChallengeAttribute("endTime", challengeID);
+        let curMonth = this.convertMonth(curDate.substr(4, 3));
+        let endMonth = endTime.substr(5, 2);
+        //console.log(endMonth + " vs " + curMonth + " = " + (endMonth - curMonth));
+        if(endTime && curDate) {
+            endTime = parseInt(endTime.substr(8, 2), 10);
+            curDate = parseInt(curDate.substr(8, 2), 10);
+            //console.log(endMonth - curMonth);
+            if((endMonth - curMonth) < 0) {
+                //console.log((endTime + (30 * (endMonth - curMonth + 12))));
+                return ((endTime + (30 * (endMonth - curMonth + 12))) - curDate);
+            }
+            else {
+                return ((endTime + (30 * (endMonth - curMonth))) - curDate);
+            }
+        }
+    }
+
     displayChallenges = (date) => {
         //return convertToISOString(date).substr(0, 10);
         if (this.props.user.challenges) {
@@ -114,7 +152,7 @@ class Calendar extends React.Component {
             for (let i = 0; i < this.props.user.challenges.length; i++) {
                 if (this.getChallengeAttribute("endTime", this.props.user.challenges[i])) {
                     //alert(this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) + " vs " + convertToISOString(date).substr(0, 10));
-                    if (this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) === convertToISOString(date).substr(0, 10)) {
+                    if ((this.getDaysLeft(this.props.user.challenges[i]) >= 0) && this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) === convertToISOString(date).substr(0, 10)) {
                         //let dailyChallenges = this.state.dayChallengeIDs;
                         //alert("Before: " + dailyChallenges.push(this.props.user.challenges[i]));
                         dayChallenges.push(this.props.user.challenges[i]);
