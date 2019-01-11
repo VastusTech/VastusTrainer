@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import {Popup, List, Header, Divider, Segment, Grid, Form, Button} from "semantic-ui-react";
 import {switchReturnItemType} from "../logic/ItemType";
 import ClientCard from "../components/ClientCard";
+import TrainerCard from "../components/TrainerCard";
 import EventCard from "../components/EventCard";
 import ChallengeCard from "../components/ChallengeCard";
 import PostCard from "../components/PostCard";
@@ -86,7 +87,7 @@ class SearchScreen extends Component {
                 <List.Item>
                     {switchReturnItemType(item_type,
                     <ClientCard rank={i} clientID={result.id}/>,
-                    null,
+                    <TrainerCard trainerID={result.id}/>,
                     null,
                     null,
                     null,
