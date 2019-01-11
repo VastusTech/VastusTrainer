@@ -28,7 +28,9 @@ class Lambda {
             fromID: fromID,
             action: "UPDATESET",
             itemType: objectItemType,
-            identifiers: [ objectID ] ? objectID != null : [],
+            identifiers: [
+                objectID
+            ],
             attributeName: attributeName,
             attributeValues: [
                 attributeValue

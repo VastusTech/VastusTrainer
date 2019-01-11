@@ -8,7 +8,7 @@ class TrainerFunctions extends UserFunctions {
     // =============================================================================
     // Create Functions ============================================================
     static createTrainer(fromID, name, username, email, successHandler, failureHandler) {
-        this.create(fromID, name, null,null, username, email, null, successHandler, failureHandler);
+        this.create(fromID, name, null, null, username, email, null, successHandler, failureHandler);
     }
     static createTrainerOptional(fromID, name, gender, birthday, username, email, bio, successHandler, failureHandler) {
         this.create(fromID, name, gender, birthday, username, email, bio, successHandler, failureHandler);
