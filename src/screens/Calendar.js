@@ -226,6 +226,7 @@ class Calendar extends React.Component {
         const currentDate = getDate(new Date())
         const dateFormat = "D";
         const rows = [];
+        //alert(monthStart);
 
 
         //days are an empty array
@@ -236,7 +237,7 @@ class Calendar extends React.Component {
         let formattedDate = "";
 
         //these nested loops allow us to go through all the days in a month then all days per row/week
-        while (day <= endDate) {
+        while (day <= endDate && day >= startDate) {
             for (let i = 0; i < 7; i++) {
                 //
                 formattedDate = dateFns.format(day, dateFormat);
@@ -265,7 +266,7 @@ class Calendar extends React.Component {
             //Each day is constructed as a cell/modal trigger
             //makes the most sense to check scheduled challenges associated and add them to the 'day list'
             rows.push(
-                <div className="row" key={day}>
+                <div className="row" key={day} >
                 {days}
                 </div>
             );
