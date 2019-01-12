@@ -93,6 +93,11 @@ export function addMessageFromNotification(board, message, dataHandler, failureH
                 dispatch(setIsNotLoading());
             });
         }
+        else {
+            dispatch(addMessageToBoard(board, message));
+            if (dataHandler) { dataHandler(message); }
+            dispatch(setIsNotLoading());
+        }
     };
 }
 export function addMessageToBoard(board, message) {
