@@ -103,17 +103,17 @@ class CommentBox extends Component<Props> {
         //     this.setState({canAddImage: false});
         // }
         return (
-        	<Fragment>
-            <form onSubmit={this.addComment} className='u-margin-top--2'>
-                <Input type='text' action fluid className="textarea" name="comment" placeholder="Write Message...">
-                    <input />
-                    <Button as='label' for='proPicUpload'  >
-                        <Icon name='camera' size = "Large"/>
-                        <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPictureOrVideo}/>
-                    </Button>
-                    <Button primary>Send</Button>
-                </Input> 
-            </form>
+            <Fragment>
+                <form onSubmit={this.addComment} className='u-margin-top--2'>
+                    <Input type='text' action fluid className="textarea" name="comment" placeholder="Write Message...">
+                        <input />
+                        <Button as='label' for='proPicUpload'  >
+                            <Icon name='camera' size = "Large"/>
+                            <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPictureOrVideo}/>
+                        </Button>
+                        <Button primary>Send</Button>
+                    </Input>
+                </form>
             </Fragment>
         );
     }
