@@ -67,7 +67,7 @@ class ClientModal extends Component<Props> {
         this.componentWillReceiveProps(this.props);
         //alert(JSON.stringify(this.props));
         //alert("Fetching client on mount");
-        this.props.fetchClient(this.props.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "profilePicture", "friendRequests"]);
+        //this.props.fetchClient(this.props.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "profilePicture", "friendRequests"]);
     }
 
     componentWillReceiveProps(newProps) {

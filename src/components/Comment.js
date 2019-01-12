@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Label, Icon } from 'semantic-ui-react'
+import { Label, Grid, Icon, Container } from 'semantic-ui-react'
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import connect from "react-redux/es/connect/connect";
-// import {Player} from "video-react";
+import {Player} from "video-react";
 // import { Storage } from 'aws-amplify';
 
 type Props = {
@@ -13,11 +13,9 @@ class Comment extends Component<Props> {
     state = {
         username: null,
         sentRequest: false,
-        videoURL: null,
-        imageURL: null
     };
 
-  createCorrectMessage() {
+    createCorrectMessage() {
         if (this.props.comment && this.props.comment.name) {
             const from = this.props.comment.from;
             const name = this.props.comment.name;
@@ -34,114 +32,147 @@ class Comment extends Component<Props> {
                     // Regular message
                     if (ifSelf) {
                         return(
-                            <div className='u-text-align--right'>
-                                <strong className='u-margin-bottom--half u-display--block'>{name}</strong>
-                                <Label fluid className='u-bg--primary u-color--white u-overflow-wrap--break u-max-width--full' pointing='right' size='large' color='purple'>
-                                    {message}
-                                </Label>
-                            </div>
+                            <Grid.Column floated='right' width={5}>
+                                <Container>
+                                    <Grid>
+                                        <Grid.Row style={{marginBottom: '-15px'}}>
+                                            <strong>{name}</strong>
+                                        </Grid.Row>
+                                        <Grid.Row style={{marginTop: '-15px'}}>
+                                            <Label pointing='right' size='large' color='purple'>
+                                                {message}
+                                            </Label>
+                                        </Grid.Row>
+                                    </Grid>
+                                </Container>
+                            </Grid.Column>
                         );
                     }
                     else {
                         return(
-                            <div className='u-text-align--left'>
-                                <strong className='u-margin-bottom--half u-display--block'>{name}</strong>
-                                <Label pointing='left' size='large' className='u-overflow-wrap--break u-max-width--full'>
-                                    {message}
-                                </Label>
-                            </div>
+                            <Grid.Column floated='left' width={5}>
+                                <Container>
+                                    <Grid>
+                                        <Grid.Row style={{marginBottom: '-15px'}}>
+                                            <strong>{name}</strong>
+                                        </Grid.Row>
+                                        <Grid.Row style={{marginTop: '-15px'}}>
+                                            <Label pointing='left' size='large'>
+                                                {message}
+                                            </Label>
+                                        </Grid.Row>
+                                    </Grid>
+                                </Container>
+                            </Grid.Column>
                         );
                     }
                 }
-                // else if (titleAttributes.length === 2) {
-                //     // Then this is going to include a link
-                //     const type = titleAttributes[1];
-                //     switch (type) {
-                //         case "videoLink":
-                //             if (!this.state.sentRequest) {
-                //                 this.state.sentRequest = true;
-                //                 Storage.get(comment).then((url) => {
-                //                     this.setState({videoURL: url})
-                //                 }).catch((error) => {
-                //                     console.error("ERROR IN GETTING VIDEO FOR COMMENT");
-                //                     console.error(error);
-                //                 });
-                //             }
-                //             if (ifSelf) {
-                //                 return(
-                //                     <Label className='ui right fluid' pointing='right' color='purple'>
-                //                         <Player>
-                //                             <source src={this.state.videoURL} type="video/mp4"/>
-                //                         </Player>
-                //                     </Label>
-                //                 );
-                //             }
-                //             else {
-                //                 return (
-                //                     <Label className='ui left fluid' pointing='left'>
-                //                         <Player>
-                //                             <source src={this.state.videoURL} type="video/mp4" />
-                //                         </Player>
-                //                     </Label>
-                //                 );
-                //             }
-                //         case "pictureLink":
-                //             if (!this.state.sentRequest) {
-                //                 this.state.sentRequest = true;
-                //                 Storage.get(comment).then((url) => {
-                //                     this.setState({imageURL: url})
-                //                 }).catch((error) => {
-                //                     console.error("ERROR IN GETTING IMAGE FOR COMMENT");
-                //                     console.error(error);
-                //                 });
-                //             }
-                //             if (ifSelf) {
-                //                 return(
-                //                     <Label className='ui right fluid' pointing='right' color='purple'>
-                //                         <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
-                //                             <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
-                //                                 <Icon name="upload" className='u-margin-right--0' size="large" inverted />
-                //                             </Label>
-                //                             <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setPicture}/>
-                //                         </div>
-                //                     </Label>
-                //                 );
-                //             }
-                //             else {
-                //                 return(
-                //                     <Label className='ui left fluid' pointing='left'>
-                //                         <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
-                //                             <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
-                //                                 <Icon name="upload" className='u-margin-right--0' size="large" inverted />
-                //                             </Label>
-                //                             <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setPicture}/>
-                //                         </div>
-                //                     </Label>
-                //                 );
-                //             }
-                //         default:
-                //             console.error("Comment type = " + type + " not recognized!");
-                //             break;
-                //     }
-                // }
-                // else {
-                //     // Improperly formatted message?
-                // }
+            }
+        }
+    }
+
+    createCorrectComment() {
+        const from = this.props.comment.from;
+        const name = this.props.comment.name;
+        const message = this.props.comment.message;
+        const type = this.props.comment.type;
+        const ifSelf = from === this.props.user.id;
+        if (type) {
+            // Image or video message
+            if (type === "picture") {
+                if (ifSelf) {
+                    // Self picture
+                    return (
+                        <Label className='ui right fluid' pointing='right' color='purple'>
+                            <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                                 style={{backgroundImage: `url(${message})`}}>
+                                <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
+                                    <Icon name="upload" className='u-margin-right--0' size="large" inverted/>
+                                </Label>
+                                <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true}
+                                       onChange={this.setPicture}/>
+                            </div>
+                        </Label>
+                    );
+                }
+                else {
+                    // Other picture
+                    return (
+                        <Label className='ui left fluid' pointing='left'>
+                            <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
+                                 style={{backgroundImage: `url(${message})`}}>
+                                <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
+                                    <Icon name="upload" className='u-margin-right--0' size="large" inverted/>
+                                </Label>
+                                <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true}
+                                       onChange={this.setPicture}/>
+                            </div>
+                        </Label>
+                    );
+                }
+            }
+            else if (type === "video") {
+                if (ifSelf) {
+                    // Self video
+                    return (
+                        <Label className='ui right fluid' pointing='right' color='purple'>
+                            <Player>
+                                <source src={message} type="video/mp4"/>
+                            </Player>
+                        </Label>
+                    );
+                }
+                else {
+                    // Other video
+                    return (
+                        <Label className='ui left fluid' pointing='left'>
+                            <Player>
+                                <source src={message} type="video/mp4"/>
+                            </Player>
+                        </Label>
+                    );
+                }
             }
             else {
-                // Received empty message?
+                alert("Unrecognized message type = " + type);
             }
         }
         else {
-            // Error'ed comment received
+            // Normal message
+            if (ifSelf) {
+                // Self text
+                return (
+                    <Grid.Column floated='right' width={10}>
+                        <div>
+                            <Label pointing='right' size='large' color='purple'>
+                                {message}
+                            </Label>
+                            <strong>{name}</strong>
+                        </div>
+                    </Grid.Column>
+                );
+            }
+            else {
+                // Other text
+                return (
+                    <Grid.Column floated='left' width={10}>
+                        <div>
+                            <strong>{name}</strong>
+                            <Label pointing='left' size='large'>
+                                {message}
+                            </Label>
+                        </div>
+                    </Grid.Column>
+                );
+            }
         }
     }
 
     render() {
         return (
-            <div className='u-margin-bottom--2'>
-                {this.createCorrectMessage()}
-            </div>
+            <Grid class="ui computer vertically reversed equal width grid">
+                {this.createCorrectComment()}
+            </Grid>
 
         );
     }

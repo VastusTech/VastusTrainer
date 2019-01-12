@@ -9,9 +9,9 @@ type Props = {
 class Comments extends Component<Props> {
     render() {
         return (
-            <Fragment>
+            <Fragment style={{overflow: 'auto', maxHeight: '50px'}}>
                 {
-                    this.props.comments.map((comment, index) => {
+                    this.props.comments.slice(0).reverse().map((comment, index) => {
                         return <Comment key={index} comment={comment} />
                     })
                 }
