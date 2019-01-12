@@ -174,6 +174,14 @@ class ChallengeCard extends Component {
                 </Card>
             );
         }
+        //alert(this.getDaysLeft());
+        if (!this.getChallengeAttribute("id")) {
+            //alert("can't find challenge");
+            return null;
+        }
+        if  (this.getDaysLeft() <= 0) {
+            return null;
+        }
         // if(this.getChallengeAttribute("tags")) {
         //     // console.log("There be tags!");
         //     // console.log(this.getChallengeAttribute("tags"));
@@ -185,6 +193,7 @@ class ChallengeCard extends Component {
                     <Card.Header textAlign = 'center'>{this.getChallengeAttribute("title")}</Card.Header>
                     <Card.Meta textAlign = 'center' >{this.getDaysLeft()/*this.getDaysLeft(Date.daysBetween(this.getTodayDateString(), this.getChallengeAttribute("endTime")))*/} days left</Card.Meta>
                     {this.displayTagIcons(this.getChallengeAttribute("tags"))}
+                    {/*alert(this.getDaysLeft())*/}
                     <ChallengeDescriptionModal open={this.state.challengeModalOpen} onClose={this.closeChallengeModal.bind(this)} challengeID={this.getChallengeAttribute("id")}
                                                daysLeft={this.getDaysLeft()}/>
                 </Card.Content>

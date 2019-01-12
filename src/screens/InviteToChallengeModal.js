@@ -22,6 +22,9 @@ class InviteToChallengeModalProp extends Component {
 
     constructor(props) {
         super(props);
+        this.getChallengeAttribute = this.getChallengeAttribute.bind(this);
+        InviteToChallengeModalProp.getTodayDateString = InviteToChallengeModalProp.getTodayDateString.bind(this);
+        InviteToChallengeModalProp.convertMonth = InviteToChallengeModalProp.convertMonth.bind(this);
     }
 
     update() {
@@ -79,14 +82,63 @@ class InviteToChallengeModalProp extends Component {
         this.handleInviteToChallenge(challenge);
     }
 
+    getChallengeAttribute = (challengeID, attribute) => {
+        if (challengeID) {
+            const challenge = this.props.cache.challenges[challengeID];
+            if (challenge) {
+                return challenge[attribute];
+            }
+        }
+        return null;
+    }
+
+    static getTodayDateString() {
+        // This is annoying just because we need to work with time zones :(
+        const shortestTimeInterval = 5;
+        const date = new Date();
+        date.setMinutes(date.getMinutes() + (shortestTimeInterval - (date.getMinutes() % shortestTimeInterval)));
+        return String(date);
+    }
+
+    static convertMonth(month) {
+        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        for(let i=0; i<12; i++) {
+            //console.log(month + "vs" + months[i]);
+            if(month === months[i]) {
+                return (i + 1);
+            }
+        }
+    }
+
+    getDaysLeft = (challengeID) => {
+        let curDate = InviteToChallengeModalProp.getTodayDateString();
+        let endTime = this.getChallengeAttribute(challengeID, "endTime");
+        let curMonth = InviteToChallengeModalProp.convertMonth(curDate.substr(4, 3));
+        let endMonth = endTime.substr(5, 2);
+        //console.log(endMonth + " vs " + curMonth + " = " + (endMonth - curMonth));
+        if(endTime && curDate) {
+            endTime = parseInt(endTime.substr(8, 2), 10);
+            curDate = parseInt(curDate.substr(8, 2), 10);
+            //console.log(endMonth - curMonth);
+            if((endMonth - curMonth) < 0) {
+                //console.log((endTime + (30 * (endMonth - curMonth + 12))));
+                return ((endTime + (30 * (endMonth - curMonth + 12))) - curDate);
+            }
+            else {
+                return ((endTime + (30 * (endMonth - curMonth))) - curDate);
+            }
+        }
+    }
+
     render() {
-        function rows(userID, friendID, challenges, challengeInviteHandler, isInviteLoading) {
+        function rows(userID, friendID, challenges, challengeInviteHandler, isInviteLoading, daysLeft) {
             const rowProps = [];
             for (let i = 0; i < challenges.length; i++) {
-                if (challenges.hasOwnProperty(i) === true) {
+                //alert("see me");
+                if (challenges.hasOwnProperty(i) === true && daysLeft(challenges[i]) >= 0) {
                     rowProps.push(
                         <Fragment key={i+1}>
-                            <Card color='purple' fluid raised>
+                            <Card fluid raised>
                                 <Card.Content>
                                     <ChallengeCard challengeID={challenges[i]}/>
                                     <Button loading={isInviteLoading} primary fluid onClick={() => {challengeInviteHandler(challenges[i])}}>Invite to Challenge</Button>
@@ -113,7 +165,7 @@ class InviteToChallengeModalProp extends Component {
                     <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
                     <Modal.Content className="u-bg--bg">
                         {rows(this.props.user.id, this.props.friendID, this.state.loadedChallengeIDs, this.sendInvite.bind(this),
-                            this.state.isInviteLoading)}
+                            this.state.isInviteLoading, this.getDaysLeft)}
                     </Modal.Content>
                 </Modal>
             );

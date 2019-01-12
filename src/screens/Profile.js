@@ -374,14 +374,6 @@ class Profile extends React.PureComponent {
                         </List.Item>
                         <Divider />
                         <List.Item>
-                            <Button primary fluid size="large" onClick={this.openBuddyModal.bind(this)}><Icon name="users" /> Buddy List</Button>
-                            <Modal basic size='mini' open={this.state.buddyModalOpen} onClose={this.closeBuddyModal.bind(this)} closeIcon>
-                                <Modal.Content image>
-                                    <BuddyListProp/>
-                                </Modal.Content>
-                            </Modal>
-                        </List.Item>
-                        <List.Item>
                             <Button primary fluid size="large" onClick={this.openSubscriberModal.bind(this)}>{this.state.numSubscribers} Subscribers</Button>
                             <Modal basic size='mini' open={this.state.subscriberModalOpen} onClose={this.closeSubscriberModal.bind(this)} closeIcon>
                                 <Modal.Content image>

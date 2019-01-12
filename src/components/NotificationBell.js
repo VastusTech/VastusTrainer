@@ -82,7 +82,7 @@ class NotificationBellProp extends Component {
     //To the right of the request is two buttons, one to accept and one to deny the current request.
     render() {
         if(this.props.user.receivedInvites) {
-            //console.log(JSON.stringify(this.props.user.receivedInvites.length));
+            //alert(JSON.stringify(this.props.user.receivedInvites.length));
             return (
                 <div>
                     <Icon name='bell' size='large'/>
