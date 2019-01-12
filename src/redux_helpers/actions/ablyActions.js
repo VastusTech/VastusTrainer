@@ -1,6 +1,7 @@
 import {setIsLoading, setIsNotLoading} from "./infoActions";
 
 const ADD_HANDLER = 'ADD_HANDLER';
+const SET_HANDLER = 'SET_HANDLER';
 const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
 
 export function addHandlerToBoard(board, handler) {
@@ -19,6 +20,29 @@ export function addHandlerToNotifications(handler) {
             const channelName = getStore().user.id + "-Notifications";
             subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
             dispatch(addHandler(channelName, handler));
+        }
+        else {
+            console.error("Can't set handler to notifications when the USER ID isn't set!");
+        }
+        dispatch(setIsNotLoading());
+    };
+}
+export function setHandlerToBoard(board, handler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        const channelName = board + "-Board";
+        subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
+        dispatch(setHandler(channelName, handler));
+        dispatch(setIsNotLoading());
+    };
+}
+export function setHandlerToNotifications(handler) {
+    return (dispatch, getStore) => {
+        dispatch(setIsLoading());
+        if (getStore().user.id) {
+            const channelName = getStore().user.id + "-Notifications";
+            subscribeToChannelOnlyOnce(channelName, dispatch, getStore);
+            dispatch(setHandler(channelName, handler));
         }
         else {
             console.error("Can't set handler to notifications when the USER ID isn't set!");
@@ -70,6 +94,15 @@ function getMessageHandler(channelName, getStore) {
 function addHandler(channel, handler) {
     return {
         type: ADD_HANDLER,
+        payload: {
+            channel,
+            handler
+        }
+    };
+}
+function setHandler(channel, handler) {
+    return {
+        type: SET_HANDLER,
         payload: {
             channel,
             handler

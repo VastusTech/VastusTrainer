@@ -1,4 +1,5 @@
 const ADD_HANDLER = 'ADD_HANDLER';
+const SET_HANDLER = 'SET_HANDLER';
 const CLEAR_CHANNELS = 'CLEAR_CHANNELS';
 
 const initialState = {
@@ -17,6 +18,15 @@ export default (state = initialState, action) => {
                 state.notificationHandlers[action.payload.channel] = [];
             }
             state.notificationHandlers[action.payload.channel].push(action.payload.handler);
+            break;
+        case SET_HANDLER:
+            state = {
+                ...state,
+                notificationHandlers: {
+                    ...state.notificationHandlers,
+                    [action.payload.channel]: [action.payload.handler]
+                }
+            };
             break;
         case CLEAR_CHANNELS:
             state = {

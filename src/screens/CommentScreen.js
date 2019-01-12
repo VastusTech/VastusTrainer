@@ -10,7 +10,7 @@ import {
     addMessageToBoard,
     addMessageFromNotification
 } from "../redux_helpers/actions/messageActions";
-import {addHandlerToBoard} from "../redux_helpers/actions/ablyActions";
+import {setHandlerToBoard} from "../redux_helpers/actions/ablyActions";
 import connect from "react-redux/es/connect/connect";
 import QL from "../GraphQL";
 import { getItemTypeFromID } from "../logic/ItemType";
@@ -46,7 +46,7 @@ class CommentScreen extends Component<Props> {
     componentWillReceiveProps(newProps, nextContext) {
         if (this.state.board !== newProps.board) {
             this.state.board = newProps.board;
-            this.props.addHandlerToBoard(newProps.board, (message) => {
+            this.props.setHandlerToBoard(newProps.board, (message) => {
                 // If you get a message, then that means that it is definitely a Message?
                 // alert("What to do with this?\n\n" + JSON.stringify(message));
 
@@ -144,8 +144,8 @@ const mapDispatchToProps = (dispatch) => {
         clearBoard: (board) => {
             dispatch(clearBoard(board));
         },
-        addHandlerToBoard: (board, handler) => {
-            dispatch(addHandlerToBoard(board, handler));
+        setHandlerToBoard: (board, handler) => {
+            dispatch(setHandlerToBoard(board, handler));
         },
         addMessageFromNotification: (board, message, dataHandler, failureHandler) => {
             dispatch(addMessageFromNotification(board, message, dataHandler, failureHandler));
