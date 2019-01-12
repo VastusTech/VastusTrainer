@@ -8,40 +8,43 @@ class MessageFunctions {
     // =============================================================================
     // Create Functions ============================================================
     static createTextMessage(fromID, from, name, board, message, successHandler, failureHandler) {
-        this.create(fromID, board, from, name, null, message, successHandler, failureHandler);
+        this.create(fromID, board, from, name, null, message, null, successHandler, failureHandler);
     }
-    // static createPictureMessage(fromID, from, name, board, picture, picturePath, successHandler, failureHandler) {
-    //     S3.putImage(picturePath, picture, () => {
-    //         this.create(fromID, board, from, name, "picture", picturePath, successHandler, (error) => {
-    //             // Try your best to correct, then give up...
-    //             S3.delete(picturePath);
-    //             failureHandler(error);
-    //         });
-    //     }, failureHandler);
-    // }
-    // static createVideoMessage(fromID, from, name, board, video, videoPath, successHandler, failureHandler) {
-    //     S3.putVideo(videoPath, video, () => {
-    //         this.create(fromID, board, from, name, "video", videoPath, successHandler, (error) => {
-    //             // Try your best to correct, then give up...
-    //             S3.delete(videoPath);
-    //             failureHandler(error);
-    //         });
-    //     }, failureHandler);
-    // }
+    static createPictureMessage(fromID, from, name, board, picture, picturePath, successHandler, failureHandler) {
+        this.create(fromID, board, from, name, "picture", picturePath, picture, successHandler, failureHandler);
+    }
+    static createVideoMessage(fromID, from, name, board, video, videoPath, successHandler, failureHandler) {
+        this.create(fromID, board, from, name, "video", videoPath, video, successHandler, failureHandler);
+    }
+
     // Update Functions ============================================================
 
 
 
     // TODO THESE ARE THE LOW-LEVEL DATABASE ACTION FUNCTIONS
     // =============================================================================
-    static create(fromID, board, from, name, type, message, successHandler, failureHandler) {
+    static create(fromID, board, from, name, type, message, file, successHandler, failureHandler) {
         Lambda.create(fromID, "Message", {
             from,
             name,
             board,
             type,
             message,
-        }, successHandler, failureHandler);
+        }, (data) => {
+            // TODO Soon we'll have to adjust the Java project to be able to delete messages!
+            if (type) {
+                const path = data.data + "/" + message;
+                if (type === "picture") {
+                    S3.putImage(path, file, () => { successHandler(data); }, failureHandler);
+                }
+                else if (type === "video") {
+                    S3.putVideo(path, file, () => { successHandler(data); }, failureHandler);
+                }
+            }
+            else {
+                successHandler(data);
+            }
+        }, failureHandler);
     }
     // static updateAdd(fromID, inviteID, attributeName, attributeValue, successHandler, failureHandler) {
     //     Lambda.updateAddToAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
@@ -53,7 +56,11 @@ class MessageFunctions {
     //     Lambda.updateSetAttribute(fromID, inviteID, itemType, attributeName, attributeValue, successHandler, failureHandler);
     // }
     // static delete(fromID, inviteID, successHandler, failureHandler) {
-    //     Lambda.delete(fromID, inviteID, itemType, successHandler, failureHandler);
+    //     Lambda.invokeDatabaseLambda({
+    //         fromID,
+    //         itemType,
+    //
+    //     }, successHandler, failureHandler);
     // }
 }
 

@@ -4,7 +4,12 @@ import Comments from '../components/Comments';
 import { Icon, Message, Divider } from "semantic-ui-react";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import {fetchClient, fetchTrainer, fetchMessageQuery, getFetchItemFunction} from "../redux_helpers/actions/cacheActions";
-import {queryNextMessagesFromBoard, clearBoard, addMessageToBoard} from "../redux_helpers/actions/messageActions";
+import {
+    queryNextMessagesFromBoard,
+    clearBoard,
+    addMessageToBoard,
+    addMessageFromNotification
+} from "../redux_helpers/actions/messageActions";
 import {addHandlerToBoard} from "../redux_helpers/actions/ablyActions";
 import connect from "react-redux/es/connect/connect";
 import QL from "../GraphQL";
@@ -45,7 +50,7 @@ class CommentScreen extends Component<Props> {
                 // If you get a message, then that means that it is definitely a Message?
                 // alert("What to do with this?\n\n" + JSON.stringify(message));
 
-                this.props.addMessageToBoard(newProps.board, message.data);
+                this.props.addMessageFromNotification(newProps.board, message.data);
             });
             // Set up the board
             this.queryMessages();
@@ -141,6 +146,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         addHandlerToBoard: (board, handler) => {
             dispatch(addHandlerToBoard(board, handler));
+        },
+        addMessageFromNotification: (board, message, dataHandler, failureHandler) => {
+            dispatch(addMessageFromNotification(board, message, dataHandler, failureHandler));
         }
     };
 };

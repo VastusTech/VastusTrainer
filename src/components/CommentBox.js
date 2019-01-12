@@ -24,6 +24,9 @@ class CommentBox extends Component<Props> {
     constructor(props) {
         super(props);
         this.addComment = this.addComment.bind(this);
+        this.addPicture = this.addPicture.bind(this);
+        this.addVideo = this.addVideo.bind(this);
+        this.setPictureOrVideo = this.setPictureOrVideo.bind(this);
         // this.addPicOrVid = this.addPicOrVid.bind(this);
         // this.setPicture = this.setPicture.bind(this);
     }
@@ -50,11 +53,6 @@ class CommentBox extends Component<Props> {
         if (comment) {
             MessageFunctions.createTextMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board, comment, () => {
                 console.log("Successfully sent message!");
-                // this.props.addMessageToBoard(this.state.board, {
-                //     from: this.props.user.id,
-                //     board: this.state.board,
-                //     message: comment,
-                // });
             }, (error) => {
                 console.error("Failed to send message! Error = " + JSON.stringify(error));
             });
@@ -64,59 +62,39 @@ class CommentBox extends Component<Props> {
         }
     }
 
-    // addPicture(picture) {
-    //     MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
-    //         picture, "")
-    // }
+    addPicture(picture) {
+        MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
+            picture, "picture", () => {
+                console.log("Successfully created picture message!");
+            }, (error) => {
+                console.error("FAILED ADDING PICTURE. ERROR = " + JSON.stringify(error));
+            })
+    }
 
-    // addVideo(video) {
-    //
-    // }
+    addVideo(video) {
+        MessageFunctions.createVideoMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
+            video, "video", () => {
+                console.log("Successfully created video message!");
+            }, (error) => {
+                console.error("FAILED ADDING VIDEO. ERROR = " + JSON.stringify(error));
+            })
+    }
 
-    // addPicOrVid(path) {
-    //     // Get the value of the comment box
-    //     // and make sure it not some empty strings
-    //     let comment = path;
-    //     //let name = this.props.user.username;
-    //     // let name = this.props.curUser + "_videoLink";
-    //
-    //     //console.error(name);
-    //     //console.error(name);
-    //     const commentObject = { name, comment };
-    //
-    //     this.props.handleAddComment(commentObject);
-    //
-    //     // Publish comment
-    //     /*global Ably*/
-    //     //console.error(this.props.challengeChannel);
-    //     // const channel = Ably.channels.get(this.props.challengeChannel);
-    //     // channel.publish('add_comment', commentObject, err => {
-    //     //     //console.error("Added Comment: " + commentObject.comment);
-    //     //     if (err) {
-    //     //         console.log('Unable to publish message; err = ' + err.message);
-    //     //     }
-    //     // });
-    // }
-
-    // setPicture(event) {
-    //     //console.error(JSON.stringify(this.props));
-    //     //console.error(this.props.curUserID);
-    //     if (this.props.curUserID) {
-    //         // const path = "/ClientFiles/" + this.props.curUserID + "/" + Math.floor((Math.random() * 10000000000000) + 1);
-    //         //
-    //         // Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" }).then((result) => {
-    //         //     this.setState({imagePath: path});
-    //         //     this.setState({isLoading: true});
-    //         //     this.addPicOrVid(path);
-    //         // }).catch((error) => {
-    //         //     console.error("failed storage put");
-    //         //     console.error(error);
-    //         // });
-    //
-    //         //console.error("Calling storage put");
-    //         //console.error("File = " + JSON.stringify(event.target.files[0]));
-    //     }
-    // }
+    setPictureOrVideo(event) {
+        const file = event.target.files[0];
+        const fileType = file["type"];
+        const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+        const validVideoTypes = ["video/mp4", "video/mv4", "video/avi", "video/mpg"];
+        if (validImageTypes.includes(fileType)) {
+            this.addPicture(file);
+        }
+        else if (validVideoTypes.includes(fileType)) {
+            this.addVideo(file);
+        }
+        else {
+            alert("PROBLEMATIC FILE TYPE = " + fileType);
+        }
+    }
 
     render() {
         // if(this.state.imageURL && this.state.canAddImage) {
@@ -129,10 +107,10 @@ class CommentBox extends Component<Props> {
             <form onSubmit={this.addComment} className='u-margin-top--2'>
                 <Input type='text' action fluid className="textarea" name="comment" placeholder="Write Message...">
                     <input />
-                    {/*<Button as='label' for='proPicUpload'  >*/}
-                        {/*<Icon name='camera' size = "Large"/>*/}
-                        {/*<input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPicture}/>*/}
-                    {/*</Button>*/}
+                    <Button as='label' for='proPicUpload'  >
+                        <Icon name='camera' size = "Large"/>
+                        <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPictureOrVideo}/>
+                    </Button>
                     <Button primary>Send</Button>
                 </Input> 
             </form>
