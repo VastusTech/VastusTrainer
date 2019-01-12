@@ -11,13 +11,13 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
         let ifFirst = getStore().message.boardIfFirsts[board];
         if (!ifFirst) { ifFirst = true; }
         let nextToken = getStore().message.boardNextTokens[board];
-        if (ifFirst || nextToken) {
+        if (ifFirst || !nextToken) {
             // Then you do the query
-            QL.queryMessages(QL.constructMessageQuery(board, ["from", "message", "type", "board", "id", "time_created"], null, limit), (data) => {
+            QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "message", "type", "board", "id", "time_created"], null, limit), (data) => {
                 if (data) {
                     if (!data.items) { data.items = []; }
                     dispatch(addQueryToBoard(board, data.items, data.nextToken));
-                    dataHandler(data.items);
+                    if (dataHandler) { dataHandler(data.items); }
                     dispatch(setIsNotLoading());
                 }
                 else {
@@ -25,18 +25,18 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
                     console.error(JSON.stringify(error));
                     dispatch(setError(error));
                     dispatch(setIsNotLoading());
-                    failureHandler(error);
+                    if (failureHandler) { failureHandler(error); }
                 }
             }, (error) => {
                 console.error("ERROR INSIDE GET NEXT MESSAGES");
                 console.error(JSON.stringify(error));
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
-                failureHandler(error);
+                if (failureHandler) { failureHandler(error); }
             });
         }
         else {
-            dataHandler(null);
+            if (dataHandler) { dataHandler(null); }
         }
     };
 }

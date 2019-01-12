@@ -341,7 +341,7 @@ class GraphQL {
         var inputVariables = {board};
         if (limit) { inputVariables.limit = limit; }
         if (nextToken) { inputVariables.nextToken = nextToken; }
-        return GraphQL.constructQuery("QuerySponsors", "querySponsors", inputVariables, variableList, filter, false, true);
+        return GraphQL.constructQuery("QueryMessages", "queryMessages", inputVariables, variableList, filter, false, true);
     }
     static queryClients(queryString, successHandler, failureHandler) {
         GraphQL.execute(queryString, "queryClients", successHandler, failureHandler);
@@ -484,6 +484,7 @@ class GraphQL {
                     query += ', ';
                 }
                 query += variable + ": $" + variable;
+                ifFirst = false;
             }
             query += ')';
         }

@@ -5,13 +5,16 @@ import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/ac
 import connect from "react-redux/es/connect/connect";
 import Lambda from "../Lambda";
 import defaultProfilePicture from "../img/roundProfile.png";
+import MessageFunctions from "../databaseFunctions/MessageFunctions";
+import {addMessageToBoard} from "../redux_helpers/actions/messageActions";
 
 type Props = {
-
+    board: string
 }
 
-class VideoUpload extends Component<Props> {
+class CommentBox extends Component<Props> {
     state = {
+        board: null,
         imagePath: '',
         imageURL: '',
         sentRequest: false,
@@ -21,14 +24,17 @@ class VideoUpload extends Component<Props> {
     constructor(props) {
         super(props);
         this.addComment = this.addComment.bind(this);
-        this.addPicOrVid = this.addPicOrVid.bind(this);
-        this.setPicture = this.setPicture.bind(this);
+        // this.addPicOrVid = this.addPicOrVid.bind(this);
+        // this.setPicture = this.setPicture.bind(this);
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
-            this.resetState();
+        if (newProps.board !== this.state.board) {
+            this.state.board = newProps.board;
         }
+        // if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
+        //     this.resetState();
+        // }
         //console.error("Comment User: " + JSON.stringify(this.props));
     }
 
@@ -39,26 +45,18 @@ class VideoUpload extends Component<Props> {
         // Get the value of the comment box
         // and make sure it not some empty strings
         let comment = e.target.elements.comment.value.trim();
-        //let name = this.props.user.username;
-        let name = this.props.curUser;
-
-        //console.error(name);
 
         // Make sure name and comment boxes are filled
         if (comment) {
-            //console.error(name);
-            const commentObject = { name, comment };
-
-            this.props.handleAddComment(commentObject);
-
-            // Publish comment
-            /*global Ably*/
-            //console.error(this.props.challengeChannel);
-            const channel = Ably.channels.get(this.props.challengeChannel);
-            channel.publish('add_comment', commentObject, err => {
-                if (err) {
-                    console.log('Unable to publish message; err = ' + err.message);
-                }
+            MessageFunctions.createTextMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board, comment, () => {
+                console.log("Successfully sent message!");
+                // this.props.addMessageToBoard(this.state.board, {
+                //     from: this.props.user.id,
+                //     board: this.state.board,
+                //     message: comment,
+                // });
+            }, (error) => {
+                console.error("Failed to send message! Error = " + JSON.stringify(error));
             });
 
             // Clear input fields
@@ -66,52 +64,59 @@ class VideoUpload extends Component<Props> {
         }
     }
 
-    addPicOrVid(path) {
-        // Get the value of the comment box
-        // and make sure it not some empty strings
-        let comment = path;
-        //let name = this.props.user.username;
-        let name = this.props.curUser + "_videoLink";
+    // addPicture(picture) {
+    //     MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
+    //         picture, "")
+    // }
 
-        //console.error(name);
-        //console.error(name);
-        const commentObject = { name, comment };
+    // addVideo(video) {
+    //
+    // }
 
-        this.props.handleAddComment(commentObject);
+    // addPicOrVid(path) {
+    //     // Get the value of the comment box
+    //     // and make sure it not some empty strings
+    //     let comment = path;
+    //     //let name = this.props.user.username;
+    //     // let name = this.props.curUser + "_videoLink";
+    //
+    //     //console.error(name);
+    //     //console.error(name);
+    //     const commentObject = { name, comment };
+    //
+    //     this.props.handleAddComment(commentObject);
+    //
+    //     // Publish comment
+    //     /*global Ably*/
+    //     //console.error(this.props.challengeChannel);
+    //     // const channel = Ably.channels.get(this.props.challengeChannel);
+    //     // channel.publish('add_comment', commentObject, err => {
+    //     //     //console.error("Added Comment: " + commentObject.comment);
+    //     //     if (err) {
+    //     //         console.log('Unable to publish message; err = ' + err.message);
+    //     //     }
+    //     // });
+    // }
 
-        // Publish comment
-        /*global Ably*/
-        //console.error(this.props.challengeChannel);
-        const channel = Ably.channels.get(this.props.challengeChannel);
-        channel.publish('add_comment', commentObject, err => {
-            //console.error("Added Comment: " + commentObject.comment);
-            if (err) {
-                console.log('Unable to publish message; err = ' + err.message);
-            }
-        });
-    }
-
-    setPicture(event) {
-        //console.error(JSON.stringify(this.props));
-        //console.error(this.props.curUserID);
-        if (this.props.curUserID) {
-            const path = "/ClientFiles/" + this.props.curUserID + "/" + Math.floor((Math.random() * 10000000000000) + 1);
-
-            Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" }).then((result) => {
-                this.setState({imagePath: path});
-                this.setState({isLoading: true});
-                this.addPicOrVid(path);
-            }).catch((error) => {
-                console.error("failed storage put");
-                console.error(error);
-            });
-
-            //console.error("Calling storage put");
-            //console.error("File = " + JSON.stringify(event.target.files[0]));
-        }
-    }
-
-
+    // setPicture(event) {
+    //     //console.error(JSON.stringify(this.props));
+    //     //console.error(this.props.curUserID);
+    //     if (this.props.curUserID) {
+    //         // const path = "/ClientFiles/" + this.props.curUserID + "/" + Math.floor((Math.random() * 10000000000000) + 1);
+    //         //
+    //         // Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" }).then((result) => {
+    //         //     this.setState({imagePath: path});
+    //         //     this.setState({isLoading: true});
+    //         //     this.addPicOrVid(path);
+    //         // }).catch((error) => {
+    //         //     console.error("failed storage put");
+    //         //     console.error(error);
+    //         // });
+    //
+    //         //console.error("Calling storage put");
+    //         //console.error("File = " + JSON.stringify(event.target.files[0]));
+    //     }
+    // }
 
     render() {
         // if(this.state.imageURL && this.state.canAddImage) {
@@ -124,10 +129,10 @@ class VideoUpload extends Component<Props> {
             <form onSubmit={this.addComment} className='u-margin-top--2'>
                 <Input type='text' action fluid className="textarea" name="comment" placeholder="Write Message...">
                     <input />
-                    <Button as='label' for='proPicUpload'  >
-                        <Icon name='camera' size = "Large"/>
-                        <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPicture}/>
-                    </Button>
+                    {/*<Button as='label' for='proPicUpload'  >*/}
+                        {/*<Icon name='camera' size = "Large"/>*/}
+                        {/*<input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPicture}/>*/}
+                    {/*</Button>*/}
                     <Button primary>Send</Button>
                 </Input> 
             </form>
@@ -136,4 +141,17 @@ class VideoUpload extends Component<Props> {
     }
 }
 
-export default VideoUpload;
+const mapStateToProps = (state) => ({
+    user: state.user,
+    message: state.message
+});
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addMessageToBoard: (board, message) => {
+            dispatch(addMessageToBoard(board, message));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentBox);

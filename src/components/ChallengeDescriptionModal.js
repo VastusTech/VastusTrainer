@@ -317,7 +317,7 @@ class ChallengeDescriptionModal extends Component<Props> {
             )},
             { menuItem: 'Challenge Chat', render: () => (
                 <Tab.Pane basic className='u-border--0 u-padding--0 u-margin-top--3'>
-                    <CommentScreen curUser={this.props.user.username} curUserID={this.props.user.id} challengeChannel={this.state.challengeID}/>
+                    <CommentScreen board={this.state.challengeID}/>
                 </Tab.Pane> 
             )},
         ];

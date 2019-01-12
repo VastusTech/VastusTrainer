@@ -2,19 +2,20 @@ import React, { Component, Fragment } from 'react';
 import Comment from './Comment';
 import {Segment} from 'semantic-ui-react'
 
-class Comments extends Component {
+type Props = {
+    board: string
+};
+
+class Comments extends Component<Props> {
     render() {
         return (
-            //<Segment style={{overflow: 'auto', maxHeight: 200 }}>
             <Fragment>
-                    {
-                        this.props.comments.map((comment, index) => {
-                            //console.log(index + ":" + JSON.stringify(comment));
-                            return <Comment key={index} comment={comment} />
-                        })
-                    }
+                {
+                    this.props.comments.map((comment, index) => {
+                        return <Comment key={index} comment={comment} />
+                    })
+                }
             </Fragment>
-            //</Segment>
         );
     }
 }

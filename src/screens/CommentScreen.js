@@ -3,112 +3,101 @@ import CommentBox from "../components/CommentBox";
 import Comments from '../components/Comments';
 import { Icon, Message, Divider } from "semantic-ui-react";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
+import {fetchClient, fetchTrainer, fetchMessageQuery, getFetchItemFunction} from "../redux_helpers/actions/cacheActions";
+import {queryNextMessagesFromBoard, clearBoard, addMessageToBoard} from "../redux_helpers/actions/messageActions";
+import {addHandlerToBoard} from "../redux_helpers/actions/ablyActions";
 import connect from "react-redux/es/connect/connect";
+import QL from "../GraphQL";
+import { getItemTypeFromID } from "../logic/ItemType";
 
-class CommentScreen extends Component {
+type Props = {
+    board: string,
+};
+
+class CommentScreen extends Component<Props> {
     state = {
-        currentChannel: '',
-        canCallHistory: true,
-        comments: [],
-        isHistoryLoading: true
+        board: null,
+        messages: [],
+        isLoading: true,
+        fetchLimit: 10,
+        canFetch: true,
     };
-
-    _isMounted = true;
-
-    channelName = "persisted:" + this.props.challengeChannel;
-    //channelName = this.props.challengeChannel;
 
     constructor(props) {
         super(props);
-        this.handleAddComment = this.handleAddComment.bind(this);
+        // this.handleAddComment = this.handleAddComment.bind(this);
+        this.queryMessages = this.queryMessages.bind(this);
     }
 
     componentDidMount() {
-        /*global Ably*/
-
-        this._isMounted = true;
-
-        //console.error(this.props.challengeChannel);
-
-        const channel = Ably.channels.get(this.channelName);
-
-        let self = this;
-
-        channel.subscribe(function(msg) {
-            if(self._isMounted) {
-                //console.error(JSON.stringify(msg.data));
-                self.setState({comments: self.state.comments.concat(msg.data)});
-            }
-            self.getHistory();
-        });
-
-        channel.attach();
-        channel.once('attached', () => {
-            channel.history((err, page) => {
-                // create a new array with comments only in an reversed order (i.e old to new)
-                const commentArray = Array.from(page.items.reverse(), item => item.data);
-
-                //console.error(JSON.stringify(commentArray));
-
-                this.setState({comments: commentArray});
-            });
-        });
-        //console.error("Comment screen user: " + this.props.curUser);
-    }
-
-
-    componentDidUpdate() {
-        //Don't call the history multiple times or else Ably will restrict us lol
-        if(this.state.canCallHistory) {
-            //console.error("Getting the history");
-            this.getHistory();
-           //console.error("I should only be called once");
-        }
+        this.componentWillReceiveProps(this.props);
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
+        // TODO Unsubscribe to the Ably messages
+        // TODO Also potentially clear the board?
     }
 
-    handleAddComment(comment) {
-        //console.error("concatted: " + JSON.stringify(this.state.comments.concat(comment)));
-        //this.setState({comments: this.state.comments.concat(comment)});
-        //console.error("after: " + JSON.stringify(this.state.comments));
-        //this.getHistory();
+    componentWillReceiveProps(newProps, nextContext) {
+        if (this.state.board !== newProps.board) {
+            this.state.board = newProps.board;
+            this.props.addHandlerToBoard(newProps.board, (message) => {
+                // If you get a message, then that means that it is definitely a Message?
+                // alert("What to do with this?\n\n" + JSON.stringify(message));
+
+                this.props.addMessageToBoard(newProps.board, message.data);
+            });
+            // Set up the board
+            this.queryMessages();
+        }
     }
 
-    getHistory() {
-        //console.error(this.channelName);
-        this.setState({canCallHistory: true});
+    queryMessages() {
+        // alert("Can we query?");
+        if (this.state.canFetch) {
+            // alert("QUerying next messages from the board!");
+            this.props.queryNextMessagesFromBoard(this.state.board, this.state.fetchLimit, (items) => {
+                if (items) {
+                    // this.setState({messages: [...this.state.messages, ...items]});
+                    for (let i = 0; i < items.length; i++) {
+                        // Fetch everything we need to!
+                        const message = items[i];
+                        const fromItemType = getItemTypeFromID(message.from);
+                        if (fromItemType === "Client") {
+                            this.props.fetchClient(message.from, ["name"])
+                        }
+                        else if (fromItemType === "Trainer") {
+                            this.props.fetchTrainer(message.from, ["name"]);
+                        }
+                    }
+                }
+                else {
+                    // That means we're done getting messages
+                    this.setState({canFetch: false});
+                }
+                this.setState({isLoading: false});
+            });
+        }
+    }
 
-        const channel = Ably.channels.get(this.channelName);
-
-        this.setState({canCallHistory: false});
-
-        channel.history((err, page) => {
-            // create a new array with comments only in an reversed order (i.e old to new)
-            console.log("Received history!");
-            const commentArray = Array.from(page.items.reverse(), item => item.data);
-
-            //console.error(JSON.stringify(commentArray));
-
-            if(this._isMounted) {
-                this.setState({comments: commentArray, isHistoryLoading: false});
-            }
-        });
+    getBoardMessages() {
+        if (this.state.board && this.props.message.boards[this.state.board]) {
+            return this.props.message.boards[this.state.board];
+        }
+        return [];
     }
 
     loadHistory(historyLoading) {
         if (historyLoading) {
             return (
-                    <Message icon>
-                        <Icon name='spinner' size="small" loading />
-                        <Message.Content>
-                            <Message.Header>
-                                Loading...
-                            </Message.Header>
-                        </Message.Content>
-                    </Message>
+                <Message icon>
+                    <Icon name='spinner' size="small" loading />
+                    <Message.Content>
+                        <Message.Header>
+                            Loading...
+                        </Message.Header>
+                    </Message.Content>
+                </Message>
             )
         }
     }
@@ -118,14 +107,42 @@ class CommentScreen extends Component {
         return (
             <div className='u-margin-top--4'>
                 {/*console.log("Comment screen render user: " + this.props.curUser)*/}
-                {this.loadHistory(this.state.isHistoryLoading)}
-                <Comments comments={this.state.comments}/>
+                {this.loadHistory(this.state.isLoading)}
+                <Comments board={this.state.board} comments={this.getBoardMessages()}/>
                 <Divider className='u-margin-top--4' />
-                <CommentBox handleAddComment={this.handleAddComment} curUser={this.props.curUser} curUserID={this.props.curUserID}
-                    challengeChannel={this.channelName}/>
+                <CommentBox board={this.state.board}/>
             </div>
         );
     }
 }
 
-export default CommentScreen;
+const mapStateToProps = (state) => ({
+    user: state.user,
+    cache: state.cache,
+    message: state.message
+});
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchClient: (id, variablesList, dataHandler) => {
+            dispatch(fetchClient(id, variablesList, dataHandler));
+        },
+        fetchTrainer: (id, variablesList, dataHandler) => {
+            dispatch(fetchTrainer(id, variablesList, dataHandler));
+        },
+        addMessageToBoard: (board, message) => {
+            dispatch(addMessageToBoard(board, message));
+        },
+        queryNextMessagesFromBoard: (board, limit, dataHandler, failureHandler) => {
+            dispatch(queryNextMessagesFromBoard(board, limit, dataHandler, failureHandler));
+        },
+        clearBoard: (board) => {
+            dispatch(clearBoard(board));
+        },
+        addHandlerToBoard: (board, handler) => {
+            dispatch(addHandlerToBoard(board, handler));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentScreen);

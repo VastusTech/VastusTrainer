@@ -373,7 +373,7 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         // variablesList = variablesList.sort();
 
         // const fetchQueryDispatchType = getFetchQueryType(itemType);
-        let queryString = QL.getConstructQueryFunction(itemType)(board, variablesList, filter, limit, nextToken);
+        let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
         const nextTokenString = QL.getNextTokenString(nextToken);
         const normalizedQueryString = JSON.stringify(QL.getNormalizedQuery(queryString));
         // if (nextTokenString === "null") { alert("N Q S = " + JSON.stringify(normalizedQueryString))}

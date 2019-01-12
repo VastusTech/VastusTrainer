@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
                 state.boards[action.payload.board] = [];
             }
             // TODO Insert sort it into here?
-            state.boards.unshift(action.payload.message);
+            state.boards[action.payload.board].unshift(action.payload.message);
             break;
         case ADD_QUERY:
             state = {

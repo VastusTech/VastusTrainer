@@ -52,7 +52,7 @@ function subscribeToChannel(channelName, dispatch, getStore) {
             alert("Failed to subscribe to the channel. Error = " + JSON.stringify(err));
         }
         else {
-            alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
+            // alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
         }
     });
 }
