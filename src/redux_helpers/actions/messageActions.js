@@ -71,6 +71,9 @@ function addURLToMessages(messages, dataHandler) {
             }
         }
     }
+    if (messagesLength === 0) {
+        dataHandler(messages);
+    }
 }
 export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {
