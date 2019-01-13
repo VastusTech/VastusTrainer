@@ -13,6 +13,8 @@ class Comment extends Component<Props> {
     state = {
         username: null,
         sentRequest: false,
+        videoURL: null,
+        imageURL: null
     };
 
     createCorrectMessage() {

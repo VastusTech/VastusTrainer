@@ -1,4 +1,5 @@
 import QL from "../../GraphQL";
+import S3 from "../../S3Storage";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 
 const ADD_MESSAGE = 'ADD_MESSAGE';
@@ -16,9 +17,11 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
             QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "message", "type", "board", "id", "time_created"], null, limit), (data) => {
                 if (data) {
                     if (!data.items) { data.items = []; }
-                    dispatch(addQueryToBoard(board, data.items, data.nextToken));
-                    if (dataHandler) { dataHandler(data.items); }
-                    dispatch(setIsNotLoading());
+                    addURLToMessages(data.items, (messages) => {
+                        dispatch(addQueryToBoard(board, messages, data.nextToken));
+                        if (dataHandler) { dataHandler(messages); }
+                        dispatch(setIsNotLoading());
+                    });
                 }
                 else {
                     const error = new Error("query messages came back with null?");
@@ -40,12 +43,61 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
         }
     };
 }
+function addURLToMessages(messages, dataHandler) {
+    const messagesLength = messages.length;
+    let messagesReturned = 0;
+    for (let i = 0; i < messagesLength; i++) {
+        const message = messages[i];
+        if (message.type) {
+            S3.get(message.message, (url) => {
+                message.message = url;
+                messagesReturned++;
+                if (messagesReturned >= messagesLength) {
+                    dataHandler(messages);
+                }
+            }, (error) => {
+                console.error("FAILED TO RECEIVE URL FOR MEDIA IN MESSAGE! ERROR = " + JSON.stringify(error));
+                messagesReturned++;
+                message.message = "";
+                if (messagesReturned >= messagesLength) {
+                    dataHandler(messages);
+                }
+            });
+        }
+        else {
+            messagesReturned++;
+            if (messagesReturned >= messagesLength) {
+                dataHandler(messages);
+            }
+        }
+    }
+}
+export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
+    return (dispatch) => {
+        dispatch(setIsLoading());
+        if (message.type) {
+            S3.get(message.message, (url) => {
+                message.message = url;
+                dispatch(addMessageToBoard(board, message));
+                if (dataHandler) { dataHandler(message); }
+                dispatch(setIsNotLoading());
+            }, (error) => {
+                message.message = "";
+                console.error("Error getting media for message from notification! Error = " + JSON.stringify(error));
+                dispatch(addMessageToBoard(board, message));
+                if (failureHandler) { failureHandler(error); }
+                dispatch(setError(error));
+                dispatch(setIsNotLoading());
+            });
+        }
+    };
+}
 export function addMessageToBoard(board, message) {
     return {
         type: ADD_MESSAGE,
-        payload: {
+            payload: {
             board,
-            message
+                message
         }
     };
 }

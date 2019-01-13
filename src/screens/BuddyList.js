@@ -127,10 +127,11 @@ class BuddyListProp extends Component {
                 if (friends.hasOwnProperty(key) === true) {
                     //console.log("Friend " + key + ": " + JSON.stringify(friends[key].id));
                     const friendID = friends[key];
+                    let friendNum = parseInt(key) + 1;
                     rowProps.push(
                         <List.Item>
                             <List.Content>
-                                <ClientCard rank={key} clientID={friendID} feedUpdate={forceUpdate}/>
+                                <ClientCard rank={friendNum} clientID={friendID} feedUpdate={forceUpdate}/>
                             </List.Content>
                         </List.Item>
                     );

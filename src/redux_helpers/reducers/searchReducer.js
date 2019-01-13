@@ -45,8 +45,9 @@ const initialClientState = {
 };
 
 const initialTrainerState = {
-    enabled: false,
-    variableList: [],
+    enabled: true,
+    variableList: ["id", "name", "username", "item_type", "gender", "birthday", "profileImagePath", /*"profilePicture", */"profileImagePaths", "subscribers", "friendlinessRating", "" +
+    "effectivenessRating", "posts"],
     filterJSON: {
         or: [{
             username: {
