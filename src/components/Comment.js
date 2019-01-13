@@ -26,7 +26,7 @@ class Comment extends Component<Props> {
             if (type === "picture") {
                 if (ifSelf) {
                     // Self picture
-                    return(
+                    return (
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
                                  style={{backgroundImage: `url(${message})`}}>
@@ -41,7 +41,7 @@ class Comment extends Component<Props> {
                 }
                 else {
                     // Other picture
-                    return(
+                    return (
                         <Label className='ui left fluid' pointing='left'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
                                  style={{backgroundImage: `url(${message})`}}>
@@ -58,7 +58,7 @@ class Comment extends Component<Props> {
             else if (type === "video") {
                 if (ifSelf) {
                     // Self video
-                    return(
+                    return (
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <Player>
                                 <source src={message} type="video/mp4"/>
@@ -129,7 +129,6 @@ class Comment extends Component<Props> {
             <Grid class="ui computer vertically reversed equal width grid">
                 {this.createCorrectComment()}
             </Grid>
-
         );
     }
 }
