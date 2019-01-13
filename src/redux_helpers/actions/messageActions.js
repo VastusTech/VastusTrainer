@@ -10,12 +10,14 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         let ifFirst = getStore().message.boardIfFirsts[board];
-        if (!ifFirst) { ifFirst = true; }
+        if (ifFirst !== false) { ifFirst = true; }
         let nextToken = getStore().message.boardNextTokens[board];
-        if (ifFirst || !nextToken) {
+        // alert("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
+        if (ifFirst || nextToken) {
             // Then you do the query
-            QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "message", "type", "board", "id", "time_created"], null, limit), (data) => {
+            QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "message", "type", "board", "id", "time_created"], null, limit, nextToken), (data) => {
                 if (data) {
+                    // alert(JSON.stringify(data));
                     if (!data.items) { data.items = []; }
                     addURLToMessages(data.items, (messages) => {
                         dispatch(addQueryToBoard(board, messages, data.nextToken));
@@ -71,6 +73,9 @@ function addURLToMessages(messages, dataHandler) {
             }
         }
     }
+    if (messagesLength === 0) {
+        dataHandler(messages);
+    }
 }
 export function addMessageFromNotification(board, message, dataHandler, failureHandler) {
     return (dispatch) => {
@@ -89,6 +94,11 @@ export function addMessageFromNotification(board, message, dataHandler, failureH
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
             });
+        }
+        else {
+            dispatch(addMessageToBoard(board, message));
+            if (dataHandler) { dataHandler(message); }
+            dispatch(setIsNotLoading());
         }
     };
 }

@@ -13,65 +13,7 @@ class Comment extends Component<Props> {
     state = {
         username: null,
         sentRequest: false,
-        videoURL: null,
-        imageURL: null
     };
-
-    createCorrectMessage() {
-        if (this.props.comment && this.props.comment.name) {
-            const from = this.props.comment.from;
-            const name = this.props.comment.name;
-            const message = this.props.comment.message;
-            const type = this.props.comment.type;
-            const titleAttributes = this.props.comment.name.split("_");
-            if (titleAttributes.length > 0) {
-                // const name = titleAttributes[0];
-                // if (this.props.user.id !== from) {
-                //     this.setState({username: name});
-                // }
-                const ifSelf = from === this.props.user.id;
-                if (!type) {
-                    // Regular message
-                    if (ifSelf) {
-                        return(
-                            <Grid.Column floated='right' width={5}>
-                                <Container>
-                                    <Grid>
-                                        <Grid.Row style={{marginBottom: '-15px'}}>
-                                            <strong>{name}</strong>
-                                        </Grid.Row>
-                                        <Grid.Row style={{marginTop: '-15px'}}>
-                                            <Label pointing='right' size='large' color='purple'>
-                                                {message}
-                                            </Label>
-                                        </Grid.Row>
-                                    </Grid>
-                                </Container>
-                            </Grid.Column>
-                        );
-                    }
-                    else {
-                        return(
-                            <Grid.Column floated='left' width={5}>
-                                <Container>
-                                    <Grid>
-                                        <Grid.Row style={{marginBottom: '-15px'}}>
-                                            <strong>{name}</strong>
-                                        </Grid.Row>
-                                        <Grid.Row style={{marginTop: '-15px'}}>
-                                            <Label pointing='left' size='large'>
-                                                {message}
-                                            </Label>
-                                        </Grid.Row>
-                                    </Grid>
-                                </Container>
-                            </Grid.Column>
-                        );
-                    }
-                }
-            }
-        }
-    }
 
     createCorrectComment() {
         const from = this.props.comment.from;
@@ -143,27 +85,39 @@ class Comment extends Component<Props> {
             // Normal message
             if (ifSelf) {
                 // Self text
-                return (
-                    <Grid.Column floated='right' width={10}>
-                        <div>
-                            <Label pointing='right' size='large' color='purple'>
-                                {message}
-                            </Label>
-                            <strong>{name}</strong>
-                        </div>
+                return(
+                    <Grid.Column floated='right' width={5}>
+                        <Container>
+                            <Grid>
+                                <Grid.Row style={{marginBottom: '-15px'}}>
+                                    <strong>{name}</strong>
+                                </Grid.Row>
+                                <Grid.Row style={{marginTop: '-15px'}}>
+                                    <Label pointing='right' size='large' color='purple'>
+                                        {message}
+                                    </Label>
+                                </Grid.Row>
+                            </Grid>
+                        </Container>
                     </Grid.Column>
                 );
             }
             else {
                 // Other text
-                return (
-                    <Grid.Column floated='left' width={10}>
-                        <div>
-                            <strong>{name}</strong>
-                            <Label pointing='left' size='large'>
-                                {message}
-                            </Label>
-                        </div>
+                return(
+                    <Grid.Column floated='left' width={5}>
+                        <Container>
+                            <Grid>
+                                <Grid.Row style={{marginBottom: '-15px'}}>
+                                    <strong>{name}</strong>
+                                </Grid.Row>
+                                <Grid.Row style={{marginTop: '-15px'}}>
+                                    <Label pointing='left' size='large'>
+                                        {message}
+                                    </Label>
+                                </Grid.Row>
+                            </Grid>
+                        </Container>
                     </Grid.Column>
                 );
             }
@@ -175,7 +129,6 @@ class Comment extends Component<Props> {
             <Grid class="ui computer vertically reversed equal width grid">
                 {this.createCorrectComment()}
             </Grid>
-
         );
     }
 }

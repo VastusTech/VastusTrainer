@@ -24,6 +24,8 @@ export function updateAuth() {
                 }));
                 dispatch(setIsNotLoading());
             }, (error) => {
+                alert(JSON.stringify(error));
+                alert(error.code);
                 console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
@@ -57,10 +59,17 @@ export function logIn(username, password) {
                 dispatch(setIsNotLoading());
             });
         }).catch((error) => {
-            console.log("REDUX: Failed log in...");
-            console.log(error);
-            dispatch(setError(error));
-            dispatch(setIsNotLoading());
+            if (error.code === "UserNotConfirmedException") {
+                dispatch(authSignUp());
+                dispatch(openSignUpModal());
+                dispatch(setIsNotLoading());
+            }
+            else {
+                console.log("REDUX: Failed log in...");
+                console.log(error);
+                dispatch(setError(error));
+                dispatch(setIsNotLoading());
+            }
         });
     };
 }
