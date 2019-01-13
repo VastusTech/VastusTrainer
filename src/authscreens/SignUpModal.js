@@ -124,6 +124,8 @@ class SignUpModal extends Component {
                         <Modal.Actions>
                             <div>
                                 <Form>
+                                    <label>Confirm Username!</label>
+                                    <Form.Input type="text" name="username" placeholder=" Username " onChange={value => this.changeStateText("username", value)}/>
                                     <label>Confirmation Code</label>
                                     <Form.Input type="text" name="confirmationCode" placeholder=" XXXXXX " onChange={value => this.changeStateText("confirmationCode", value)}/>
                                 </Form>
