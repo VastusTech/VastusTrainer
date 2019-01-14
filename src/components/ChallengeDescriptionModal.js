@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 // import QL from '../GraphQL';
 import { convertFromISO } from "../logic/TimeHelper";
 import {fetchTrainer, fetchClient, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../redux_helpers/actions/cacheActions";
+import {fetchClient, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../redux_helpers/actions/cacheActions";
+import {clearBoard} from "../redux_helpers/actions/messageActions";
 import CompleteChallengeModal from "../screens/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import VideoUploadScreen from "../screens/VideoUploadScreen";
@@ -51,8 +53,6 @@ class ChallengeDescriptionModal extends Component<Props> {
         isRequestLoading: false,
         joinRequestSent: false,
         canCallChecks: true,
-        deleted: false,
-        fetchedTrainer: false
     };
 
     resetState(challengeID) {
@@ -115,21 +115,18 @@ class ChallengeDescriptionModal extends Component<Props> {
         }
 
         const members = this.getChallengeAttribute("members");
-        const owner = this.getChallengeAttribute("owner");
         if (!this.props.open && newProps.open && newProps.eventID && members && members.length > 0) {
             for (let i = 0; i < members.length; i++) {
                 this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
                     this.setState({});
                 });
-                if(owner) {
-                    if (owner.substr(0, 2) === "TR") {
-                        if(!this.state.fetchedTrainer) {
-                            this.props.fetchTrainer(owner, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
-                            this.setState({fetchedTrainer: true});
-                        }
-                    }
-                }
             }
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.state.challengeID) {
+            this.props.clearBoard(this.state.challengeID);
         }
     }
 
@@ -357,8 +354,8 @@ class ChallengeDescriptionModal extends Component<Props> {
             return (
                 <Fragment>
                     <Button primary fluid className='u-margin-bottom--1' onClick={this.openSubmitModal}>Submit Your Entry</Button>
-                    <Button primary fluid size="large" onClick={this.openCompleteModal}>Select Winner</Button>
                     <Button loading={this.state.isDeleteLoading} fluid negative size="large" disabled={this.state.isDeleteLoading} onClick={this.handleDeleteChallengeButton}>Delete</Button>
+                    <Button primary fluid size="large" onClick={this.openCompleteModal}>Select Winner</Button>
                     <Divider className='u-margin-top--4' />
                     <Tab menu={{ widths: 2, inverted: true }} panes={panes} className='u-challenge u-margin-top--2' />
                 </Fragment>
@@ -384,7 +381,7 @@ class ChallengeDescriptionModal extends Component<Props> {
             }
             else {
                 return (<div><Button loading={this.state.isRequestLoading} fluid size="large" disabled={this.state.isRequestLoading}
-                                     onClick={this.handleRequestChallengeButton}>Send Join Request</Button></div>)
+                                onClick={this.handleRequestChallengeButton}>Send Join Request</Button></div>)
             }
         }
         else {
@@ -395,13 +392,13 @@ class ChallengeDescriptionModal extends Component<Props> {
     }
 
     createChallengeChatButton() {
-
+        
         return null;
     }
-
-    profilePicture() {
+    
+   profilePicture() {
         if (this.props.user.profilePicture) {
-
+            
             return (
                 <div>
                     <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
@@ -419,14 +416,6 @@ class ChallengeDescriptionModal extends Component<Props> {
                     <Loader />
                 </Dimmer>
             );
-        }
-    }
-
-    challengeDeleted() {
-        if(this.state.deleted) {
-            return (<Message negative>
-                <Message.Header>This Challenge is Deleted!</Message.Header>
-            </Message>);
         }
     }
 
@@ -456,8 +445,8 @@ class ChallengeDescriptionModal extends Component<Props> {
             this.setState({canCallChecks: false});
             //alert("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
-
-
+	
+		 
         //alert("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <div>
@@ -544,6 +533,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         clearChallengeQuery: () => {
             dispatch(clearChallengeQuery());
+        },
+        clearBoard: (board) => {
+            dispatch(clearBoard(board));
         }
     };
 };
