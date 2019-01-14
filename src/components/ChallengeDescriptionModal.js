@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 // import QL from '../GraphQL';
 import { convertFromISO } from "../logic/TimeHelper";
 import {fetchClient, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../redux_helpers/actions/cacheActions";
+import {clearBoard} from "../redux_helpers/actions/messageActions";
 import CompleteChallengeModal from "../screens/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import VideoUploadScreen from "../screens/VideoUploadScreen";
@@ -119,6 +120,12 @@ class ChallengeDescriptionModal extends Component<Props> {
                     this.setState({});
                 });
             }
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.state.challengeID) {
+            this.props.clearBoard(this.state.challengeID);
         }
     }
 
@@ -510,6 +517,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         clearChallengeQuery: () => {
             dispatch(clearChallengeQuery());
+        },
+        clearBoard: (board) => {
+            dispatch(clearBoard(board));
         }
     };
 };
