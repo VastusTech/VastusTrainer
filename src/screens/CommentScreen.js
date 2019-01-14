@@ -138,8 +138,8 @@ class CommentScreen extends Component<Props> {
                     {this.loadHistory(this.state.isLoading)}
                     <ScrollView
                         class='chat'
-                        width={800}
-                        height={400}
+                        width={window.innerWidth}
+                        height={window.innerHeight}
                         ref={ref => (this.scrollView = ref)}
                         onScroll={this.handleScroll}
                     >
