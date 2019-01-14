@@ -441,150 +441,303 @@ class NotificationCard extends Component<Props> {
             );
         }
         else {*/
-            if (this.getInviteAttribute("inviteType") === "friendRequest") {
-                //alert(this.getInviteAttribute("inviteType"));
-                return (
-                    <Card fluid raised centered>
-                        <div className="u-container">
+        if (this.getInviteAttribute("inviteType") === "friendRequest") {
+            //alert(this.getInviteAttribute("inviteType"));
+            return (
+                <Card fluid raised centered>
+                    <div className="u-container">
                         <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profilePicture")})`}}></div>
-                        </div>
+                    </div>
 
-                        <Card.Content textAlign='center'>
-                            <Card.Header onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
-                                {this.getFromAttribute("name")}
-                            </Card.Header>
-                            <Card.Description>
+                    <Card.Content textAlign='center'>
+                        <Card.Header onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
+                            {this.getFromAttribute("name")}
+                        </Card.Header>
+                        <Card.Description>
                             has sent you a buddy request {/*Insert Invite Sent Time Here*/}
-                            </Card.Description>
-                        </Card.Content>
-                        <Card.Content extra textAlign='center'>
-                            <Button.Group fluid>
-                                <Button onClick={this.handleDeclineFriendRequestButton.bind(this)}>Deny</Button>
-                                <Button primary onClick={this.handleAcceptFriendRequestButton.bind(this)}>Accept</Button>
-                            </Button.Group>
-                        </Card.Content>
-                        <ClientModal
-                            clientID={this.getAboutAttribute("id")}
-                            open={this.state.clientModalOpen}
-                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
-                            onClose={this.handleClientModalClose.bind(this)}
-                        />
-                        <TrainerModal
-                            trainerID={this.getAboutAttribute("id")}
-                            open={this.state.clientModalOpen}
-                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
-                            onClose={this.handleClientModalClose.bind(this)}
-                        />
-                    </Card>
-                );
-            }
-            else if (this.getInviteAttribute("inviteType") === "eventInvite") {
-                //alert(this.getInviteAttribute("inviteType"));
-                return (
-                    <Card fluid raised>
-                        <Card.Content>
-                            <Feed>
-                                <Feed.Event>
-                                    <Feed.Label>
-                                        <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
-                                    </Feed.Label>
-                                    <Feed.Content>
-                                        <Feed.Summary>
-                                            You were invited to{' '}
-                                            <Feed.User onClick={this.handleEventModalOpen.bind(this)}>
-                                                {this.getAboutAttribute("title")}
-                                            </Feed.User>
-                                            <EventDescriptionModal
-                                                open={this.state.eventModalOpen}
-                                                onClose={this.handleEventModalClose.bind(this)}
-                                                eventID={this.getAboutAttribute("id")}
-                                            />
-                                            {' '}by{' '}
-                                            <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
-                                                {this.getFromAttribute("name")}
-                                            </Feed.User>
-                                            <ClientModal
-                                                clientID={this.getFromAttribute("id")}
-                                                open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
-                                                onClose={this.handleClientModalClose.bind(this)}
-                                            />
-                                            <TrainerModal
-                                                trainerID={this.getAboutAttribute("id")}
-                                                open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
-                                                onClose={this.handleTrainerModalClose.bind(this)}
-                                            />
-                                            <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
-                                        </Feed.Summary>
-                                        <Divider/>
-                                        <Feed.Extra>
-                                            <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineEventInviteButton.bind(this)}>Deny</Button>
-                                            <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptEventInviteButton.bind(this)}>Accept</Button>
-                                        </Feed.Extra>
-                                    </Feed.Content>
-                                </Feed.Event>
-                            </Feed>
-                        </Card.Content>
-                    </Card>
-                );
-            }
-            else if (this.getInviteAttribute("inviteType") === "challengeInvite") {
-                //alert("hey yah");
-                //alert(this.getInviteAttribute("title"));
-                return (
-                    <Card fluid raised>
-                        <Card.Content>
-                            <Feed>
-                                <Feed.Event>
-                                    <Feed.Label>
-                                        <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
-                                    </Feed.Label>
-                                    <Feed.Content>
-                                        <Feed.Summary>
-                                            You were invited to{' '}
-                                            <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
-                                                {this.getAboutAttribute("title")}
-                                            </Feed.User>
-                                            <ChallengeDescriptionModal
-                                                open={this.state.challengeModalOpen}
-                                                onClose={this.handleChallengeModalClose.bind(this)}
-                                                challengeID={this.getAboutAttribute("id")}
-                                            />
-                                            {' '}by{' '}
-                                            <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
-                                                {this.getFromAttribute("name")}
-                                            </Feed.User>
-                                            <ClientModal
-                                                clientID={this.getFromAttribute("id")}
-                                                open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
-                                                onClose={this.handleClientModalClose.bind(this)}
-                                            />
-                                            <TrainerModal
-                                                trainerID={this.getAboutAttribute("id")}
-                                                open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
-                                                onClose={this.handleTrainerModalClose.bind(this)}
-                                            />
-                                            <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
-                                        </Feed.Summary>
-                                        <Divider/>
-                                        <Feed.Extra>
-                                            <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineChallengeRequestButton.bind(this)}>Deny</Button>
-                                            <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptChallengeRequestButton.bind(this)}>Accept</Button>
-                                        </Feed.Extra>
-                                    </Feed.Content>
-                                </Feed.Event>
-                            </Feed>
-                        </Card.Content>
-                    </Card>
-                );
-            }
-            else {
-                return null;
-            }
+                        </Card.Description>
+                    </Card.Content>
+                    <Card.Content extra textAlign='center'>
+                        <Button.Group fluid>
+                            <Button onClick={this.handleDeclineFriendRequestButton.bind(this)}>Deny</Button>
+                            <Button primary onClick={this.handleAcceptFriendRequestButton.bind(this)}>Accept</Button>
+                        </Button.Group>
+                    </Card.Content>
+                    <ClientModal
+                        clientID={this.getAboutAttribute("id")}
+                        open={this.state.clientModalOpen}
+                        onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                        onClose={this.handleClientModalClose.bind(this)}
+                    />
+                    <TrainerModal
+                        trainerID={this.getAboutAttribute("id")}
+                        open={this.state.clientModalOpen}
+                        onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                        onClose={this.handleClientModalClose.bind(this)}
+                    />
+                </Card>
+            );
         }
+        else if (this.getInviteAttribute("inviteType") === "eventInvite") {
+            //alert(this.getInviteAttribute("inviteType"));
+            return (
+                <Card fluid raised>
+                    <Card.Content>
+                        <Feed>
+                            <Feed.Event>
+                                <Feed.Label>
+                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                </Feed.Label>
+                                <Feed.Content>
+                                    <Feed.Summary>
+                                        You were invited to{' '}
+                                        <Feed.User onClick={this.handleEventModalOpen.bind(this)}>
+                                            {this.getAboutAttribute("title")}
+                                        </Feed.User>
+                                        <EventDescriptionModal
+                                            open={this.state.eventModalOpen}
+                                            onClose={this.handleEventModalClose.bind(this)}
+                                            eventID={this.getAboutAttribute("id")}
+                                        />
+                                        {' '}by{' '}
+                                        <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
+                                            {this.getFromAttribute("name")}
+                                        </Feed.User>
+                                        <ClientModal
+                                            clientID={this.getFromAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleClientModalClose.bind(this)}
+                                        />
+                                        <TrainerModal
+                                            trainerID={this.getAboutAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleTrainerModalClose.bind(this)}
+                                        />
+                                        <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
+                                    </Feed.Summary>
+                                    <Divider/>
+                                    <Feed.Extra>
+                                        <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineEventInviteButton.bind(this)}>Deny</Button>
+                                        <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptEventInviteButton.bind(this)}>Accept</Button>
+                                    </Feed.Extra>
+                                </Feed.Content>
+                            </Feed.Event>
+                        </Feed>
+                    </Card.Content>
+                </Card>
+            );
+        }
+        else if (this.getInviteAttribute("inviteType") === "challengeInvite") {
+            //alert("hey yah");
+            //alert(this.getInviteAttribute("title"));
+            return (
+                <Card fluid raised>
+                    <Card.Content>
+                        <Feed>
+                            <Feed.Event>
+                                <Feed.Label>
+                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                </Feed.Label>
+                                <Feed.Content>
+                                    <Feed.Summary>
+                                        You were invited to{' '}
+                                        <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
+                                            {this.getAboutAttribute("title")}
+                                        </Feed.User>
+                                        <ChallengeDescriptionModal
+                                            open={this.state.challengeModalOpen}
+                                            onClose={this.handleChallengeModalClose.bind(this)}
+                                            challengeID={this.getAboutAttribute("id")}
+                                        />
+                                        {' '}by{' '}
+                                        <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
+                                            {this.getFromAttribute("name")}
+                                        </Feed.User>
+                                        <ClientModal
+                                            clientID={this.getFromAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleClientModalClose.bind(this)}
+                                        />
+                                        <TrainerModal
+                                            trainerID={this.getAboutAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleTrainerModalClose.bind(this)}
+                                        />
+                                        <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
+                                    </Feed.Summary>
+                                    <Divider/>
+                                    <Feed.Extra>
+                                        <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineChallengeRequestButton.bind(this)}>Deny</Button>
+                                        <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptChallengeRequestButton.bind(this)}>Accept</Button>
+                                    </Feed.Extra>
+                                </Feed.Content>
+                            </Feed.Event>
+                        </Feed>
+                    </Card.Content>
+                </Card>
+            );
+        }
+        else if (this.getInviteAttribute("inviteType") === "challengeRequest") {
+            //alert("hey yah");
+            //alert(this.getInviteAttribute("title"));
+            return (
+                <Card fluid raised>
+                    <Card.Content>
+                        <Feed>
+                            <Feed.Event>
+                                <Feed.Label>
+                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                </Feed.Label>
+                                <Feed.Content>
+                                    <Feed.Summary>
+                                        <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
+                                            {this.getFromAttribute("name")}
+                                        </Feed.User>
+                                        Would like to join {' '}
+                                        <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
+                                            {this.getAboutAttribute("title")}
+                                        </Feed.User>
+                                        <ChallengeDescriptionModal
+                                            open={this.state.challengeModalOpen}
+                                            onClose={this.handleChallengeModalClose.bind(this)}
+                                            challengeID={this.getAboutAttribute("id")}
+                                        />
+                                        <ClientModal
+                                            clientID={this.getFromAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleClientModalClose.bind(this)}
+                                        />
+                                        <TrainerModal
+                                            trainerID={this.getAboutAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleTrainerModalClose.bind(this)}
+                                        />
+                                        <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
+                                    </Feed.Summary>
+                                    <Divider/>
+                                    <Feed.Extra>
+                                        <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineChallengeRequestButton.bind(this)}>Deny</Button>
+                                        <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptChallengeRequestButton.bind(this)}>Accept</Button>
+                                    </Feed.Extra>
+                                </Feed.Content>
+                            </Feed.Event>
+                        </Feed>
+                    </Card.Content>
+                </Card>
+            );
+        }
+        else if (this.getInviteAttribute("inviteType") === "eventRequest") {
+            //alert("hey yah");
+            //TODO: Update this when events are supported
+            return (
+                <Card fluid raised>
+                    <Card.Content>
+                        <Feed>
+                            <Feed.Event>
+                                <Feed.Label>
+                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                </Feed.Label>
+                                <Feed.Content>
+                                    <Feed.Summary>
+                                        <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
+                                            {this.getFromAttribute("name")}
+                                        </Feed.User>
+                                        Would like to join {' '}
+                                        <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
+                                            {this.getAboutAttribute("title")}
+                                        </Feed.User>
+                                        <ChallengeDescriptionModal
+                                            open={this.state.challengeModalOpen}
+                                            onClose={this.handleChallengeModalClose.bind(this)}
+                                            challengeID={this.getAboutAttribute("id")}
+                                        />
+                                        <ClientModal
+                                            clientID={this.getFromAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleClientModalClose.bind(this)}
+                                        />
+                                        <TrainerModal
+                                            trainerID={this.getAboutAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleTrainerModalClose.bind(this)}
+                                        />
+                                        <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
+                                    </Feed.Summary>
+                                    <Divider/>
+                                    <Feed.Extra>
+                                        <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineChallengeRequestButton.bind(this)}>Deny</Button>
+                                        <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptChallengeRequestButton.bind(this)}>Accept</Button>
+                                    </Feed.Extra>
+                                </Feed.Content>
+                            </Feed.Event>
+                        </Feed>
+                    </Card.Content>
+                </Card>
+            );
+        }
+        else if (this.getInviteAttribute("inviteType") === "groupRequest") {
+            //alert("hey yah");
+            //TODO: Update this when groups are supported
+            return (
+                <Card fluid raised>
+                    <Card.Content>
+                        <Feed>
+                            <Feed.Event>
+                                <Feed.Label>
+                                    <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                </Feed.Label>
+                                <Feed.Content>
+                                    <Feed.Summary>
+                                        <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
+                                            {this.getFromAttribute("name")}
+                                        </Feed.User>
+                                        Would like to join {' '}
+                                        <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
+                                            {this.getAboutAttribute("title")}
+                                        </Feed.User>
+                                        <ChallengeDescriptionModal
+                                            open={this.state.challengeModalOpen}
+                                            onClose={this.handleChallengeModalClose.bind(this)}
+                                            challengeID={this.getAboutAttribute("id")}
+                                        />
+                                        <ClientModal
+                                            clientID={this.getFromAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleClientModalClose.bind(this)}
+                                        />
+                                        <TrainerModal
+                                            trainerID={this.getAboutAttribute("id")}
+                                            open={this.state.clientModalOpen}
+                                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
+                                            onClose={this.handleTrainerModalClose.bind(this)}
+                                        />
+                                        <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
+                                    </Feed.Summary>
+                                    <Divider/>
+                                    <Feed.Extra>
+                                        <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineChallengeRequestButton.bind(this)}>Deny</Button>
+                                        <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptChallengeRequestButton.bind(this)}>Accept</Button>
+                                    </Feed.Extra>
+                                </Feed.Content>
+                            </Feed.Event>
+                        </Feed>
+                    </Card.Content>
+                </Card>
+            );
+        }
+        else {
+            return null;
+        }
+    }
     //}
 }
 
