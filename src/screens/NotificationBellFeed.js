@@ -5,14 +5,22 @@ import {Dimmer, Loader, Grid, Message} from 'semantic-ui-react'
 import NotificationCard from "../components/NotificationCard";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import {connect} from 'react-redux';
-import {fetchInvite} from "../redux_helpers/actions/cacheActions";
+import {
+    fetchInvite,
+    fetchEvent,
+    fetchChallenge,
+    fetchGroup,
+    fetchClient,
+    fetchTrainer
+} from "../redux_helpers/actions/cacheActions";
+import {getItemTypeFromID} from "../logic/ItemType";
 
 /*
 * NotificationCard Feed
 *
 * This is a feed which contains all of the buddy (friend) requests that have been sent to the current user.
  */
-class NotificationFeed extends Component {
+class NotificationFeed extends React.PureComponent {
     state = {
         error: null,
         isLoading: true,
@@ -42,9 +50,55 @@ class NotificationFeed extends Component {
             this.setState({isLoading: true});
         }
 
+        const fetchAboutAndFromInfo = (invite) => {
+            if (invite && invite.from && invite.inviteType && invite.about) {
+                // Fetch from user information
+                const fromItemType = getItemTypeFromID(invite.from);
+                if (fromItemType === "Client") {
+                    alert("fetching client");
+                    props.fetchClient(invite.from, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+                } else if (fromItemType === "Trainer") {
+                    alert("fetching trainer");
+                    props.fetchTrainer(invite.from, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                } else if (fromItemType === "Gym") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else {
+                    console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+                }
+                // Fetch about item information
+                const aboutItemType = getItemTypeFromID(invite.about);
+                if (aboutItemType === "Client") {
+                    alert("fetching client");
+                    props.fetchClient(invite.about, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+                } else if (aboutItemType === "Trainer") {
+                    alert("fetching trainer");
+                    props.fetchTrainer(invite.about, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                } else if (aboutItemType === "Gym") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else if (aboutItemType === "Event") {
+                    alert("fetching event");
+                    props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                } else if (aboutItemType === "Challenge") {
+                    alert("fetching challenge");
+                    props.fetchChallenge(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                } else if (aboutItemType === "Group") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else {
+                    console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+                }
+            }
+            else {
+                // TODO FIll in the invite with bum info?
+            }
+        };
+
         const fetchAndAddInvite = (inviteID) => {
             props.fetchInvite(inviteID, ["time_created", "from", "inviteType", "about", "description"], (data) => {
                 this.state.notifications.push(data.id);
+                fetchAboutAndFromInfo(data);
                 this.setState({isLoading: false});
             });
         };
@@ -68,7 +122,7 @@ class NotificationFeed extends Component {
             props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
                 if (data) {
                     if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
-                        for (let i = 0; i < data.receivedInvites; i++) {
+                        for (let i = 0; i < data.receivedInvites.length; i++) {
                             fetchAndAddInvite(data.receivedInvites[i]);
                         }
                     }
@@ -96,8 +150,8 @@ class NotificationFeed extends Component {
     };
 
     forceUpdate = () => {
-        this.state.sentRequest = false;
-        this.update(this.props);
+        // this.state.sentRequest = false;
+        // this.update(this.props);
         // this.props.forceFetchUserAttributes(["receivedInvites"]);
     };
 
@@ -106,7 +160,7 @@ class NotificationFeed extends Component {
     render() {
         function inviteRows(invites, feedUpdate) {
             return _.times(invites.length, i => (
-                <NotificationCard inviteID={invites[i]} feedUpdate={feedUpdate}/>
+                <NotificationCard inviteID={invites[i]} feedUpdate={() => {}/*feedUpdate*/}/>
             ));
         }
 
@@ -139,14 +193,29 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchUserAttributes: (attributesList) => {
-            dispatch(fetchUserAttributes(attributesList));
+        fetchUserAttributes: (attributesList, dataHandler) => {
+            dispatch(fetchUserAttributes(attributesList, dataHandler));
         },
         forceFetchUserAttributes: (attributeList) => {
             dispatch(forceFetchUserAttributes(attributeList));
         },
-        fetchInvite: (id, variablesList) => {
-            dispatch(fetchInvite(id, variablesList));
+        fetchInvite: (id, variablesList, dataHandler) => {
+            dispatch(fetchInvite(id, variablesList, dataHandler));
+        },
+        fetchClient: (id, variablesList) => {
+            dispatch(fetchClient(id, variablesList));
+        },
+        fetchTrainer: (id, variablesList) => {
+            dispatch(fetchTrainer(id, variablesList));
+        },
+        fetchEvent: (id, variablesList, dataHandler) => {
+            dispatch(fetchEvent(id, variablesList, dataHandler));
+        },
+        fetchChallenge: (id, variablesList, dataHandler) => {
+            dispatch(fetchChallenge(id, variablesList, dataHandler));
+        },
+        fetchGroup: (id, variablesList, dataHandler) => {
+            dispatch(fetchGroup(id, variablesList, dataHandler));
         }
     }
 };
