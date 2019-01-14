@@ -5,21 +5,28 @@ import {Dimmer, Loader, Grid, Message} from 'semantic-ui-react'
 import NotificationCard from "../components/NotificationCard";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import {connect} from 'react-redux';
-import {fetchInvite} from "../redux_helpers/actions/cacheActions";
+import {
+    fetchInvite,
+    fetchEvent,
+    fetchChallenge,
+    fetchGroup,
+    fetchClient,
+    fetchTrainer
+} from "../redux_helpers/actions/cacheActions";
+import {getItemTypeFromID} from "../logic/ItemType";
 
 /*
 * NotificationCard Feed
 *
 * This is a feed which contains all of the buddy (friend) requests that have been sent to the current user.
  */
-class NotificationFeed extends Component {
+class NotificationFeed extends React.PureComponent {
     state = {
         error: null,
         isLoading: true,
         sentRequest: false,
+        notifications: []
     };
-
-    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -27,30 +34,11 @@ class NotificationFeed extends Component {
         this.forceUpdate = this.forceUpdate.bind(this);
     }
 
-    resetState() {
-        this.setState({
-            error: null,
-            isLoading: true,
-            sentRequest: false,
-        });
-    }
-
     componentDidMount() {
-        //this.setState({isLoading: true});
-        // this.update();
         this.update(this.props);
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     componentWillReceiveProps(newProps, nextContext) {
-        //this.setState({isLoading: true});
-        if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
-            this.resetState();
-        }
         this.update(newProps);
     }
 
@@ -62,51 +50,117 @@ class NotificationFeed extends Component {
             this.setState({isLoading: true});
         }
 
-        if (this.state.isLoading && user.hasOwnProperty("receivedInvites") && user.receivedInvites && user.receivedInvites.length) {
-            this.setState({isLoading: false});
-            for (let i = 0; i < user.receivedInvites.length; i++) {
-                props.fetchInvite(user.receivedInvites[i], ["time_created", "from", "inviteType", "about", "description"]);
+        const fetchAboutAndFromInfo = (invite) => {
+            if (invite && invite.from && invite.inviteType && invite.about) {
+                // Fetch from user information
+                const fromItemType = getItemTypeFromID(invite.from);
+                if (fromItemType === "Client") {
+                    alert("fetching client");
+                    props.fetchClient(invite.from, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+                } else if (fromItemType === "Trainer") {
+                    alert("fetching trainer");
+                    props.fetchTrainer(invite.from, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                } else if (fromItemType === "Gym") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else {
+                    console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+                }
+                // Fetch about item information
+                const aboutItemType = getItemTypeFromID(invite.about);
+                if (aboutItemType === "Client") {
+                    alert("fetching client");
+                    props.fetchClient(invite.about, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+                } else if (aboutItemType === "Trainer") {
+                    alert("fetching trainer");
+                    props.fetchTrainer(invite.about, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                } else if (aboutItemType === "Gym") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else if (aboutItemType === "Event") {
+                    alert("fetching event");
+                    props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                } else if (aboutItemType === "Challenge") {
+                    alert("fetching challenge");
+                    props.fetchChallenge(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                } else if (aboutItemType === "Group") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else {
+                    console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+                }
             }
-        }
-        else if (!props.info.isLoading) {
-            if (!this.state.sentRequest && !props.info.error) {
-                props.fetchUserAttributes(["receivedInvites"]);
-                this.setState({sentRequest: true});
+            else {
+                // TODO FIll in the invite with bum info?
             }
+        };
+
+        const fetchAndAddInvite = (inviteID) => {
+            props.fetchInvite(inviteID, ["time_created", "from", "inviteType", "about", "description"], (data) => {
+                this.state.notifications.push(data.id);
+                fetchAboutAndFromInfo(data);
+                this.setState({isLoading: false});
+            });
+        };
+
+        const fetchAndAddReceivedInvites = (itemType, id) => {
+            let fetchFunction;
+            if (itemType === "Event") { fetchFunction = props.fetchEvent; }
+            if (itemType === "Challenge") { fetchFunction = props.fetchChallenge; }
+            if (itemType === "Group") { fetchFunction = props.fetchGroup; }
+            fetchFunction(id, ["receivedInvites"], (data) => {
+                if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
+                    for (let i = 0; i < data.receivedInvites.length; i++) {
+                        fetchAndAddInvite(data.receivedInvites[i]);
+                    }
+                }
+            });
+        };
+
+        if (!this.state.sentRequest) {
+            this.state.sentRequest = true;
+            props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
+                if (data) {
+                    if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
+                        for (let i = 0; i < data.receivedInvites.length; i++) {
+                            fetchAndAddInvite(data.receivedInvites[i]);
+                        }
+                    }
+                    if (data.hasOwnProperty("ownedEvents") && data.ownedEvents) {
+                        for (let i = 0; i < data.ownedEvents.length; i++) {
+                            fetchAndAddReceivedInvites("Event", data.ownedEvents[i]);
+                        }
+                    }
+                    if (data.hasOwnProperty("ownedChallenges") && data.ownedChallenges) {
+                        for (let i = 0; i < data.ownedChallenges.length; i++) {
+                            fetchAndAddReceivedInvites("Challenge", data.ownedChallenges[i]);
+                        }
+                    }
+                    if (data.hasOwnProperty("ownedGroups") && data.ownedGroups) {
+                        for (let i = 0; i < data.ownedGroups.length; i++) {
+                            fetchAndAddReceivedInvites("Group", data.ownedGroups[i]);
+                        }
+                    }
+                }
+                else {
+                    this.setState({isLoading: false});
+                }
+            });
         }
     };
 
-
     forceUpdate = () => {
-        this.props.forceFetchUserAttributes(["receivedInvites"]);
+        // this.state.sentRequest = false;
+        // this.update(this.props);
+        // this.props.forceFetchUserAttributes(["receivedInvites"]);
     };
 
     //The buddy requests consists of a profile picture with the name of the user who has sent you a request.
     //To the right of the request is two buttons, one to accept and one to deny the current request.
     render() {
-
-        // function friendRows(friendRequests, userID, feedUpdate)
-        // {
-        //     //console.log(friendRequests);
-        //     if (friendRequests != null) {
-        //         return _.times(friendRequests.length, i => (
-        //             <NotificationCard userID={userID} friendRequestID={friendRequests[i]} feedUpdate={feedUpdate}/>
-        //         ));
-        //     }
-        // }
-        //
-        // function challengeRows(eventRequests, userID)
-        // {
-        //     //console.log(friendRequests);
-        //     if (eventRequests != null) {
-        //         return _.times(eventRequests.length, i => (
-        //             <NotificationCard userID={userID} eventRequestID={eventRequests[i]}/>
-        //         ));
-        //     }
-        // }
         function inviteRows(invites, feedUpdate) {
             return _.times(invites.length, i => (
-                <NotificationCard inviteID={invites[i]} feedUpdate={feedUpdate}/>
+                <NotificationCard inviteID={invites[i]} feedUpdate={() => {}/*feedUpdate*/}/>
             ));
         }
 
@@ -117,10 +171,10 @@ class NotificationFeed extends Component {
                 </Dimmer>
             );
         }
-        if (this.props.user.receivedInvites && this.props.user.receivedInvites.length && this.props.user.receivedInvites.length > 0) {
+        if (this.state.notifications && this.state.notifications.length && this.state.notifications.length > 0) {
             return(
                 <Fragment>
-                    {inviteRows(this.props.user.receivedInvites, this.forceUpdate.bind(this))}
+                    {inviteRows(this.state.notifications, this.forceUpdate.bind(this))}
                 </Fragment>
             );
         }
@@ -139,14 +193,29 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchUserAttributes: (attributesList) => {
-            dispatch(fetchUserAttributes(attributesList));
+        fetchUserAttributes: (attributesList, dataHandler) => {
+            dispatch(fetchUserAttributes(attributesList, dataHandler));
         },
         forceFetchUserAttributes: (attributeList) => {
             dispatch(forceFetchUserAttributes(attributeList));
         },
-        fetchInvite: (id, variablesList) => {
-            dispatch(fetchInvite(id, variablesList));
+        fetchInvite: (id, variablesList, dataHandler) => {
+            dispatch(fetchInvite(id, variablesList, dataHandler));
+        },
+        fetchClient: (id, variablesList) => {
+            dispatch(fetchClient(id, variablesList));
+        },
+        fetchTrainer: (id, variablesList) => {
+            dispatch(fetchTrainer(id, variablesList));
+        },
+        fetchEvent: (id, variablesList, dataHandler) => {
+            dispatch(fetchEvent(id, variablesList, dataHandler));
+        },
+        fetchChallenge: (id, variablesList, dataHandler) => {
+            dispatch(fetchChallenge(id, variablesList, dataHandler));
+        },
+        fetchGroup: (id, variablesList, dataHandler) => {
+            dispatch(fetchGroup(id, variablesList, dataHandler));
         }
     }
 };

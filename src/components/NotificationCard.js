@@ -1,22 +1,28 @@
 import React, {Component} from 'react'
-// import _ from 'lodash'
-import {Image, Modal, Grid, Button, Dimmer, Loader, Card, Feed, Icon, Divider} from 'semantic-ui-react'
-// import { API, Auth, graphqlOperation } from "aws-amplify";
-// import setupAWS from '../AppConfig';
-// import proPic from "../img/BlakeProfilePic.jpg";
-// import QL from "../GraphQL";
-import Lambda from "../Lambda";
+import {Image, Button, Card, Feed, Divider} from 'semantic-ui-react'
 import ClientModal from "./ClientModal";
-// import EventCard from "./EventCard";
+import TrainerModal from "./TrainerModal";
 import EventDescriptionModal from "./EventDescriptionModal";
+import ChallengeDescriptionModal from "./ChallengeDescriptionModal";
 import { connect } from "react-redux";
-import {fetchClient, fetchEvent} from "../redux_helpers/actions/cacheActions";
+import {
+    fetchClient,
+    fetchEvent,
+    fetchChallenge,
+    fetchTrainer,
+    fetchInvite
+} from "../redux_helpers/actions/cacheActions";
 import UserFunctions from "../databaseFunctions/UserFunctions";
 import InviteFunctions from "../databaseFunctions/InviteFunctions";
 import EventFunctions from "../databaseFunctions/EventFunctions";
 import ChallengeFunctions from "../databaseFunctions/ChallengeFunctions";
+import {getItemTypeFromID} from "../logic/ItemType";
 
-class NotificationCard extends Component {
+type Props = {
+    inviteID: string
+};
+
+class NotificationCard extends Component<Props> {
     state = {
         error: null,
         isLoading: false,
@@ -24,8 +30,12 @@ class NotificationCard extends Component {
         sentRequest: false,
         clientModalOpen: false,
         eventModalOpen: false,
+        trainerModalOpen: false,
+        challengeModalOpen: false,
         isAcceptInviteLoading: false,
         isDenyInviteLoading: false,
+        fromItemType: null,
+        aboutItemType: null,
     };
 
     constructor(props) {
@@ -35,80 +45,78 @@ class NotificationCard extends Component {
     }
 
     componentDidMount() {
-        this.update(this.props);
+        // this.update(this.props);
     }
 
     componentWillReceiveProps(newProps, nextContext) {
-        this.update(newProps);
+        // this.update(newProps);
+        this.setState({inviteID: newProps.inviteID});
     }
 
-    update(props) {
-        if (props.inviteID) {
-            const invite = props.cache.invites[props.inviteID];
-            if (invite) {
-                if (invite.from && invite.inviteType && invite.about) {
-                    // TODO This sends two requests which is sorta inconsequential but is seriously bugging me :(
-                    if (this.state.inviteID !== props.inviteID && !this.state.sentRequest && !this.props.info.isLoading) {
-                        this.setState({inviteID: props.inviteID});
-                        this.state.sentRequest = true;
-                        // console.log("Fetching client = " + invite.from);
-                        props.fetchClient(invite.from, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
-                        if (invite.inviteType === "eventInvite") {
-                            // console.log("Fetching event = " + invite.about);
-                            props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
-                        }
-                    }
-                }
-                else {
-                    console.log("Invite only partially gotten?");
-                    console.log(JSON.stringify(invite));
-                }
+    // update(props) {
+    //     if (props.inviteID) {
+    //         alert(this.state.sentRequest);
+    //         if (!this.state.sentRequest) {
+    //             this.state.sentRequest = true;
+    //             alert("setting to true");
+    //             this.props.fetchInvite(props.inviteID, ["time_created", "from", "inviteType", "about", "description"], (data) => {
+    //                 if (data && data.from && data.inviteType && data.about) {
+    //                     // Fetch from user information
+    //                     const fromItemType = getItemTypeFromID(data.from);
+    //                     if (fromItemType === "Client") {
+    //                         props.fetchClient(data.from, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+    //                     } else if (fromItemType === "Trainer") {
+    //                         props.fetchTrainer(data.from, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+    //                     } else if (fromItemType === "Gym") {
+    //                         // TODO FETCH THIS?
+    //                         alert("not implemented!");
+    //                     } else {
+    //                         console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+    //                     }
+    //                     // Fetch about item information
+    //                     const aboutItemType = getItemTypeFromID(data.about);
+    //                     if (aboutItemType === "Client") {
+    //                         props.fetchClient(data.about, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+    //                     } else if (aboutItemType === "Trainer") {
+    //                         props.fetchTrainer(data.about, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+    //                     } else if (aboutItemType === "Gym") {
+    //                         // TODO FETCH THIS?
+    //                         alert("not implemented!");
+    //                     } else if (aboutItemType === "Event") {
+    //                         props.fetchEvent(data.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+    //                     } else if (aboutItemType === "Challenge") {
+    //                         props.fetchChallenge(data.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+    //                     } else if (aboutItemType === "Group") {
+    //                         // TODO FETCH THIS?
+    //                         alert("not implemented!");
+    //                     } else {
+    //                         console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+    //                     }
+    //                 }
+    //                 else {
+    //                     // TODO FIll in the invite with bum info?
+    //                 }
+    //             });
+    //         }
+    //     }
+    // }
+
+    handleClientModalOpen() {
+        if(this.getAboutAttribute("id")) {
+            if (this.getAboutAttribute("id").substr(0, 2) === "CL") {
+                this.setState({clientModalOpen: true});
+            }
+            else if (this.getAboutAttribute("id").substr(0, 2) === "TR") {
+                this.setState({trainerModalOpen: true});
             }
         }
-    }
-
-    // update = () => {
-        // if (this.state.friendRequestID) {
-        //     QL.getClient(this.state.friendRequestID, ["name"], (data) => {
-        //         if (data.name) {
-        //             this.setState({isLoading: false, name: data.name});
-        //         }
-        //         else {
-        //             this.setState({isLoading: false});
-        //         }
-        //     }, (error) => {
-        //         console.log("Getting friend request ID failed");
-        //         if (error.message) {
-        //             error = error.message;
-        //         }
-        //         console.log(error);
-        //         this.setState({error: error, isLoading: false});
-        //     });
-        // }
-        // else {
-        //     //console.log("ERID: " + this.props.eventRequestID);
-        //     QL.getEvent(this.props.eventRequestID, ["id", "title", "goal", "time", "time_created", "owner", "members"], (data) => {
-        //         if (data) {
-        //             this.setState({isLoading: false, name: data.title, event: data});
-        //         }
-        //         else {
-        //             this.setState({isLoading: false});
-        //         }
-        //     }, (error) => {
-        //         console.log("Getting friend request ID failed");
-        //         if (error.message) {
-        //             error = error.message;
-        //         }
-        //         console.log(error);
-        //         this.setState({error: error, isLoading: false});
-        //     });
-        // }
-    // };
-
-    handleClientModalOpen() { this.setState({clientModalOpen: true})};
+    };
     handleClientModalClose() { this.setState({clientModalOpen: false})};
+    handleTrainerModalClose() { this.setState({trainerModalOpen: false})};
     handleEventModalOpen() { this.setState({eventModalOpen: true})};
     handleEventModalClose() { this.setState({eventModalOpen: false})};
+    handleChallengeModalOpen() { this.setState({challengeModalOpen: true})};
+    handleChallengeModalClose() { this.setState({challengeModalOpen: false})};
 
     handleAcceptFriendRequest() {
         const userID = this.props.user.id;
@@ -159,7 +167,31 @@ class NotificationCard extends Component {
                 });
         }
         else {
-            console.log("user id or invite id not set yet");
+            console.error("user id or invite id not set yet");
+        }
+    }
+
+    handleAcceptChallengeRequestButton() {
+        this.setState({isAcceptInviteLoading: true});
+        const userID = this.props.user.id;
+        const inviteID = this.state.inviteID;
+        // console.log("Accepting event invite " + inviteID);
+        if(userID && inviteID) {
+            const challengeID = this.getAboutAttribute("id");
+            // console.log("User ID: " + userID + " event ID: " + eventID);
+            UserFunctions.addChallenge(userID, userID, challengeID,
+                (data) => {
+                    // console.log("Successfully added " + challengeID + " to the schedule!");
+                    this.props.feedUpdate();
+                    this.setState({isAcceptInviteLoading: false});
+                }, (error) => {
+                    console.log(JSON.stringify(error));
+                    this.setState({error: error});
+                    this.setState({isAcceptInviteLoading: false});
+                });
+        }
+        else {
+            console.error("user id or invite id not set yet");
         }
     }
 
@@ -213,6 +245,29 @@ class NotificationCard extends Component {
         }
     }
 
+    handleDeclineChallengeRequestButton() {
+        this.setState({isDenyInviteLoading: true});
+        const userID = this.props.user.id;
+        const inviteID = this.state.inviteID;
+        // console.log("DECLINING " + "User ID: " + userID + " Invite ID: " + inviteID);
+        if(userID && inviteID) {
+            InviteFunctions.delete(userID, inviteID,
+                (data) => {
+                    this.setState({isDenyInviteLoading: false});
+                    // console.log("Successfully declined " + inviteID + " event invite!");
+                    this.props.feedUpdate();
+                }, (error) => {
+                    this.setState({isDenyInviteLoading: false});
+                    console.error(JSON.stringify(error));
+                    this.setState({error: error});
+                });
+        }
+        else {
+            console.error("user id or invite id not set");
+            this.setState({isDenyInviteLoading: false});
+        }
+    }
+
     handleAcceptChallengeInvite() {
         UserFunctions.addChallenge(this.state.user.id, this.state.user.id, this.getInviteAttribute("about"), () => {
             // TODO
@@ -220,6 +275,7 @@ class NotificationCard extends Component {
             // TODO
         });
     }
+
     handleDeclineChallengeInvite() {
         InviteFunctions.delete(this.state.user.id, this.state.inviteID, () => {
             // TODO
@@ -227,6 +283,7 @@ class NotificationCard extends Component {
             // TODO
         });
     }
+
     handleAcceptEventRequest() {
         EventFunctions.addMember(this.state.user.id, this.getInviteAttribute("to"), this.getInviteAttribute("about"), () => {
             // TODO
@@ -234,6 +291,7 @@ class NotificationCard extends Component {
             // TODO
         });
     }
+
     handleDeclineEventRequest() {
         InviteFunctions.delete(this.state.user.id, this.state.inviteID, () => {
             // TODO
@@ -241,6 +299,7 @@ class NotificationCard extends Component {
             // TODO
         });
     }
+
     handleAcceptChallengeRequest() {
         ChallengeFunctions.addMember(this.state.user.id, this.getInviteAttribute("to"), this.getInviteAttribute("about"), () => {
             // TODO
@@ -248,7 +307,24 @@ class NotificationCard extends Component {
             // TODO
         });
     }
+
     handleDeclineChallengeRequest() {
+        InviteFunctions.delete(this.state.user.id, this.state.inviteID, () => {
+            // TODO
+        }, (error) => {
+            // TODO
+        });
+    }
+
+    handleAcceptGroupRequest() {
+        ChallengeFunctions.addMember(this.state.user.id, this.getInviteAttribute("to"), this.getInviteAttribute("about"), () => {
+            // TODO
+        }, (error) => {
+            // TODO
+        });
+    }
+
+    handleDeclineGroupRequest() {
         InviteFunctions.delete(this.state.user.id, this.state.inviteID, () => {
             // TODO
         }, (error) => {
@@ -267,33 +343,76 @@ class NotificationCard extends Component {
     getFromAttribute(attribute) {
         const invite = this.props.cache.invites[this.props.inviteID];
         if (invite && invite.from) {
-            // TODO Incorporate itemType into this ASAP
-            const from = this.props.cache.clients[invite.from];
-            if (from) {
-                return from[attribute];
+            const fromItemType = getItemTypeFromID(invite.from);
+            if (fromItemType === "Client") {
+                const from = this.props.cache.clients[invite.from];
+                if (from) {
+                    return from[attribute];
+                }
+            }
+            else if (fromItemType === "Trainer") {
+                const from = this.props.cache.trainers[invite.from];
+                if (from) {
+                    return from[attribute];
+                }
+            }
+            else if (fromItemType === "Gym") {
+                const from = this.props.cache.gyms[invite.from];
+                if (from) {
+                    return from[attribute];
+                }
             }
         }
         return null;
     }
 
+
     getAboutAttribute(attribute) {
         const invite = this.props.cache.invites[this.props.inviteID];
         if (invite && invite.about) {
-            if (invite.inviteType === "friendRequest") {
-                // TODO Itemtype
+            const aboutItemType = this.getAboutItemType();
+            if (aboutItemType === "Client") {
                 const about = this.props.cache.clients[invite.about];
                 if (about) {
                     return about[attribute];
                 }
             }
-            else if (invite.inviteType === "eventInvite") {
+            else if (aboutItemType === "Trainer") {
+                const about = this.props.cache.trainers[invite.about];
+                if (about) {
+                    return about[attribute];
+                }
+            }
+            else if (aboutItemType === "Event") {
                 const about = this.props.cache.events[invite.about];
+                if (about) {
+                    return about[attribute];
+                }
+            }
+            else if (aboutItemType === "Challenge") {
+                const about = this.props.cache.challenges[invite.about];
+                if (about) {
+                    return about[attribute];
+                }
+            }
+            else if (aboutItemType === "Group") {
+                const about = this.props.cache.groups[invite.about];
                 if (about) {
                     return about[attribute];
                 }
             }
         }
         return null;
+    }
+
+    getAboutItemType() {
+        if (!this.state.aboutItemType) {
+            const about = this.getInviteAttribute("about");
+            if (about) {
+                this.state.aboutItemType = getItemTypeFromID(about);
+            }
+        }
+        return this.state.aboutItemType;
     }
 
     getTimeSinceInvite() {
@@ -312,7 +431,7 @@ class NotificationCard extends Component {
     }
 
     render() {
-        if (!this.getInviteAttribute("id") || !this.getAboutAttribute("id")) {
+        /*if (!this.getInviteAttribute("id") || !this.getAboutAttribute("id")) {
             return(
                 <Grid.Row className="ui one column stackable center aligned page grid">
                     <Dimmer>
@@ -321,14 +440,15 @@ class NotificationCard extends Component {
                 </Grid.Row>
             );
         }
-        else {
+        else {*/
             if (this.getInviteAttribute("inviteType") === "friendRequest") {
+                //alert(this.getInviteAttribute("inviteType"));
                 return (
-                    <Card color='purple' fluid raised centered>
+                    <Card fluid raised centered>
                         <div className="u-container">
                         <div className="u-avatar u-avatar--large u-margin-bottom--neg2 u-margin-x--auto" style={{backgroundImage: `url(${this.getFromAttribute("profilePicture")})`}}></div>
                         </div>
-                        
+
                         <Card.Content textAlign='center'>
                             <Card.Header onClick={this.handleClientModalOpen.bind(this)}>
                                 {this.getFromAttribute("name")}
@@ -340,7 +460,7 @@ class NotificationCard extends Component {
                         <Card.Content extra textAlign='center'>
                             <Button.Group fluid>
                                 <Button onClick={this.handleDeclineFriendRequestButton.bind(this)}>Deny</Button>
-                                <Button primary onClick={this.handleAcceptFriendRequestButton.bind(this)}>Accept</Button>     
+                                <Button primary onClick={this.handleAcceptFriendRequestButton.bind(this)}>Accept</Button>
                             </Button.Group>
                         </Card.Content>
                         <ClientModal
@@ -349,12 +469,19 @@ class NotificationCard extends Component {
                             onOpen={this.handleClientModalOpen.bind(this)}
                             onClose={this.handleClientModalClose.bind(this)}
                         />
+                        <TrainerModal
+                            trainerID={this.getAboutAttribute("id")}
+                            open={this.state.clientModalOpen}
+                            onOpen={this.handleClientModalOpen.bind(this)}
+                            onClose={this.handleClientModalClose.bind(this)}
+                        />
                     </Card>
                 );
             }
             else if (this.getInviteAttribute("inviteType") === "eventInvite") {
+                //alert(this.getInviteAttribute("inviteType"));
                 return (
-                    <Card color='purple' fluid raised>
+                    <Card fluid raised>
                         <Card.Content>
                             <Feed>
                                 <Feed.Event>
@@ -382,6 +509,12 @@ class NotificationCard extends Component {
                                                 onOpen={this.handleClientModalOpen.bind(this)}
                                                 onClose={this.handleClientModalClose.bind(this)}
                                             />
+                                            <TrainerModal
+                                                trainerID={this.getAboutAttribute("id")}
+                                                open={this.state.clientModalOpen}
+                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onClose={this.handleTrainerModalClose.bind(this)}
+                                            />
                                             <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
                                         </Feed.Summary>
                                         <Divider/>
@@ -396,11 +529,63 @@ class NotificationCard extends Component {
                     </Card>
                 );
             }
+            else if (this.getInviteAttribute("inviteType") === "challengeInvite") {
+                //alert("hey yah");
+                //alert(this.getInviteAttribute("title"));
+                return (
+                    <Card fluid raised>
+                        <Card.Content>
+                            <Feed>
+                                <Feed.Event>
+                                    <Feed.Label>
+                                        <Image src={this.getFromAttribute("profilePicture")} circular size="large"/>
+                                    </Feed.Label>
+                                    <Feed.Content>
+                                        <Feed.Summary>
+                                            You were invited to{' '}
+                                            <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
+                                                {this.getAboutAttribute("title")}
+                                            </Feed.User>
+                                            <ChallengeDescriptionModal
+                                                open={this.state.challengeModalOpen}
+                                                onClose={this.handleChallengeModalClose.bind(this)}
+                                                challengeID={this.getAboutAttribute("id")}
+                                            />
+                                            {' '}by{' '}
+                                            <Feed.User onClick={this.handleClientModalOpen.bind(this)}>
+                                                {this.getFromAttribute("name")}
+                                            </Feed.User>
+                                            <ClientModal
+                                                clientID={this.getFromAttribute("id")}
+                                                open={this.state.clientModalOpen}
+                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onClose={this.handleClientModalClose.bind(this)}
+                                            />
+                                            <TrainerModal
+                                                trainerID={this.getAboutAttribute("id")}
+                                                open={this.state.clientModalOpen}
+                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onClose={this.handleTrainerModalClose.bind(this)}
+                                            />
+                                            <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
+                                        </Feed.Summary>
+                                        <Divider/>
+                                        <Feed.Extra>
+                                            <Button inverted loading={this.state.isDenyInviteLoading} disabled={this.state.isDenyInviteLoading} floated="right" size="small" onClick={this.handleDeclineChallengeRequestButton.bind(this)}>Deny</Button>
+                                            <Button primary loading={this.state.isAcceptInviteLoading} disabled={this.state.isAcceptInviteLoading} floated="right" size="small" onClick={this.handleAcceptChallengeRequestButton.bind(this)}>Accept</Button>
+                                        </Feed.Extra>
+                                    </Feed.Content>
+                                </Feed.Event>
+                            </Feed>
+                        </Card.Content>
+                    </Card>
+                );
+            }
             else {
                 return null;
             }
         }
-    }
+    //}
 }
 
 const mapStateToProps = (state) => ({
@@ -411,11 +596,20 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchClient: (id, variablesList) => {
-            dispatch(fetchClient(id, variablesList));
+        fetchClient: (id, variablesList, dataHandler) => {
+            dispatch(fetchClient(id, variablesList, dataHandler));
         },
-        fetchEvent: (id, variablesList) => {
-            dispatch(fetchEvent(id, variablesList));
+        fetchTrainer: (id, variablesList, dataHandler) => {
+            dispatch(fetchTrainer(id, variablesList, dataHandler))
+        },
+        fetchEvent: (id, variablesList, dataHandler) => {
+            dispatch(fetchEvent(id, variablesList, dataHandler));
+        },
+        fetchChallenge: (id, variablesList, dataHandler) => {
+            dispatch(fetchChallenge(id, variablesList, dataHandler));
+        },
+        fetchInvite: (id, variablesList, dataHandler) => {
+            dispatch(fetchInvite(id, variablesList, dataHandler));
         }
     };
 };
