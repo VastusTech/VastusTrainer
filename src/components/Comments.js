@@ -24,19 +24,13 @@ class Comments extends Component<Props> {
 
     render() {
         return (
-            <ScrollView
-                class='chat'
-                width={800}
-                height={400}
-                ref={ref => (this.scrollView = ref)}
-                onScroll={this.handleScroll}
-            >
+            <div>
                 {
                     this.props.comments.slice(0).reverse().map((comment, index) => {
                         return <Comment key={index} comment={comment} />
                     })
                 }
-            </ScrollView>
+            </div>
         );
     }
 }

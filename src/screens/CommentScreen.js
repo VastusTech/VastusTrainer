@@ -14,6 +14,7 @@ import {setHandlerToBoard} from "../redux_helpers/actions/ablyActions";
 import connect from "react-redux/es/connect/connect";
 import QL from "../GraphQL";
 import { getItemTypeFromID } from "../logic/ItemType";
+import ScrollView from "react-inverted-scrollview";
 
 type Props = {
     board: string,
@@ -113,9 +114,15 @@ class CommentScreen extends Component<Props> {
             <div className='u-margin-top--2'>
                 {/*console.log("Comment screen render user: " + this.props.curUser)*/}
                 {this.loadHistory(this.state.isLoading)}
-                <Grid width={40}>
+                <ScrollView
+                    class='chat'
+                    width={800}
+                    height={400}
+                    ref={ref => (this.scrollView = ref)}
+                    onScroll={this.handleScroll}
+                >
                     <Comments board={this.state.board} comments={this.getBoardMessages()}/>
-                </Grid>
+                </ScrollView>
                 <Divider className='u-margin-top--2' />
                 <CommentBox board={this.state.board}/>
             </div>
