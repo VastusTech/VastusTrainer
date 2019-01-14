@@ -25,6 +25,10 @@ export default (state = initialState, action) => {
                 notificationHandlers: {
                     ...state.notificationHandlers,
                     [action.payload.channel]: [action.payload.handler]
+                },
+                subscribedChannels: {
+                    ...state.subscribedChannels,
+                    [action.payload.channel]: action.payload.channel
                 }
             };
             break;
