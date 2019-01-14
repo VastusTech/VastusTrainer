@@ -17,9 +17,8 @@ class NotificationFeed extends Component {
         error: null,
         isLoading: true,
         sentRequest: false,
+        notifications: []
     };
-
-    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -27,30 +26,11 @@ class NotificationFeed extends Component {
         this.forceUpdate = this.forceUpdate.bind(this);
     }
 
-    resetState() {
-        this.setState({
-            error: null,
-            isLoading: true,
-            sentRequest: false,
-        });
-    }
-
     componentDidMount() {
-        //this.setState({isLoading: true});
-        // this.update();
         this.update(this.props);
-        this._isMounted = true;
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     componentWillReceiveProps(newProps, nextContext) {
-        //this.setState({isLoading: true});
-        if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
-            this.resetState();
-        }
         this.update(newProps);
     }
 
@@ -62,48 +42,68 @@ class NotificationFeed extends Component {
             this.setState({isLoading: true});
         }
 
-        if (this.state.isLoading && user.hasOwnProperty("receivedInvites") && user.receivedInvites && user.receivedInvites.length) {
-            this.setState({isLoading: false});
-            for (let i = 0; i < user.receivedInvites.length; i++) {
-                props.fetchInvite(user.receivedInvites[i], ["time_created", "from", "inviteType", "about", "description"]);
-            }
-        }
-        else if (!props.info.isLoading) {
-            if (!this.state.sentRequest && !props.info.error) {
-                props.fetchUserAttributes(["receivedInvites"]);
-                this.setState({sentRequest: true});
-            }
+        const fetchAndAddInvite = (inviteID) => {
+            props.fetchInvite(inviteID, ["time_created", "from", "inviteType", "about", "description"], (data) => {
+                this.state.notifications.push(data.id);
+                this.setState({isLoading: false});
+            });
+        };
+
+        const fetchAndAddReceivedInvites = (itemType, id) => {
+            let fetchFunction;
+            if (itemType === "Event") { fetchFunction = props.fetchEvent; }
+            if (itemType === "Challenge") { fetchFunction = props.fetchChallenge; }
+            if (itemType === "Group") { fetchFunction = props.fetchGroup; }
+            fetchFunction(id, ["receivedInvites"], (data) => {
+                if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
+                    for (let i = 0; i < data.receivedInvites.length; i++) {
+                        fetchAndAddInvite(data.receivedInvites[i]);
+                    }
+                }
+            });
+        };
+
+        if (!this.state.sentRequest) {
+            this.state.sentRequest = true;
+            props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
+                if (data) {
+                    if (data.hasOwnProperty("receivedInvites") && data.receivedInvites) {
+                        for (let i = 0; i < data.receivedInvites; i++) {
+                            fetchAndAddInvite(data.receivedInvites[i]);
+                        }
+                    }
+                    if (data.hasOwnProperty("ownedEvents") && data.ownedEvents) {
+                        for (let i = 0; i < data.ownedEvents.length; i++) {
+                            fetchAndAddReceivedInvites("Event", data.ownedEvents[i]);
+                        }
+                    }
+                    if (data.hasOwnProperty("ownedChallenges") && data.ownedChallenges) {
+                        for (let i = 0; i < data.ownedChallenges.length; i++) {
+                            fetchAndAddReceivedInvites("Challenge", data.ownedChallenges[i]);
+                        }
+                    }
+                    if (data.hasOwnProperty("ownedGroups") && data.ownedGroups) {
+                        for (let i = 0; i < data.ownedGroups.length; i++) {
+                            fetchAndAddReceivedInvites("Group", data.ownedGroups[i]);
+                        }
+                    }
+                }
+                else {
+                    this.setState({isLoading: false});
+                }
+            });
         }
     };
 
-
     forceUpdate = () => {
-        this.props.forceFetchUserAttributes(["receivedInvites"]);
+        this.state.sentRequest = false;
+        this.update(this.props);
+        // this.props.forceFetchUserAttributes(["receivedInvites"]);
     };
 
     //The buddy requests consists of a profile picture with the name of the user who has sent you a request.
     //To the right of the request is two buttons, one to accept and one to deny the current request.
     render() {
-
-        // function friendRows(friendRequests, userID, feedUpdate)
-        // {
-        //     //console.log(friendRequests);
-        //     if (friendRequests != null) {
-        //         return _.times(friendRequests.length, i => (
-        //             <NotificationCard userID={userID} friendRequestID={friendRequests[i]} feedUpdate={feedUpdate}/>
-        //         ));
-        //     }
-        // }
-        //
-        // function challengeRows(eventRequests, userID)
-        // {
-        //     //console.log(friendRequests);
-        //     if (eventRequests != null) {
-        //         return _.times(eventRequests.length, i => (
-        //             <NotificationCard userID={userID} eventRequestID={eventRequests[i]}/>
-        //         ));
-        //     }
-        // }
         function inviteRows(invites, feedUpdate) {
             return _.times(invites.length, i => (
                 <NotificationCard inviteID={invites[i]} feedUpdate={feedUpdate}/>
@@ -117,10 +117,10 @@ class NotificationFeed extends Component {
                 </Dimmer>
             );
         }
-        if (this.props.user.receivedInvites && this.props.user.receivedInvites.length && this.props.user.receivedInvites.length > 0) {
+        if (this.state.notifications && this.state.notifications.length && this.state.notifications.length > 0) {
             return(
                 <Fragment>
-                    {inviteRows(this.props.user.receivedInvites, this.forceUpdate.bind(this))}
+                    {inviteRows(this.state.notifications, this.forceUpdate.bind(this))}
                 </Fragment>
             );
         }
