@@ -17,7 +17,9 @@ class InviteToChallengeModalProp extends Component {
         loadedChallengeIDs: [],
         sentRequest: false,
         error: null,
-        isInviteLoading: false
+        isInviteLoading: false,
+        inviteButtonName: "Invite To Challenge",
+        isInviteDisabled: false
     };
 
     constructor(props) {
@@ -25,6 +27,7 @@ class InviteToChallengeModalProp extends Component {
         this.getChallengeAttribute = this.getChallengeAttribute.bind(this);
         InviteToChallengeModalProp.getTodayDateString = InviteToChallengeModalProp.getTodayDateString.bind(this);
         InviteToChallengeModalProp.convertMonth = InviteToChallengeModalProp.convertMonth.bind(this);
+        this.rows = this.rows.bind(this);
     }
 
     update() {
@@ -34,7 +37,6 @@ class InviteToChallengeModalProp extends Component {
         if (!user.id) {
             console.error("Pretty bad error");
             this.setState({isLoading: true});
-            this.setState({isInviteLoading: false});
         }
 
         if (this.state.isLoading && user.hasOwnProperty("challenges") && user.challenges && user.challenges.length) {
@@ -61,8 +63,11 @@ class InviteToChallengeModalProp extends Component {
         InviteFunctions.createChallengeInvite(this.props.user.id, this.props.user.id, this.props.friendID, challengeID,
             (data) => {
                 this.handleClose();
+                this.setState({isInviteLoading: false, isInviteDisabled: true, inviteButtonName: "Invite Sent"});
+
             }, (error) => {
                 console.log(JSON.stringify(error));
+                this.setState({isInviteLoading: false, error: error});
             });
     }
 
@@ -130,27 +135,29 @@ class InviteToChallengeModalProp extends Component {
         }
     }
 
-    render() {
-        function rows(userID, friendID, challenges, challengeInviteHandler, isInviteLoading, daysLeft) {
-            const rowProps = [];
-            for (let i = 0; i < challenges.length; i++) {
-                //alert("see me");
-                if (challenges.hasOwnProperty(i) === true && daysLeft(challenges[i]) >= 0) {
-                    rowProps.push(
-                        <Fragment key={i+1}>
-                            <Card fluid raised>
-                                <Card.Content>
-                                    <ChallengeCard challengeID={challenges[i]}/>
-                                    <Button loading={isInviteLoading} primary fluid onClick={() => {challengeInviteHandler(challenges[i])}}>Invite to Challenge</Button>
-                                </Card.Content>
-                            </Card>
-                        </Fragment>
-                    );
-                }
+    rows(userID, friendID, challenges, challengeInviteHandler, isInviteLoading, daysLeft) {
+        const rowProps = [];
+        for (let i = 0; i < challenges.length; i++) {
+            //alert("see me");
+            if (challenges.hasOwnProperty(i) === true && daysLeft(challenges[i]) >= 0) {
+                rowProps.push(
+                    <Fragment key={i+1}>
+                        <Card fluid raised>
+                            <Card.Content>
+                                <ChallengeCard challengeID={challenges[i]}/>
+                                <Button disabled={this.state.isInviteDisabled} loading={this.state.isInviteLoading} primary fluid onClick={() => {challengeInviteHandler(challenges[i])}}>{this.state.inviteButtonName}</Button>
+                            </Card.Content>
+                        </Card>
+                    </Fragment>
+                );
             }
-
-            return rowProps;
         }
+
+        return rowProps;
+    }
+
+    render() {
+
         if (this.props.info.isLoading) {
             //console.log("loading: " + JSON.stringify(this.state));
             return(
@@ -164,9 +171,10 @@ class InviteToChallengeModalProp extends Component {
                 <Modal centered dimmer='blurring' size='large' open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
                     <Modal.Header className="u-bg--bg">Select Challenge</Modal.Header>
                     <Modal.Content className="u-bg--bg">
-                        {rows(this.props.user.id, this.props.friendID, this.state.loadedChallengeIDs, this.sendInvite.bind(this),
+                        {this.rows(this.props.user.id, this.props.friendID, this.state.loadedChallengeIDs, this.sendInvite.bind(this),
                             this.state.isInviteLoading, this.getDaysLeft)}
                     </Modal.Content>
+                    {this.state.error}
                 </Modal>
             );
         }

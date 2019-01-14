@@ -18,7 +18,8 @@ class CommentBox extends Component<Props> {
         imagePath: '',
         imageURL: '',
         sentRequest: false,
-        canAddImage: true
+        canAddImage: true,
+        sendLoading: false
     };
 
     constructor(props) {
@@ -51,10 +52,13 @@ class CommentBox extends Component<Props> {
 
         // Make sure name and comment boxes are filled
         if (comment) {
+            this.setState({sendLoading: true});
             MessageFunctions.createTextMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board, comment, () => {
                 console.log("Successfully sent message!");
+                this.setState({sendLoading: false});
             }, (error) => {
                 console.error("Failed to send message! Error = " + JSON.stringify(error));
+                this.setState({sendLoading: false});
             });
 
             // Clear input fields
@@ -63,19 +67,25 @@ class CommentBox extends Component<Props> {
     }
 
     addPicture(picture) {
+        this.setState({sendLoading: true});
         MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
             picture, "picture", () => {
+                this.setState({sendLoading: false});
                 console.log("Successfully created picture message!");
             }, (error) => {
+                this.setState({sendLoading: false});
                 console.error("FAILED ADDING PICTURE. ERROR = " + JSON.stringify(error));
             })
     }
 
     addVideo(video) {
+        this.setState({sendLoading: true});
         MessageFunctions.createVideoMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
             video, "video", () => {
+                this.setState({sendLoading: false});
                 console.log("Successfully created video message!");
             }, (error) => {
+                this.setState({sendLoading: false});
                 console.error("FAILED ADDING VIDEO. ERROR = " + JSON.stringify(error));
             })
     }
@@ -111,7 +121,7 @@ class CommentBox extends Component<Props> {
                             <Icon name='camera' size = "Large"/>
                             <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden='true' onChange={this.setPictureOrVideo}/>
                         </Button>
-                        <Button primary>Send</Button>
+                        <Button loading={this.state.sendLoading} primary>Send</Button>
                     </Input>
                 </form>
             </Fragment>

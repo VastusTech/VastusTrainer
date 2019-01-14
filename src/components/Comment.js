@@ -85,39 +85,27 @@ class Comment extends Component<Props> {
             // Normal message
             if (ifSelf) {
                 // Self text
-                return(
-                    <Grid.Column floated='right' width={5}>
-                        <Container>
-                            <Grid>
-                                <Grid.Row style={{marginBottom: '-15px'}}>
-                                    <strong>{name}</strong>
-                                </Grid.Row>
-                                <Grid.Row style={{marginTop: '-15px'}}>
-                                    <Label pointing='right' size='large' color='purple'>
-                                        {message}
-                                    </Label>
-                                </Grid.Row>
-                            </Grid>
-                        </Container>
+                return (
+                    <Grid.Column floated='right' width={10}>
+                        <div>
+                            <Label pointing='right' size='large' color='purple'>
+                                {message}
+                            </Label>
+                            <strong>{name}</strong>
+                        </div>
                     </Grid.Column>
                 );
             }
             else {
                 // Other text
-                return(
-                    <Grid.Column floated='left' width={5}>
-                        <Container>
-                            <Grid>
-                                <Grid.Row style={{marginBottom: '-15px'}}>
-                                    <strong>{name}</strong>
-                                </Grid.Row>
-                                <Grid.Row style={{marginTop: '-15px'}}>
-                                    <Label pointing='left' size='large'>
-                                        {message}
-                                    </Label>
-                                </Grid.Row>
-                            </Grid>
-                        </Container>
+                return (
+                    <Grid.Column floated='left' width={10}>
+                        <div>
+                            <strong>{name}</strong>
+                            <Label pointing='left' size='large'>
+                                {message}
+                            </Label>
+                        </div>
                     </Grid.Column>
                 );
             }
@@ -129,6 +117,7 @@ class Comment extends Component<Props> {
             <Grid class="ui computer vertically reversed equal width grid">
                 {this.createCorrectComment()}
             </Grid>
+
         );
     }
 }

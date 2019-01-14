@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CommentBox from "../components/CommentBox";
 import Comments from '../components/Comments';
-import { Icon, Message, Divider } from "semantic-ui-react";
+import { Icon, Message, Divider, Grid } from "semantic-ui-react";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import {fetchClient, fetchTrainer, fetchMessageQuery, getFetchItemFunction} from "../redux_helpers/actions/cacheActions";
 import {
@@ -14,6 +14,7 @@ import {setHandlerToBoard} from "../redux_helpers/actions/ablyActions";
 import connect from "react-redux/es/connect/connect";
 import QL from "../GraphQL";
 import { getItemTypeFromID } from "../logic/ItemType";
+import ScrollView from "react-inverted-scrollview";
 
 type Props = {
     board: string,
@@ -110,11 +111,19 @@ class CommentScreen extends Component<Props> {
     render() {
 
         return (
-            <div className='u-margin-top--4'>
+            <div className='u-margin-top--2'>
                 {/*console.log("Comment screen render user: " + this.props.curUser)*/}
                 {this.loadHistory(this.state.isLoading)}
-                <Comments board={this.state.board} comments={this.getBoardMessages()}/>
-                <Divider className='u-margin-top--4' />
+                <ScrollView
+                    class='chat'
+                    width={800}
+                    height={400}
+                    ref={ref => (this.scrollView = ref)}
+                    onScroll={this.handleScroll}
+                >
+                    <Comments board={this.state.board} comments={this.getBoardMessages()}/>
+                </ScrollView>
+                <Divider className='u-margin-top--2' />
                 <CommentBox board={this.state.board}/>
             </div>
         );
@@ -154,3 +163,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentScreen);
+
