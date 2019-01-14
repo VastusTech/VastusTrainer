@@ -101,7 +101,7 @@ class NotificationCard extends Component<Props> {
     //     }
     // }
 
-    handleClientModalOpen() {
+    handleClientOrTrainerModalOpen() {
         if(this.getAboutAttribute("id")) {
             if (this.getAboutAttribute("id").substr(0, 2) === "CL") {
                 this.setState({clientModalOpen: true});
@@ -450,7 +450,7 @@ class NotificationCard extends Component<Props> {
                         </div>
 
                         <Card.Content textAlign='center'>
-                            <Card.Header onClick={this.handleClientModalOpen.bind(this)}>
+                            <Card.Header onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
                                 {this.getFromAttribute("name")}
                             </Card.Header>
                             <Card.Description>
@@ -466,13 +466,13 @@ class NotificationCard extends Component<Props> {
                         <ClientModal
                             clientID={this.getAboutAttribute("id")}
                             open={this.state.clientModalOpen}
-                            onOpen={this.handleClientModalOpen.bind(this)}
+                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
                             onClose={this.handleClientModalClose.bind(this)}
                         />
                         <TrainerModal
                             trainerID={this.getAboutAttribute("id")}
                             open={this.state.clientModalOpen}
-                            onOpen={this.handleClientModalOpen.bind(this)}
+                            onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
                             onClose={this.handleClientModalClose.bind(this)}
                         />
                     </Card>
@@ -500,19 +500,19 @@ class NotificationCard extends Component<Props> {
                                                 eventID={this.getAboutAttribute("id")}
                                             />
                                             {' '}by{' '}
-                                            <Feed.User onClick={this.handleClientModalOpen.bind(this)}>
+                                            <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
                                                 {this.getFromAttribute("name")}
                                             </Feed.User>
                                             <ClientModal
                                                 clientID={this.getFromAttribute("id")}
                                                 open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
                                                 onClose={this.handleClientModalClose.bind(this)}
                                             />
                                             <TrainerModal
                                                 trainerID={this.getAboutAttribute("id")}
                                                 open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
                                                 onClose={this.handleTrainerModalClose.bind(this)}
                                             />
                                             <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
@@ -552,19 +552,19 @@ class NotificationCard extends Component<Props> {
                                                 challengeID={this.getAboutAttribute("id")}
                                             />
                                             {' '}by{' '}
-                                            <Feed.User onClick={this.handleClientModalOpen.bind(this)}>
+                                            <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
                                                 {this.getFromAttribute("name")}
                                             </Feed.User>
                                             <ClientModal
                                                 clientID={this.getFromAttribute("id")}
                                                 open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
                                                 onClose={this.handleClientModalClose.bind(this)}
                                             />
                                             <TrainerModal
                                                 trainerID={this.getAboutAttribute("id")}
                                                 open={this.state.clientModalOpen}
-                                                onOpen={this.handleClientModalOpen.bind(this)}
+                                                onOpen={this.handleClientOrTrainerModalOpen.bind(this)}
                                                 onClose={this.handleTrainerModalClose.bind(this)}
                                             />
                                             <Feed.Date>{/*Insert Invite Sent Time Here*/}</Feed.Date>
