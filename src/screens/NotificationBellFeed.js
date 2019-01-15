@@ -39,6 +39,7 @@ class NotificationFeed extends React.PureComponent {
     }
 
     componentWillReceiveProps(newProps, nextContext) {
+        alert("c w r p");
         this.update(newProps);
     }
 
@@ -93,9 +94,9 @@ class NotificationFeed extends React.PureComponent {
                     // TODO FETCH THIS?
                     alert("not implemented!");
                 } else if (aboutItemType === "Event") {
-                    props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                    props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction"]);
                 } else if (aboutItemType === "Challenge") {
-                    props.fetchChallenge(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                    props.fetchChallenge(invite.about, ["id", "title", "endTime", "time_created", "owner", "members", "capacity", "difficulty", "restriction"]);
                 } else if (aboutItemType === "Group") {
                     // TODO FETCH THIS?
                     alert("not implemented!");
@@ -131,6 +132,7 @@ class NotificationFeed extends React.PureComponent {
         };
 
         if (!this.state.sentRequest) {
+            alert("Sending request...");
             this.state.sentRequest = true;
             props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
                 if (data) {
