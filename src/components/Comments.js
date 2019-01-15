@@ -1,16 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Comment from './Comment';
+import ScrollView from 'react-inverted-scrollview';
 
-class Comments extends Component {
+type Props = {
+    board: string
+};
+
+class Comments extends Component<Props> {
     render() {
         return (
-            <section className="section">
-                {
-                    this.props.comments.map((comment, index) => {
-                        return <Comment key={index} comment={comment} />
-                    })
-                }
-            </section>
+            <div style={{width: '300px'}}>
+            {
+                this.props.comments.slice(0).reverse().map((comment, index) => {
+                    return <Comment key={index} comment={comment} />
+                })
+            }
+            </div>
         );
     }
 }

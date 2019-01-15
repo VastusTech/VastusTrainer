@@ -1,14 +1,15 @@
 import { Fragment } from 'react';
 import {Tab, Menu, Icon, Header, Feed } from "semantic-ui-react";
-import EventFeed from "./EventFeed";
 import NotificationFeed from "./NotificationBellFeed";
 import ProfileProp from "./Profile";
 import React from "react";
-import CreateEventProp from "./CreateEvent";
-import NextWorkoutProp from "../components/NextWorkout";
-// import ScheduledEventsList from "./ScheduledEventList";
 import LeaderBoard from "./Leaderboard";
-import CommentScreen from "./CommentScreen";
+import NotificationBellProp from "../components/NotificationBell";
+// import ChallengeFeed from "./ChallengeFeed";
+import PostFeed from "./PostFeed";
+import Calendar from "./Calendar";
+import OrganizationalScreen from "./OrganizationalScreen";
+// import SearchScreen from "./SearchScreen";
 
 /**
 * Tabs TODO Potentially clean this up
@@ -16,7 +17,7 @@ import CommentScreen from "./CommentScreen";
 * The app is currently split up into three sections: home, profile, and notifications.
  */
 export default () => (
-    <Tab menu={{fixed: "bottom", widths: 5, size: "small", inverted: true}} panes={
+    <Tab menu={{fixed: "bottom", widths: 4, size: "medium", inverted: true}} panes={
         [
             {
                 menuItem:
@@ -25,9 +26,7 @@ export default () => (
                     </Menu.Item>),
                 render: () =>
                     <Tab.Pane basic attached={false}>
-                        <CreateEventProp/>
-                        <NextWorkoutProp/>
-                        <EventFeed/>
+                        <PostFeed/>
                     </Tab.Pane>
             },
             {
@@ -39,28 +38,28 @@ export default () => (
                     <ProfileProp/>
                 </Tab.Pane>
             },
-            {
+            /*{
                 menuItem: (
                     <Menu.Item key={2}>
-                        <Icon name='winner' size='large' />
+                        <Icon name='world' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <LeaderBoard />
+                    <ProfileProp/>
                 </Tab.Pane>
-            },
+            },*/
             {
                 menuItem: (
                     <Menu.Item key={2}>
-                        <Icon name='comment' size='large' />
+                        <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <CommentScreen/>
+                    <Calendar />
                 </Tab.Pane>
             },
             {
                 menuItem: (
                     <Menu.Item key={3}>
-                        <Icon name='bell outline' size='large' />
+                        <NotificationBellProp/>
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
                     <Fragment>

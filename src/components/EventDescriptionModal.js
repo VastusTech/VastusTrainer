@@ -1,36 +1,22 @@
 import React, { Component } from 'react';
-import {Card, Modal, Button, Header, List, Divider, Grid, Icon} from 'semantic-ui-react';
+import {Card, Modal, Button, Header, List, Divider, Grid, Message} from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 import Lambda from '../Lambda';
 import EventMemberList from "../screens/EventMemberList";
 import { connect } from 'react-redux';
-import QL from '../GraphQL';
+// import QL from '../GraphQL';
 import {fetchClient, forceFetchEvent, fetchEvent} from "../redux_helpers/actions/cacheActions";
 import CompleteChallengeModal from "../screens/CompleteChallengeModal";
 import {forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
+import CommentScreen from "../screens/CommentScreen";
+import UserFunctions from "../databaseFunctions/UserFunctions";
+import EventFunctions from "../databaseFunctions/EventFunctions";
+import VideoUploadScreen from "../screens/VideoUploadScreen";
 
-function convertTime(time) {
-    if (parseInt(time, 10) > 12) {
-        return "0" + (parseInt(time, 10) - 12) + time.substr(2, 3) + "pm";
-    }
-    else if (parseInt(time, 10) === 12) {
-        return time + "pm";
-    }
-    else if (parseInt(time, 10) === 0) {
-        return "0" + (parseInt(time, 10) + 12) + time.substr(2, 3) + "am"
-    }
-    else {
-        return time + "am"
-    }
-}
-
-function convertDate(date) {
-    let dateString = String(date);
-    let year = dateString.substr(0, 4);
-    let month = dateString.substr(5, 2);
-    let day = dateString.substr(8, 2);
-
-    return month + "/" + day + "/" + year;
+type Props = {
+    open: boolean,
+    onClose: any,
+    eventID: string
 }
 
 /*
@@ -39,11 +25,11 @@ function convertDate(date) {
 * This is the event description which displays more in depth information about a challenge, and allows the user
 * to join the challenge.
  */
-class EventDescriptionModal extends Component {
+class EventDescriptionModal extends Component<Props> {
     state = {
         // isLoading: false,
-        // isOwned: null,
-        // isJoined: null,
+        isOwned: false,
+        isJoined: false,
         eventID: null,
         // event: null,
         // ownerName: null,
@@ -52,7 +38,9 @@ class EventDescriptionModal extends Component {
         completeModalOpen: false,
         isLeaveLoading: false,
         isDeleteLoading: false,
-        isJoinLoading: false
+        isJoinLoading: false,
+        joinRequestSent: false,
+        canCallChecks: true,
     };
 
     constructor(props) {
@@ -63,6 +51,14 @@ class EventDescriptionModal extends Component {
         this.handleLeave = this.handleLeave.bind(this);
         this.handleJoin = this.handleJoin.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.isOwned = this.isOwned.bind(this);
+        this.isJoined = this.isJoined.bind(this);
+    }
+
+    componentDidMount() {
+        this.isJoined();
+        this.isOwned();
+        //console.log("Mount Owned: " + this.state.isOwned);
     }
 
     componentWillReceiveProps(newProps) {
@@ -135,54 +131,59 @@ class EventDescriptionModal extends Component {
     }
 
     handleDeleteEventButton() {
-        alert("Handling deleting the event");
+        //console.log("Handling deleting the event");
         this.setState({isLoading: true});
-        Lambda.deleteEvent(this.props.user.id, this.getEventAttribute("id"), (data) => {
+        EventFunctions.delete(this.props.user.id, this.getEventAttribute("id"), (data) => {
             this.forceUpdate(data.id);
-            // alert(JSON.stringify(data));
-            this.setState({isLoading: false, event: null, isOwned: false, isJoined: false});
+            // console.log(JSON.stringify(data));
+            this.setState({isDeleteLoading: false, event: null, isOwned: false, isJoined: false});
         }, (error) => {
-            // alert(JSON.stringify(error));
-            this.setState({isLoading: false, error: error});
+            // console.log(JSON.stringify(error));
+            this.setState({isDeleteLoading: false, error: error});
         })
     }
 
     handleLeaveEventButton() {
-        alert("Handling leaving the event");
+        //console.log("Handling leaving the event");
         this.setState({isLoading: true});
-        Lambda.removeClientFromEvent(this.props.user.id, this.props.user.id, this.getEventAttribute("id"), (data) => {
+        UserFunctions.removeEvent(this.props.user.id, this.props.user.id, this.getEventAttribute("id"), (data) => {
             this.forceUpdate(data.id);
-            //alert(JSON.stringify(data));
-            this.setState({isLoading: false, isJoined: false});
+            //console.log(JSON.stringify(data));
+            this.setState({isLeaveLoading: false, isJoined: false});
         }, (error) => {
-            //alert(JSON.stringify(error));
-            this.setState({isLoading: false, error: error});
+            //console.log(JSON.stringify(error));
+            this.setState({isLeaveLoading: false, error: error});
         })
     }
 
     handleJoinEventButton() {
-        alert("Handling joining the event");
+        //console.log("Handling joining the event");
         this.setState({isLoading: true});
-        Lambda.clientJoinEvent(this.props.user.id, this.props.user.id, this.getEventAttribute("id"),
+        UserFunctions.addEvent(this.props.user.id, this.props.user.id, this.getEventAttribute("id"),
             (data) => {
                 this.forceUpdate(data.id);
-                //alert(JSON.stringify(data));
-                this.setState({isLoading: false, isJoined: true});
+                //console.log(JSON.stringify(data));
+                this.setState({isJoinLoading: false, isJoined: true});
             }, (error) => {
-                this.setState({isLoading: false, error: error});
+                this.setState({isJoinLoading: false, error: error});
             })
     }
 
     isJoined() {
         const members = this.getEventAttribute("members");
         if (members) {
-            return members.includes(this.props.user.id);
+            const isMembers = members.includes(this.props.user.id);
+            //console.log("Is Members?: " + isMembers);
+            this.setState({isJoined: isMembers});
+            //console.log("am I in members?: " + members.includes(this.props.user.id));
         }
-        return false;
+        else {
+            this.setState({isJoined: false});
+        }
     }
 
     isOwned() {
-        return this.props.user.id === this.getEventAttribute("owner");
+        this.setState({isOwned: this.props.user.id === this.getEventAttribute("owner")});
     }
 
     handleLeave() {
@@ -210,9 +211,19 @@ class EventDescriptionModal extends Component {
 
     forceUpdate = (eventID) => {
         forceFetchEvent(eventID, ["owner",
-            "time", "capacity", "address", "title", "ifChallenge", "goal", "description", "difficulty", "memberIDs",
+            "time", "capacity", "address", "title", "ifChallenge", "description", "difficulty", "memberIDs",
             "access"]);
     };
+
+    displayError() {
+        if(this.state.error === "Error while trying to update an item in the database safely. Error: The item failed the checkHandler: That challenge is already filled up!") {
+            return (<Message negative>
+                <Message.Header>Sorry!</Message.Header>
+                <p>That challenge is already filled up!</p>
+            </Message>);
+        }
+
+    }
 
     render() {
         if (!this.getEventAttribute("id")) {
@@ -221,48 +232,68 @@ class EventDescriptionModal extends Component {
             );
         }
 
+        if(this.state.canCallChecks) {
+            this.isJoined();
+            this.isOwned();
+            //console.log("Render Owned: " + this.state.isOwned);
+            this.setState({canCallChecks: false});
+            //console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
+        }
+
         //This modal displays the challenge information and at the bottom contains a button which allows the user
         //to join a challenge.
         function createCorrectButton(isOwned, isJoined, ifCompleted, ifChallenge,
                                      joinHandler, leaveHandler, deleteHandler, completeHandler,
-                                     isLeaveLoading, isJoinLoading, isDeleteLoading) {
-            // alert(ifCompleted);
+                                     isLeaveLoading, isJoinLoading, isDeleteLoading, username, channelName, curUserID) {
+            //console.log("Owned: " + isOwned + " Joined: " + isJoined);
+            // console.log(ifCompleted);
             if (ifCompleted === "true") {
                 return(
-                    <Button fluid inverted size="large">This Event is completed</Button>
+                    <Button disabled fluid inverted size="large">This Event is completed</Button>
                 );
             }
             else if(isOwned) {
                 // TODO This should also link the choose winner button
                 if (ifChallenge) {
                     return (
-                        <Grid columns={2}>
-                            <Grid.Column>
-                                <Button loading={isDeleteLoading} fluid negative size="large" disabled={isDeleteLoading} onClick={deleteHandler}>Delete</Button>
-                            </Grid.Column>
-                            <Grid.Column>
-                                <Button primary fluid size="large" onClick={completeHandler}>Select Winner</Button>
-                            </Grid.Column>
-                        </Grid>
+                        <div>
+                            <Grid columns={2}>
+                                <Grid.Column>
+                                    <Button loading={isDeleteLoading} fluid negative size="large" disabled={isDeleteLoading} onClick={deleteHandler}>Delete</Button>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Button primary fluid size="large" onClick={completeHandler}>Select Winner</Button>
+                                </Grid.Column>
+                            </Grid>
+                            <VideoUploadScreen curUser={username} curUserID={curUserID} challengeChannel={channelName}/>
+                        </div>
                     )
                 }
                 else {
                     return(
-                        <Button loading={isDeleteLoading} fluid negative size="large" disabled={isDeleteLoading} onClick={deleteHandler}>Delete</Button>
+                        <div>
+                            <Button loading={isDeleteLoading} fluid negative size="large" disabled={isDeleteLoading} onClick={deleteHandler}>Delete</Button>
+                            <VideoUploadScreen curUser={username} curUserID={curUserID} challengeChannel={channelName}/>
+                        </div>
                     );
                 }
             }
             else if(isJoined) {
-                return (<Button loading={isLeaveLoading} fluid inverted size="large" disabled={isLeaveLoading} onClick={leaveHandler}>Leave</Button>)
+                return (
+                    <div>
+                        <Button loading={isLeaveLoading} fluid inverted size="large" disabled={isLeaveLoading} onClick={leaveHandler}>Leave</Button>
+                        <VideoUploadScreen curUser={username} curUserID={curUserID} challengeChannel={channelName}/>
+                    </div>
+                )
             }
             else {
-                //alert(isJoinLoading);
-                return (<Button loading={isJoinLoading} fluid negative size="large" disabled={isJoinLoading}
-                        onClick={joinHandler}>Join</Button>)
+                //console.log(isJoinLoading);
+                return (<Button loading={isJoinLoading} fluid size="large" disabled={isJoinLoading}
+                                onClick={joinHandler}>Join</Button>)
             }
         }
 
-        //alert("Challenge Info: " + JSON.stringify(this.state.event));
+        //console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <Modal open={this.props.open} onClose={this.props.onClose.bind(this)}>
                 <Modal.Header>{this.getEventAttribute("title")}</Modal.Header>
@@ -292,7 +323,7 @@ class EventDescriptionModal extends Component {
                             <List.Item>
                                 <List.Icon name='trophy' />
                                 <List.Content>
-                                    {this.getEventAttribute("goal")}
+                                    {/*this.getChallengeAttribute("goal")*/}
                                 </List.Content>
                             </List.Item>
                             <List.Item>
@@ -306,12 +337,23 @@ class EventDescriptionModal extends Component {
                                 </List.Content>
                             </List.Item>
                         </List>
-                            {createCorrectButton(this.isOwned(), this.isJoined(), this.getEventAttribute("ifCompleted"),
+                            {createCorrectButton(this.state.isOwned, this.state.isJoined, this.getEventAttribute("ifCompleted"),
                                 this.getEventAttribute("ifChallenge"), this.handleJoin, this.handleLeave,
                                 this.handleDelete, this.openCompleteModal.bind(this), this.state.isLeaveLoading,
-                                this.state.isJoinLoading, this.state.isDeleteLoading)}
+                                this.state.isJoinLoading, this.state.isDeleteLoading, this.props.user.username, this.getEventAttribute("title"),
+                            this.props.user.id)}
                     </Modal.Description>
-                </Modal.Content>
+                    <div>{this.displayError()}</div>
+                    {/*
+                        <Modal trigger={<Button primary id="ui center aligned"><Icon name="comment outline"/></Button>}>
+                            <Grid>
+                                <div id="ui center align">
+
+                                </div>
+                            </Grid>
+                        </Modal>
+                        */}
+                    </Modal.Content>
             </Modal>
         );
     }

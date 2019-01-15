@@ -29,7 +29,7 @@ class EventMemberList extends Component {
             this.setState({eventID: this.props.eventID, isLoading: false});
         }
         //if (this.props.members) {
-        //alert("owned:" + this.props.ifOwned);
+        //console.log("owned:" + this.props.ifOwned);
         // this.setState({isLoading: false, members: this.props.members, ifOwned: this.props.ifOwned});
         //}
     }
@@ -58,14 +58,14 @@ class EventMemberList extends Component {
 
     render() {
         // function createCorrectButton(userID, winnerID, challengeID, isOwned) {
-        //     //alert("user: " + userID + " winner: " + winnerID + " challenge: " + challengeID + " Owned?: " + isOwned);
+        //     //console.log("user: " + userID + " winner: " + winnerID + " challenge: " + challengeID + " Owned?: " + isOwned);
         //     if(isOwned === true) {
         //         return (
         //             <Button basic color='purple' onClick={() => {Lambda.completeChallenge(userID, winnerID, challengeID,
         //                 (data) => {
-        //                     alert(JSON.stringify(data));
+        //                     console.log(JSON.stringify(data));
         //                 }, (error) => {
-        //                     alert(JSON.stringify(error));
+        //                     console.log(JSON.stringify(error));
         //                 })}}>
         //                 Declare Winner
         //             </Button>
@@ -75,7 +75,7 @@ class EventMemberList extends Component {
 
         function rows(userID, members, handleClientPress)
         {
-            //alert(members);
+            //console.log(members);
             return _.times(members.length, i => (
                 <Grid.Row key={i} className="ui one column stackable center aligned page grid">
                     <ClientCard clientID={members[i]}/>

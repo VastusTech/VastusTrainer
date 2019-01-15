@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import {Checkbox, Modal, Button, Icon, Form, Segment, TextArea, Dropdown, Label} from 'semantic-ui-react';
+import {Checkbox, Modal, Button, Icon, Form, Segment, TextArea, Dropdown, Label, Image, Message} from 'semantic-ui-react';
 import Lambda from "../Lambda";
 import {connect} from "react-redux";
 import {setError} from "../redux_helpers/actions/infoActions";
+import VTLogo from "../img/vt_new.svg";
+import QL from "../GraphQL";
+import {clearEventQuery, fetchEvent, putEvent, putEventQuery} from "../redux_helpers/actions/cacheActions";
+import ChallengeFunctions from "../databaseFunctions/ChallengeFunctions";
 
 // Take from StackOverflow, nice snippit!
 // https://stackoverflow.com/a/17415677
@@ -38,13 +42,17 @@ const timeOptions = [ { key: '0:15', value: '15', text: '0:15' },
     //{ key: '3:00+', value: '3:00+', text: '3:00+' }
 ];
 
+/*type Props = {
+    queryEvents: any
+}*/
+
 /*
 * Create Event Prop
 *
 * This is the modal for creating events. Every input is in the form of a normal text input.
 * Inputting the time and date utilizes the Semantic-ui Calendar React library which isn't vanilla Semantic.
  */
-class CreateEventProp extends Component {
+class CreateEventProp extends Component<Props> {
 
     state = {
         checked: false,
@@ -87,7 +95,7 @@ class CreateEventProp extends Component {
             this.eventState.access = 'public';
         }
         else {
-            alert("Event access should be public or private");
+            console.log("Event access should be public or private");
         }
     };
 
@@ -100,11 +108,11 @@ class CreateEventProp extends Component {
         const minute = parseInt(this.eventState.startTime.substr(3, 2));
         let startDate = new Date(year, month, day, hour, minute);
         let endDate = new Date(startDate.getTime() + (60000 * this.eventState.duration));
-        // alert(endDate.toDateString());
-        // alert(endDate.getMinutes());
+        // console.log(endDate.toDateString());
+        // console.log(endDate.getMinutes());
         // endDate.setMinutes(endDate.getMinutes() + this.eventState.duration);
-        // alert(endDate.getMinutes());
-        // alert(endDate.toDateString());
+        // console.log(endDate.getMinutes());
+        // console.log(endDate.toDateString());
 
         
 
@@ -115,106 +123,37 @@ class CreateEventProp extends Component {
         // TODO Check to see if valid inputs!
         if (this.eventState.capacity && this.eventState.location && this.eventState.title && this.eventState.goal) {
             if (Number.isInteger(+this.eventState.capacity)) {
-                Lambda.createChallengeOptional(this.props.user.id, this.props.user.id, time, this.eventState.capacity,
+                // TODO Fix this........
+                ChallengeFunctions.createChallengeOptional(this.props.user.id, this.props.user.id, time, this.eventState.capacity,
                     this.eventState.location, this.eventState.title, this.eventState.goal, this.eventState.description,
                     "3", [], this.eventState.access, (data) => {
                         console.log("Successfully created a challenge!");
+                        //This is the second call
+                        this.props.clearEventQuery();
+                        this.props.queryEvents();
                         this.setState({isSubmitLoading: false});
                         this.closeModal();
                         this.setState({showSuccessLabel: true});
                         //this.setState({showSuccessModal: true});
 
                     }, (error) => {
-                        //alert(JSON.stringify(error));
+                        //console.log(JSON.stringify(error));
                         this.setState({submitError: "*" + JSON.stringify(error)});
                         this.setState({isSubmitLoading: false});
                     });
             }
             else {
-                this.setState({isSubmitLoading: false});
-                alert("Capacity needs to be an integer!");
-                alert(this.eventState.capacity);
+                this.setState({isSubmitLoading: false, submitError: "Capacity needs to be an integer!"});
             }
         }
         else {
-            this.setState({isSubmitLoading: false});
-            alert("All fields need to be filled out!");
+            this.setState({isSubmitLoading: false, submitError: "All fields need to be filled out!"});
         }
-
-        // let time = '';
-        // let endTime;
-
-        // let date = this.eventState.startDateTime.substr(0, 11);
-        // let nextDate = this.eventState.startDateTime.substr(0, 8) + "0" +
-        //     (parseInt(this.eventState.startDateTime.substr(8, 2), 10) + 1) +
-        //     this.eventState.startDateTime.substr(10, 1);
-        // let hour = this.eventState.startDateTime.substr(11, 2);
-        // let durationHour = this.state.duration.substr(0, 1);
-        // let minute = this.eventState.startDateTime.substr(14, 2);
-        // let durationMinute = this.state.duration.substr(2, 2);
-        // let endHour = (parseInt(hour, 10) + parseInt(durationHour, 10));
-        //
-        // if(endHour >= 24) {
-        //     endTime = (this.eventState.startDateTime + "_" + nextDate + "0" + (parseInt(hour, 10) +
-        //         parseInt(durationHour, 10) - 24));
-        // }
-        // else if((endHour < 24) && (endHour < 10)) {
-        //     endTime = this.eventState.startDateTime + "_" + date + "0" +
-        //         (parseInt(hour, 10) + parseInt(durationHour, 10));
-        // }
-        // else {
-        //     endTime = this.eventState.startDateTime + "_" + date +
-        //         (parseInt(hour, 10) + parseInt(durationHour, 10));
-        // }
-        //
-        // alert("Minute: " + minute + " " + "Duration: " + durationMinute);
-        // if(((parseInt(minute, 10) + parseInt(durationMinute, 10))) >= 60) {
-        //     minute = (parseInt(minute, 10) + parseInt(durationMinute, 10)) - 60;
-        //     hour = "0" + (parseInt(hour, 10) + 1);
-        //     alert("Min: " + minute);
-        //     endTime = endTime.substr(0, 28) + (hour + ":" + minute);
-        //     alert("End: " + endTime);
-        // }
-        // else {
-        //     minute = (parseInt(minute, 10) + parseInt(durationMinute, 10));
-        //     alert("Min: " + minute);
-        //     endTime += (":" + minute);
-        //     alert("End: " + endTime);
-        // }
-        //
-        // alert("End time substring: " + endTime.substr(0, 28));
-        // alert(endTime);
-        //
-        // alert(endTime);
-
-        // if(Number.isInteger(+this.eventState.capacity)) {
-        //     Lambda.createChallenge(this.props.user.id, this.props.user.id, time, String(this.eventState.capacity),
-        //         String(this.eventState.location), String(this.eventState.title),
-        //         String(this.eventState.goal), (data) => {
-        //             alert(JSON.stringify(data));
-        //             // HANDLE WHAT HAPPENS afterwards
-        //             if (data.errorMessage) {
-        //                 // Java error handling
-        //                 alert("ERROR: " + data.errorMessage + "!!! TYPE: " + data.errorType + "!!! STACK TRACE: " + data.stackTrace + "!!!");
-        //             }
-        //             else {
-        //                 alert("ya did it ya filthy animal");
-        //             }
-        //         }, (error) => {
-        //             alert(error);
-        //             // TODO HANDLE WHAT HAPPENS afterwards
-        //             // TODO keep in mind that this is asynchronous
-        //         }
-        //     );
-        // }
-        // else {
-        //     alert("Capacity must be an integer! Instead it is: " + this.eventState.capacity);
-        // }
     };
 
     handleDurationChange = (e, data) => {
         this.eventState.duration = data.value;
-        alert(this.eventState.duration);
+        //console.log(this.eventState.duration);
         // this.setState({
         //     duration: data.value,
         // }, () => {
@@ -270,6 +209,14 @@ class CreateEventProp extends Component {
         this.setState({showSuccessModal: false});
     };
 
+    displayError() {
+        if(this.state.submitError !== "") {
+            return (<Message negative>
+                <Message.Header>Sorry!</Message.Header>
+                <p>{this.state.submitError}</p>
+            </Message>);
+        }
+    }
 
     //Inside of render is a modal containing each form input required to create a Event.
     render() {
@@ -279,8 +226,8 @@ class CreateEventProp extends Component {
             <div>{this.createSuccessLabel()}</div>
             <Segment raised inverted>
                 {/*Modal trigger={<Button primary fluid size="large" closeIcon>+ Create Event</Button>} closeIcon>*/}
-                <Modal closeIcon onClose={this.closeModal} open={this.state.showModal} trigger={<div>
-                    <Button primary fluid size="large" onClick={() => this.setState({ showModal: true })}><Icon className='plus' />Post Challenge</Button></div>}>
+                <Modal onClose={this.closeModal} open={this.state.showModal} trigger={<div>
+                    <Button primary fluid size="large" onClick={() => this.setState({ showModal: true })}>{<Image src={VTLogo} avatar />}Custom Challenge</Button></div>}>
                     <Modal.Header align='center'>Challenge Builder</Modal.Header>
                     <Modal.Content>
 
@@ -291,16 +238,12 @@ class CreateEventProp extends Component {
                             </Form.Group>
                             <Form.Group unstackable widths={3}>
                                 <div className="field">
-                                    <label>Event Date</label>
+                                    <label>End Date</label>
                                     <input type="date" name="eventDate" defaultValue={CreateEventProp.getTodayDateString()} onChange={value => this.changeStateText("eventDate", value)}/>
                                 </div>
                                 <div className="field">
-                                    <label>Start Time</label>
-                                    <input type="time" name="startTime" defaultValue={CreateEventProp.getNowTimeString()} onChange={value => this.changeStateText("startTime", value)}/>
-                                </div>
-                                <div className="field">
                                     <label>Duration</label>
-                                    <Dropdown placeholder='duration' defaultValue={this.eventState.duration} fluid search selection options={timeOptions} onChange={this.handleDurationChange}/>
+                                    <Dropdown placeholder='duration' defaultValue={this.eventState.duration} fluid search selection inverted options={timeOptions} onChange={this.handleDurationChange}/>
                                 </div>
                             </Form.Group>
                             <Form.Group unstackable widths={2}>
@@ -318,7 +261,7 @@ class CreateEventProp extends Component {
                                     <Checkbox toggle onClick={this.handleAccessSwitch} onChange={this.toggle} checked={this.state.checked} label={this.eventState.access} />
                                 </Form.Field>
                             </Form.Group>
-                            <div>{this.state.submitError}</div>
+                            <div>{this.displayError()}</div>
                         </Form>
                     </Modal.Content>
                     <Modal.Actions>
@@ -332,15 +275,29 @@ class CreateEventProp extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    user: state.user
+    user: state.user,
+    info: state.info,
+    cache: state.cache
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
         setError: (error) => {
             dispatch(setError(error));
+        },
+        fetchEvent: (id, variablesList) => {
+            dispatch(fetchEvent(id, variablesList));
+        },
+        putEvent: (event) => {
+            dispatch(putEvent(event));
+        },
+        putEventQuery: (queryString, queryResult) => {
+            dispatch(putEventQuery(queryString, queryResult));
+        },
+        clearEventQuery: () => {
+            dispatch(clearEventQuery())
         }
-    };
+    }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateEventProp);

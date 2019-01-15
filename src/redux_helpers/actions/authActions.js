@@ -2,7 +2,9 @@ import { Auth } from "aws-amplify";
 import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
 import {fetchUser, clearUser, setUser, forceSetUser} from "./userActions";
 import QL from "../../GraphQL";
-import Lambda from "../../Lambda";
+// import Lambda from "../../Lambda";
+import TrainerFunctions from "../../databaseFunctions/TrainerFunctions";
+import {addHandlerToNotifications, removeAllHandlers} from "./ablyActions";
 
 export function updateAuth() {
     return (dispatch) => {
@@ -13,12 +15,17 @@ export function updateAuth() {
         // Auth.currentUserInfo();
         // Auth.currentUserPoolUser();
         Auth.currentAuthenticatedUser().then((user) => {
-            QL.getClientByUsername(user.username, ["id", "username"], (user) => {
+            QL.getTrainerByUsername(user.username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully updated the authentication credentials");
                 dispatch(setUser(user));
                 dispatch(authLogIn());
+                dispatch(addHandlerToNotifications((message) => {
+                    alert("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                }));
                 dispatch(setIsNotLoading());
             }, (error) => {
+                alert(JSON.stringify(error));
+                alert(error.code);
                 console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
@@ -33,7 +40,7 @@ export function logIn(username, password) {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
         Auth.signIn(username, password).then(() => {
-            QL.getClientByUsername(username, ["id", "username"], (user) => {
+            QL.getTrainerByUsername(username, ["id", "username"], (user) => {
                 console.log("REDUX: Successfully logged in!");
                 dispatch(authLogIn());
                 if (getStore().user.id !== user.id) {
@@ -42,6 +49,9 @@ export function logIn(username, password) {
                 else {
                     dispatch(setUser(user));
                 }
+                dispatch(addHandlerToNotifications((message) => {
+                    alert("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                }));
                 dispatch(setIsNotLoading());
             }, (error) => {
                 console.log("REDUX: Could not fetch the client");
@@ -49,20 +59,29 @@ export function logIn(username, password) {
                 dispatch(setIsNotLoading());
             });
         }).catch((error) => {
-            console.log("REDUX: Failed log in...");
-            console.log(error);
-            dispatch(setError(error));
-            dispatch(setIsNotLoading());
+            if (error.code === "UserNotConfirmedException") {
+                dispatch(authSignUp());
+                dispatch(openSignUpModal());
+                dispatch(setIsNotLoading());
+            }
+            else {
+                console.log("REDUX: Failed log in...");
+                console.log(error);
+                dispatch(setError(error));
+                dispatch(setIsNotLoading());
+            }
         });
     };
 }
 export function logOut() {
     return (dispatch, getStore) => {
         dispatch(setIsLoading());
+        const userID = getStore().user.id;
         Auth.signOut({global: true}).then((data) => {
             console.log("REDUX: Successfully logged out!");
             // dispatch(clearUser());
             dispatch(authLogOut());
+            dispatch(removeAllHandlers());
             dispatch(setIsNotLoading());
         }).catch((error) => {
             console.log("REDUX: Failed log out...");
@@ -84,7 +103,7 @@ export function signUp(username, password, name, gender, birthday, email) {
                 email: email
             }
         };
-        Lambda.createClient("admin", name, gender, birthday, email, username, (clientID) => {
+        TrainerFunctions.createTrainerOptional("admin", name, gender, birthday, username, email, null, (trainerID) => {
             Auth.signUp(params).then((data) => {
                 console.log("REDUX: Successfully signed up!");
                 dispatch(authSignUp());
@@ -94,10 +113,10 @@ export function signUp(username, password, name, gender, birthday, email) {
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
                 // TODO DELETE CLIENT THAT WAS CREATED!!!!
-                Lambda.deleteClient("admin", clientID);
+                TrainerFunctions.delete("admin", trainerID);
             });
         }, (error) => {
-            console.log("REDUX: Creating new client failed...");
+            console.log("REDUX: Creating new trainer failed...");
             dispatch(setError(error));
             dispatch(setIsNotLoading());
         });
@@ -136,8 +155,8 @@ export function confirmForgotPassword(username, confirmationCode, newPassword) {
         dispatch(setIsLoading());
         Auth.forgotPasswordSubmit(username, confirmationCode, newPassword).then(() => {
             console.log("REDUX: Successfully submitted forgot password!");
-            dispatch(authConfirmSignUp());
-            dispatch(closeForgotPasswordModal());
+            dispatch(authConfirmForgotPassword());
+            // dispatch(closeForgotPasswordModal());
             dispatch(setIsNotLoading());
         }).catch((error) => {
             console.log("REDUX: Failed submitting forgot password...");

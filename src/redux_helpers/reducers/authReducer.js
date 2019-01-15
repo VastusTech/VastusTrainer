@@ -121,7 +121,7 @@ export default (state = initialState, action) => {
             };
             break;
     }
-    // alert("AUTH: Did " + action.type + " and now state is = " + JSON.stringify(state));
+    // console.log("AUTH: Did " + action.type + " and now state is = " + JSON.stringify(state));
     return state;
 }
 

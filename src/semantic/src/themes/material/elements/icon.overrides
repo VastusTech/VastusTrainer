@@ -15,7 +15,7 @@ i.icon.adb:before { content: '\e60e'}
 i.icon.add:before { content: '\e145'}
 i.icon.add.a.photo:before { content: '\e439'}
 i.icon.add.alarm:before { content: '\e193'}
-i.icon.add.alert:before { content: '\e003'}
+i.icon.add.console.log:before { content: '\e003'}
 i.icon.add.box:before { content: '\e146'}
 i.icon.add.circle:before { content: '\e147'}
 i.icon.add.circle.outline:before { content: '\e148'}
@@ -73,7 +73,7 @@ i.icon.autorenew:before { content: '\e863'}
 i.icon.av.timer:before { content: '\e01b'}
 i.icon.backspace:before { content: '\e14a'}
 i.icon.backup:before { content: '\e864'}
-i.icon.battery.alert:before { content: '\e19c'}
+i.icon.battery.console.log:before { content: '\e19c'}
 i.icon.battery.charging.full:before { content: '\e1a3'}
 i.icon.battery.full:before { content: '\e1a4'}
 i.icon.battery.std:before { content: '\e1a5'}
@@ -766,7 +766,7 @@ i.icon.signal.wifi.four.bar:before { content: '\e1d8'}
 i.icon.signal.wifi.four.bar.lock:before { content: '\e1d9'}
 i.icon.signal.wifi.off:before { content: '\e1da'}
 i.icon.sim.card:before { content: '\e32b'}
-i.icon.sim.card.alert:before { content: '\e624'}
+i.icon.sim.card.console.log:before { content: '\e624'}
 i.icon.skip.next:before { content: '\e044'}
 i.icon.skip.previous:before { content: '\e045'}
 i.icon.slideshow:before { content: '\e41b'}

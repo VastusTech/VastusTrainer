@@ -18,7 +18,7 @@ class NextEventProp extends Component {
 
     constructor(props) {
         super(props);
-        //alert("Got into Scheduled Events constructor");
+        //console.log("Got into Scheduled Events constructor");
         this.update = this.update.bind(this);
     }
 
@@ -28,10 +28,10 @@ class NextEventProp extends Component {
 
     update(props) {
         if (!props.user.id) {
-            // alert("No user ID...");
+            // console.log("No user ID...");
             return;
         }
-        //alert("Cur User for grabbing Attributes: " + this.props.user.id);
+        //console.log("Cur User for grabbing Attributes: " + this.props.user.id);
         if (props.user.hasOwnProperty("scheduledEvents") && this.state.isLoading) {
             this.setState({isLoading: false});
             if (props.user.scheduledEvents && props.user.scheduledEvents.length) {
@@ -43,7 +43,7 @@ class NextEventProp extends Component {
                     // }
                     props.fetchEvent(props.user.scheduledEvents[i], ["id", "title", "goal", "time", "time_created", "owner", "ifChallenge", "ifCompleted", "members", "capacity", "difficulty", "access"],
                         () => {
-                            // alert(JSON.stringify(data));
+                            // console.log(JSON.stringify(data));
                             // Rerender when you get a new scheduled event
                             // this.state.events.push(data);
                             this.setState({});
@@ -74,9 +74,9 @@ class NextEventProp extends Component {
     //     });
     // }
     getEventTime(id) {
-        // alert("getting " + id);
+        // console.log("getting " + id);
         if (this.props.cache.events[id]) {
-            // alert("returning " + this.props.cache.events[id].time);
+            // console.log("returning " + this.props.cache.events[id].time);
             return this.props.cache.events[id].time;
         }
         return null;
@@ -88,7 +88,7 @@ class NextEventProp extends Component {
 
     componentWillReceiveProps(newProps, nextContext) {
         if (newProps.user && this.props.user && newProps.user.id !== this.props.user.id) {
-            // alert("resetting app for new user!");
+            // console.log("resetting app for new user!");
             this.resetState();
         }
         this.update(newProps);
@@ -96,10 +96,10 @@ class NextEventProp extends Component {
 
     render() {
         // this.update();
-        //alert("Redering");
+        //console.log("Redering");
         function rows(eventIDs, getEventTimeFunction) {
             const row = [];
-            // alert("eventIDs = " + JSON.stringify(eventIDs));
+            // console.log("eventIDs = " + JSON.stringify(eventIDs));
             for (const key in eventIDs) {
                 if (eventIDs.hasOwnProperty(key) && eventIDs[key]) {
                     const time = getEventTimeFunction(eventIDs[key]);
@@ -111,7 +111,7 @@ class NextEventProp extends Component {
                     }
                 }
             }
-            // alert("row = " + JSON.stringify(row));
+            // console.log("row = " + JSON.stringify(row));
 
             row.sort(function(a,b){return (b.time).localeCompare(a.time)});
 
@@ -119,7 +119,6 @@ class NextEventProp extends Component {
                 return (
                     <Fragment key={0}>
                         <Message>
-                            <Header>Your Next Challenge:</Header>
                             <EventCard eventID={row[row.length - 1].id}/>
                         </Message>
                     </Fragment>
@@ -130,7 +129,7 @@ class NextEventProp extends Component {
             }
         }
         if (this.state.isFetching) {
-            //alert("loading: " + JSON.stringify(this.state));
+            //console.log("loading: " + JSON.stringify(this.state));
             return(
                 <Message icon>
                     <Icon name='spinner' size="small" loading />
