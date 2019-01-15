@@ -51,7 +51,7 @@ class ChallengeCard extends Component {
 
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
-        fetchChallenge(this.state.challengeID, ["time_created", "prize"])
+        //this.props.fetchChallenge(this.state.challengeID, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
     }
 
     componentWillReceiveProps(newProps) {
@@ -104,7 +104,10 @@ class ChallengeCard extends Component {
         let curDate = this.getTodayDateString();
         let endTime = this.getChallengeAttribute("endTime");
         let curMonth = this.convertMonth(curDate.substr(4, 3));
-        let endMonth = endTime.substr(5, 2);
+        let endMonth = "";
+        if(endTime) {
+            endMonth = endTime.substr(5, 2);
+        }
         //console.log(endMonth + " vs " + curMonth + " = " + (endMonth - curMonth));
         if(endTime && curDate) {
             endTime = parseInt(endTime.substr(8, 2), 10);
@@ -142,7 +145,7 @@ class ChallengeCard extends Component {
                         <Image avatar src={require('../img/' + tags[1] + '_icon.png')}/>
                         <Image avatar src={require('../img/' + tags[2] + '_icon.png')}/>
                     </div>
-                    );
+                );
             }
             else if (tags.length === 4) {
                 return(
@@ -163,18 +166,18 @@ class ChallengeCard extends Component {
         }
     }
 
-    openChallengeModal = () => {this.setState({challengeModalOpen: true})};
-    closeChallengeModal = () => {this.setState({challengeModalOpen: false})};
+    openChallengeModal = () => {
+        if (!this.state.challengeModalOpen) {
+            console.log("Opening challenge modal");
+            this.setState({challengeModalOpen: true});
+        }
+    };
+    closeChallengeModal = () => {
+        this.setState({challengeModalOpen: false});
+        console.log("Closing challenge Modal pt. 2: the reckoning");
+    };
 
     render() {
-        if (!this.getChallengeAttribute("id")) {
-            return(
-                <Card color='purple' fluid raised>
-                    <h1>Loading...</h1>
-                </Card>
-            );
-        }
-        //alert(this.getDaysLeft());
         if (!this.getChallengeAttribute("id")) {
             //alert("can't find challenge");
             return null;
@@ -188,12 +191,11 @@ class ChallengeCard extends Component {
         // }
         return(
             // This is displays a few important pieces of information about the challenge for the feed view.
-            <Card color='purple' fluid raised onClick={this.openChallengeModal.bind(this)}>
+            <Card fluid raised onClick={this.openChallengeModal.bind(this)}>
                 <Card.Content textAlign = 'center'>
                     <Card.Header textAlign = 'center'>{this.getChallengeAttribute("title")}</Card.Header>
                     <Card.Meta textAlign = 'center' >{this.getDaysLeft()/*this.getDaysLeft(Date.daysBetween(this.getTodayDateString(), this.getChallengeAttribute("endTime")))*/} days left</Card.Meta>
-                    {this.displayTagIcons(this.getChallengeAttribute("tags"))}
-                    {/*alert(this.getDaysLeft())*/}
+                    {this.displayTagIcons(this.getChallengeAttribute("tags"))}{/*alert(this.getChallengeAttribute("tags"))*/}
                     <ChallengeDescriptionModal open={this.state.challengeModalOpen} onClose={this.closeChallengeModal.bind(this)} challengeID={this.getChallengeAttribute("id")}
                                                daysLeft={this.getDaysLeft()}/>
                 </Card.Content>
