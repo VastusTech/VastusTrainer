@@ -9,7 +9,7 @@ type Props = {
 class Comments extends Component<Props> {
     render() {
         return (
-            <div>
+            <div style={{width: '300px'}}>
             {
                 this.props.comments.slice(0).reverse().map((comment, index) => {
                     return <Comment key={index} comment={comment} />
