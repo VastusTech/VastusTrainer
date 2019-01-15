@@ -33,16 +33,15 @@ export function convertFromIntervalISO(dateTime) {
     return days[fromDate.getDay()]+', '+months[fromDate.getMonth()]+' '+fromDate.getDate()+', '+fromDate.getFullYear()+' '+fromhours+':'+fromminutes+fromampm + ' - '+tohours+':'+tominutes+toampm;
 }
 export function parseISOString(s) {
-    const b = s.split(/\D+/);
-    return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+    return new Date(String(s));
 }
 export function convertToISOString(date) {
     const tzo = -date.getTimezoneOffset(),
-            dif = tzo >= 0 ? '+' : '-',
-            pad = function(num) {
-                const norm = Math.floor(Math.abs(num));
-                return (norm < 10 ? '0' : '') + norm;
-            };
+        dif = tzo >= 0 ? '+' : '-',
+        pad = function(num) {
+            const norm = Math.floor(Math.abs(num));
+            return (norm < 10 ? '0' : '') + norm;
+        };
     return date.getFullYear() +
         '-' + pad(date.getMonth() + 1) +
         '-' + pad(date.getDate()) +
@@ -69,11 +68,13 @@ export function convertToISOIntervalString(fromDate, toDate) {
     return convertToISOString(fromDate) + "_" + convertToISOString(toDate);
 }
 export function daysLeft(dateTime) {
-    const now = Date();
+    const now = new Date();
     let one_day=1000*60*60*24;                       // Convert both dates to milliseconds
     let date1_ms = dateTime.getTime();
     let date2_ms = now.getTime();                   // Calculate the difference in milliseconds
-    let difference_ms = date2_ms - date1_ms;        // Convert back to days and return
+    // alert("1: " + date1_ms + ", 2: " + date2_ms);
+    let difference_ms = date1_ms - date2_ms;        // Convert back to days and return
+    // alert("difference = " + difference_ms);
     return Math.round(difference_ms/one_day);
 }
 function convertTime(time) {
