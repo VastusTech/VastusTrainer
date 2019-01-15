@@ -51,16 +51,33 @@ class NotificationFeed extends React.PureComponent {
         }
 
         const fetchAboutAndFromInfo = (invite) => {
-            if (invite && invite.from && invite.inviteType && invite.about) {
+            if (invite && invite.from && invite.to && invite.inviteType && invite.about) {
                 // Fetch from user information
                 const fromItemType = getItemTypeFromID(invite.from);
                 if (fromItemType === "Client") {
-                    alert("fetching client");
                     props.fetchClient(invite.from, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
                 } else if (fromItemType === "Trainer") {
-                    alert("fetching trainer");
                     props.fetchTrainer(invite.from, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
                 } else if (fromItemType === "Gym") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else {
+                    console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
+                }
+
+                const toItemType = getItemTypeFromID(invite.to);
+                if (toItemType === "Client") {
+                    props.fetchClient(invite.to, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
+                } else if (toItemType === "Trainer") {
+                    props.fetchTrainer(invite.to, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
+                } else if (toItemType === "Gym") {
+                    // TODO FETCH THIS?
+                    alert("not implemented!");
+                } else if (toItemType === "Event") {
+                    props.fetchEvent(invite.to, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                } else if (toItemType === "Challenge") {
+                    props.fetchChallenge(invite.to, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
+                } else if (toItemType === "Group") {
                     // TODO FETCH THIS?
                     alert("not implemented!");
                 } else {
@@ -69,19 +86,15 @@ class NotificationFeed extends React.PureComponent {
                 // Fetch about item information
                 const aboutItemType = getItemTypeFromID(invite.about);
                 if (aboutItemType === "Client") {
-                    alert("fetching client");
                     props.fetchClient(invite.about, ["id", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profilePicture"]);
                 } else if (aboutItemType === "Trainer") {
-                    alert("fetching trainer");
                     props.fetchTrainer(invite.about, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
                 } else if (aboutItemType === "Gym") {
                     // TODO FETCH THIS?
                     alert("not implemented!");
                 } else if (aboutItemType === "Event") {
-                    alert("fetching event");
                     props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
                 } else if (aboutItemType === "Challenge") {
-                    alert("fetching challenge");
                     props.fetchChallenge(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
                 } else if (aboutItemType === "Group") {
                     // TODO FETCH THIS?
@@ -96,7 +109,7 @@ class NotificationFeed extends React.PureComponent {
         };
 
         const fetchAndAddInvite = (inviteID) => {
-            props.fetchInvite(inviteID, ["time_created", "from", "inviteType", "about", "description"], (data) => {
+            props.fetchInvite(inviteID, ["time_created", "from", "to", "inviteType", "about", "description"], (data) => {
                 this.state.notifications.push(data.id);
                 fetchAboutAndFromInfo(data);
                 this.setState({isLoading: false});

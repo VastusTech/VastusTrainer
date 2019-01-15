@@ -35,6 +35,7 @@ class NotificationCard extends Component<Props> {
         isAcceptInviteLoading: false,
         isDenyInviteLoading: false,
         fromItemType: null,
+        toItemType: null,
         aboutItemType: null,
     };
 
@@ -366,6 +367,43 @@ class NotificationCard extends Component<Props> {
         return null;
     }
 
+    getToAttribute(attribute) {
+        const invite = this.props.cache.invites[this.props.inviteID];
+        if (invite && invite.to) {
+            const toItemType = this.getToItemType();
+            if (toItemType === "Client") {
+                const to = this.props.cache.clients[invite.to];
+                if (to) {
+                    return to[attribute];
+                }
+            }
+            else if (toItemType === "Trainer") {
+                const to = this.props.cache.trainers[invite.to];
+                if (to) {
+                    return to[attribute];
+                }
+            }
+            else if (toItemType === "Event") {
+                const to = this.props.cache.events[invite.to];
+                if (to) {
+                    return to[attribute];
+                }
+            }
+            else if (toItemType === "Challenge") {
+                const to = this.props.cache.challenges[invite.to];
+                if (to) {
+                    return to[attribute];
+                }
+            }
+            else if (toItemType === "Group") {
+                const to = this.props.cache.groups[invite.to];
+                if (to) {
+                    return to[attribute];
+                }
+            }
+        }
+        return null;
+    }
 
     getAboutAttribute(attribute) {
         const invite = this.props.cache.invites[this.props.inviteID];
@@ -403,6 +441,16 @@ class NotificationCard extends Component<Props> {
             }
         }
         return null;
+    }
+
+    getToItemType() {
+        if (!this.state.toItemType) {
+            const to = this.getInviteAttribute("to");
+            if (to) {
+                this.state.toItemType = getItemTypeFromID(to);
+            }
+        }
+        return this.state.toItemType;
     }
 
     getAboutItemType() {
@@ -597,9 +645,9 @@ class NotificationCard extends Component<Props> {
                                         <Feed.User onClick={this.handleClientOrTrainerModalOpen.bind(this)}>
                                             {this.getFromAttribute("name")}
                                         </Feed.User>
-                                        Would like to join {' '}
+                                        {' '} would like to join {' '}
                                         <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
-                                            {this.getAboutAttribute("title")}
+                                            {this.getToAttribute("title")}
                                         </Feed.User>
                                         <ChallengeDescriptionModal
                                             open={this.state.challengeModalOpen}
@@ -650,7 +698,7 @@ class NotificationCard extends Component<Props> {
                                         </Feed.User>
                                         Would like to join {' '}
                                         <Feed.User onClick={this.handleChallengeModalOpen.bind(this)}>
-                                            {this.getAboutAttribute("title")}
+                                            {this.getToAttribute("title")}
                                         </Feed.User>
                                         <ChallengeDescriptionModal
                                             open={this.state.challengeModalOpen}
@@ -768,3 +816,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotificationCard);
+
