@@ -473,7 +473,6 @@ class ChallengeDescriptionModal extends Component<Props> {
             //alert("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
 
-
         //alert("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <div>

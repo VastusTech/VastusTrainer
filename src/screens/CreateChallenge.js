@@ -308,13 +308,13 @@ class CreateChallengeProp extends Component {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Button inverted={this.state.hiitPressed} basic={!this.state.hiitPressed}>
-                                    <Image dark size='medium' src={require('../img/HIIT_icon.png')} onClick={() => {this.handleTag("HIIT")}}/>
+                                    <Image dark size='medium' src={require('../img/vastus-tech-icons-03.svg')} onClick={() => {this.handleTag("HIIT")}}/>
                                     <div style={{color: 'white'}}>HIIT</div>
                                 </Button>
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.strengthPressed} basic={!this.state.strengthPressed}>
-                                    <Image size='medium' src={require('../img/Strength_icon.png')} onClick={() => {this.handleTag("Strength")}}/>
+                                    <Image size='medium' src={require('../img/vastus-tech-icons-04.svg')} onClick={() => {this.handleTag("Strength")}}/>
                                     <div style={{color: 'white'}}>Strength</div>
                                 </Button>
                             </Grid.Column>
@@ -322,13 +322,13 @@ class CreateChallengeProp extends Component {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.performancePressed} basic={!this.state.performancePressed}>
-                                    <Image size='medium' src={require('../img/Performance_icon.png')} onClick={() => {this.handleTag("Performance")}}/>
+                                    <Image size='medium' src={require('../img/vastus-tech-icons-02.svg')} onClick={() => {this.handleTag("Performance")}}/>
                                     <div style={{color: 'white'}}>Performance</div>
                                 </Button>
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button inverted inverted={this.state.endurancePressed} basic={!this.state.endurancePressed}>
-                                    <Image size='medium' src={require('../img/Endurance_icon.png')} onClick={() => {this.handleTag("Endurance")}}/>
+                                    <Image size='medium' src={require('../img/vastus-tech-icons-01.svg')} onClick={() => {this.handleTag("Endurance")}}/>
                                     <div style={{color: 'white'}}>Endurance</div>
                                 </Button>
                             </Grid.Column>
