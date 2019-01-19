@@ -376,16 +376,16 @@ export function fetchQuery(itemType, variablesList, filter, limit, nextToken, da
         let queryString = QL.getConstructQueryFunction(itemType)(variablesList, filter, limit, nextToken);
         const nextTokenString = QL.getNextTokenString(nextToken);
         const normalizedQueryString = JSON.stringify(QL.getNormalizedQuery(queryString));
-        // if (nextTokenString === "null") { alert("N Q S = " + JSON.stringify(normalizedQueryString))}
+        // if (nextTokenString === "null") { console.log("N Q S = " + JSON.stringify(normalizedQueryString))}
         let queryCache = getQueryCache(itemType, getStore);
-        // if (nextTokenString === "null") { alert(itemType + " Cache = " + JSON.stringify(Object.keys(getStore().cache))); }
-        // if (nextTokenString === "null") { alert("THE Post Query cache = " + JSON.stringify(getStore().cache.postQueries)); }
-        // if (nextTokenString === "null") { alert(itemType + " Query cache = " + JSON.stringify(queryCache)); }
+        // if (nextTokenString === "null") { console.log(itemType + " Cache = " + JSON.stringify(Object.keys(getStore().cache))); }
+        // if (nextTokenString === "null") { console.log("THE Post Query cache = " + JSON.stringify(getStore().cache.postQueries)); }
+        // if (nextTokenString === "null") { console.log(itemType + " Query cache = " + JSON.stringify(queryCache)); }
         let queryResult = queryCache[normalizedQueryString];
-        // if (nextTokenString === "null") { alert("Normalized query cache = " + JSON.stringify(queryResult)); }
+        // if (nextTokenString === "null") { console.log("Normalized query cache = " + JSON.stringify(queryResult)); }
         if (queryResult) {
             queryResult = queryResult[nextTokenString];
-            // if (nextTokenString === "null") { alert("GOt! Query Result = " + JSON.stringify(queryResult))}
+            // if (nextTokenString === "null") { console.log("GOt! Query Result = " + JSON.stringify(queryResult))}
         }
         if (queryResult) {
             dispatch({
@@ -601,7 +601,7 @@ export function forceFetchSponsors(ids, variablesList, dataHandler, unretrievedD
     return batchForceFetch(ids, variablesList, "sponsors", "getSponsors", "FETCH_SPONSOR", dataHandler, unretrievedDataHandler, failureHandler);
 }
 export function fetchClientQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {
-    // alert("fetching clients");
+    // console.log("fetching clients");
     return fetchQuery("Client", variablesList, filter, limit, nextToken, dataHandler, failureHandler);
 }
 export function fetchTrainerQuery(variablesList, filter, limit, nextToken, dataHandler, failureHandler) {

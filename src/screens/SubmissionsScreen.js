@@ -97,7 +97,7 @@ class SubmissionsScreen extends Component<Props> {
                                     //lastPostTemp[this.state.lastPosts.indexOf(post.id)] = post.id
                                 }
                                 //this.setState({challengeMembers: curChalMems.push({key: (i+1), value: post.by, text: this.getName(post.by)})});
-                                //alert("List of options: " + JSON.stringify(this.state.challengeMembers));
+                                //console.log("List of options: " + JSON.stringify(this.state.challengeMembers));
                                 this.state.loadedPostIDs.push(post.id);
                                 this.setState({isLoading: false, alreadyInDropdown: false});
                             }
@@ -230,9 +230,9 @@ class SubmissionsScreen extends Component<Props> {
                 }
             }
             // row.sort(function(a,b){return b.time_created.localeCompare(a.time_created)});
-            // alert(JSON.stringify(postIDs));
+            // console.log(JSON.stringify(postIDs));
             for (const key in row) {
-                //alert(getPostAttribute(row[key], "by"));
+                //console.log(getPostAttribute(row[key], "by"));
                 if (memberSelected === 'all' || memberSelected === getPostAttribute(row[key], "by")) {
                     if (row.hasOwnProperty(key) === true) {
                         /*if(firstPosts.includes(row[key])) {
@@ -264,7 +264,7 @@ class SubmissionsScreen extends Component<Props> {
         }
         return (
             <Fragment>
-                {/*alert(JSON.stringify(this.state.challengeMembers))*/}
+                {/*console.log(JSON.stringify(this.state.challengeMembers))*/}
                 <Dropdown fluid selection inverted placeholder='all' defaultValue={this.state.challengeMembers[0]} options={this.state.challengeMembers} onChange={this.handleFilterChange}/>
                 {/*console.error("Comment screen render user: " + this.props.curUser)*/}
                 {this.getLoading()}

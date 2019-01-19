@@ -60,10 +60,10 @@ class Calendar extends React.Component {
 
     getChallengeAttribute(attribute, challengeID) {
         if (challengeID) {
-            //alert("Challenge ID: " + challengeID);
+            //console.log("Challenge ID: " + challengeID);
             let challenge = this.props.cache.challenges[challengeID];
             if (challenge) {
-                //alert("Challenge: " + JSON.stringify(challenge));
+                //console.log("Challenge: " + JSON.stringify(challenge));
                 if (attribute.substr(attribute.length - 6) === "Length") {
                     attribute = attribute.substr(0, attribute.length - 6);
                     if (challenge[attribute] && challenge[attribute].length) {
@@ -76,7 +76,7 @@ class Calendar extends React.Component {
                 /*if(attribute === "tags") {
                     console.log(challenge[attribute]);
                 }*/
-                //alert("Attribute found: " + challenge[attribute]);
+                //console.log("Attribute found: " + challenge[attribute]);
                 return challenge[attribute];
             }
         }
@@ -89,16 +89,16 @@ class Calendar extends React.Component {
           let dayChallenges = [];
           for (let i = 0; i < this.props.user.challenges.length; i++) {
               if (this.getChallengeAttribute("endTime", this.props.user.challenges[i])) {
-                  //alert(this.getDaysLeft(this.props.user.challenges[i]));
+                  //console.log(this.getDaysLeft(this.props.user.challenges[i]));
                   if ((this.getDaysLeft(this.props.user.challenges[i]) >= 0) && (this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) === convertToISOString(date).substr(0, 10))) {
                       //let dailyChallenges = this.state.dayChallengeIDs;
-                      //alert("Before: " + dailyChallenges.push(this.props.user.challenges[i]));
+                      //console.log("Before: " + dailyChallenges.push(this.props.user.challenges[i]));
                       dayChallenges.push(this.props.user.challenges[i]);
-                      //alert("After: " + dayChallenges);
+                      //console.log("After: " + dayChallenges);
                   }
               }
           }
-          //alert(dayChallenges);
+          //console.log(dayChallenges);
           if(dayChallenges.length > 0) {
               return (<ChallengeList challengeIDs={dayChallenges}/>);
               //return convertToISOString(date).substr(0, 10);
@@ -151,16 +151,16 @@ class Calendar extends React.Component {
             let dayChallenges = [];
             for (let i = 0; i < this.props.user.challenges.length; i++) {
                 if (this.getChallengeAttribute("endTime", this.props.user.challenges[i])) {
-                    //alert(this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) + " vs " + convertToISOString(date).substr(0, 10));
+                    //console.log(this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) + " vs " + convertToISOString(date).substr(0, 10));
                     if ((this.getDaysLeft(this.props.user.challenges[i]) >= 0) && this.getChallengeAttribute("endTime", this.props.user.challenges[i]).substr(0, 10) === convertToISOString(date).substr(0, 10)) {
                         //let dailyChallenges = this.state.dayChallengeIDs;
-                        //alert("Before: " + dailyChallenges.push(this.props.user.challenges[i]));
+                        //console.log("Before: " + dailyChallenges.push(this.props.user.challenges[i]));
                         dayChallenges.push(this.props.user.challenges[i]);
-                        //alert("After: " + dayChallenges);
+                        //console.log("After: " + dayChallenges);
                     }
                 }
             }
-            //alert(dayChallenges);
+            //console.log(dayChallenges);
             if(dayChallenges.length > 0) {
                 //return this.getChallengeAttribute("tags", dayChallenges[0]);
                 //this.displayTagIcons(this.getChallengeAttribute("tags", dayChallenges[0]));
@@ -226,7 +226,7 @@ class Calendar extends React.Component {
         const currentDate = getDate(new Date())
         const dateFormat = "D";
         const rows = [];
-        //alert(monthStart);
+        //console.log(monthStart);
 
 
         //days are an empty array

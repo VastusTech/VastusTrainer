@@ -63,7 +63,7 @@ class CreateSubmissionModal extends Component<Props> {
         for (let i = 0; i < this.state.videos.length; i++) {
             videos["videos/" + i] = this.state.videos[i];
         }
-        alert(JSON.stringify(pictures) + " vids: " + JSON.stringify(videos));
+        console.log(JSON.stringify(pictures) + " vids: " + JSON.stringify(videos));
         PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", pictures, videos, finishHandler, (error) => {
             console.error(error);
         });

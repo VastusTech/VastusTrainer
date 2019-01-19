@@ -102,7 +102,7 @@ class CommentBox extends Component<Props> {
             this.addVideo(file);
         }
         else {
-            alert("PROBLEMATIC FILE TYPE = " + fileType);
+            console.log("PROBLEMATIC FILE TYPE = " + fileType);
         }
     }
 

@@ -88,7 +88,7 @@ class PostCard extends Component {
     }
 
     getPostAttribute(attribute) {
-        //alert(this.props.postID);
+        //console.log(this.props.postID);
         if (this.state.postID) {
             let post = this.props.cache.posts[this.state.postID];
             if (post) {
@@ -151,7 +151,7 @@ class PostCard extends Component {
         const pictures = this.getPostAttribute("picturePaths");
         const videos = this.getPostAttribute("videoPaths");
         if (videos && videos.length > 0) {
-            //alert(videos[0]);
+            //console.log(videos[0]);
             if (!this.state.videoURL) {
                 const video = videos[0];
                 Storage.get(video).then((url) => {
@@ -172,11 +172,11 @@ class PostCard extends Component {
 
     getOwnerName() {
         const owner = this.getPostAttribute("by");
-        //alert(owner.substr(0, 2));
+        //console.log(owner.substr(0, 2));
         if (owner.substr(0, 2) === "CL") {
             if (this.props.cache.clients[owner]) {
-                //alert(JSON.stringify(this.props.cache.trainers));
-                //alert(JSON.stringify(this.props.cache.clients[owner]));
+                //console.log(JSON.stringify(this.props.cache.trainers));
+                //console.log(JSON.stringify(this.props.cache.clients[owner]));
                 return this.props.cache.clients[owner].name;
             }
             // else if (!this.props.info.isLoading) {
@@ -185,7 +185,7 @@ class PostCard extends Component {
         }
         else if (owner.substr(0, 2) === "TR") {
             if (this.props.cache.trainers[owner]) {
-                //alert(JSON.stringify(this.props.cache.trainers));
+                //console.log(JSON.stringify(this.props.cache.trainers));
                 return this.props.cache.trainers[owner].name;
             }
             // else if (!this.props.info.isLoading) {
@@ -221,7 +221,7 @@ class PostCard extends Component {
             //console.log(this.getPostAttribute("by"));
             let client = this.props.cache.clients[this.getPostAttribute("by")];
             if (client) {
-                //alert("Found Client in Challenge");
+                //console.log("Found Client in Challenge");
                 if (attribute.substr(attribute.length - 6) === "Length") {
                     attribute = attribute.substr(0, attribute.length - 6);
                     if (client[attribute] && client[attribute].length) {
@@ -243,17 +243,17 @@ class PostCard extends Component {
         let postType = this.getPostAttribute("postType");
         let itemType = this.getPostAttribute("item_type");
         if (postType && postType.length) {
-            //alert("Item Type: " + itemType);
+            //console.log("Item Type: " + itemType);
             if (postType.substr(0, 3) === "new") {
                 // TODO This indicates that this is for a newly created Item
                 postType = ItemType[postType.substring(3, postType.length)];
             }
-            //alert(itemType);
+            //console.log(itemType);
             if (postType) {
-                //alert("Post Type: " + postType);
+                //console.log("Post Type: " + postType);
                 // TODO Switch the post types
                 if (postType === "Client") {
-                    //alert("Client Share Post Spotted!");
+                    //console.log("Client Share Post Spotted!");
                     if(!this.state.postMessageSet) {
                         this.setState({postMessage: "shared a user profile", postMessageSet: true});
                     }
@@ -298,7 +298,7 @@ class PostCard extends Component {
             }
         }
         else if(itemType) {
-            //alert("Item Type: " + itemType);
+            //console.log("Item Type: " + itemType);
             if(!this.state.postMessageSet) {
                 this.setState({postMessage: "posted", postMessageSet: true});
             }
@@ -309,7 +309,7 @@ class PostCard extends Component {
 
     openClientModal = () => {
         if (this.getPostAttribute("by").substr(0, 2) === "CL") {
-            alert("Opening Client");
+            console.log("Opening Client");
             if (!this.state.clientModalOpen) {
                 this.setState({clientModalOpen: true});
                 this.props.fetchClient(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profileImagePaths"]);
@@ -317,7 +317,7 @@ class PostCard extends Component {
             ;
         }
         else if (this.getPostAttribute("by").substr(0, 2) === "TR") {
-            alert("Opening Trainer");
+            console.log("Opening Trainer");
             if (!this.state.trainerModalOpen) {
                 this.setState({trainerModalOpen: true});
                 this.props.fetchTrainer(this.getPostAttribute("by"), ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
@@ -353,7 +353,7 @@ class PostCard extends Component {
         if (!this.getChallengeAttribute("id")) {
             return null;
         }
-        //alert(JSON.stringify(this.props.cache.clients));
+        //console.log(JSON.stringify(this.props.cache.clients));
         return (
             // This is displays a few important pieces of information about the challenge for the feed view.
             <Card color='purple' fluid raised>

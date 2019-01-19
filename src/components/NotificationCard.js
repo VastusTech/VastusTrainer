@@ -430,7 +430,7 @@ class NotificationCard extends Component<Props> {
         }
         else {*/
         if (this.getInviteAttribute("inviteType") === "friendRequest") {
-            //alert(this.getInviteAttribute("inviteType"));
+            //console.log(this.getInviteAttribute("inviteType"));
             return (
                 <Card fluid raised centered>
                     <div className="u-container">
@@ -455,7 +455,7 @@ class NotificationCard extends Component<Props> {
             );
         }
         else if (this.getInviteAttribute("inviteType") === "eventInvite") {
-            //alert(this.getInviteAttribute("inviteType"));
+            //console.log(this.getInviteAttribute("inviteType"));
             return (
                 <Card fluid raised>
                     <Card.Content>
@@ -495,8 +495,8 @@ class NotificationCard extends Component<Props> {
             );
         }
         else if (this.getInviteAttribute("inviteType") === "challengeInvite") {
-            //alert("hey yah");
-            //alert(this.getInviteAttribute("title"));
+            //console.log("hey yah");
+            //console.log(this.getInviteAttribute("title"));
             return (
                 <Card fluid raised centered>
                     <div className="u-container">
@@ -530,8 +530,8 @@ class NotificationCard extends Component<Props> {
             );
         }
         else if (this.getInviteAttribute("inviteType") === "challengeRequest") {
-            //alert("hey yah");
-            //alert(this.getInviteAttribute("title"));
+            //console.log("hey yah");
+            //console.log(this.getInviteAttribute("title"));
             return (
                 <Card fluid raised centered>
                     <div className="u-container">
@@ -565,7 +565,7 @@ class NotificationCard extends Component<Props> {
             );
         }
         else if (this.getInviteAttribute("inviteType") === "eventRequest") {
-            //alert("hey yah");
+            //console.log("hey yah");
             //TODO: Update this when events are supported
             return (
                 <Card fluid raised>
@@ -605,7 +605,7 @@ class NotificationCard extends Component<Props> {
             );
         }
         else if (this.getInviteAttribute("inviteType") === "groupRequest") {
-            //alert("hey yah");
+            //console.log("hey yah");
             //TODO: Update this when groups are supported
             return (
                 <Card fluid raised>

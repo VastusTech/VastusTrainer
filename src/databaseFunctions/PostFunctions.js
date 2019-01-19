@@ -92,7 +92,7 @@ class PostFunctions {
             picturePaths,
             videoPaths,
         }, (data) => {
-            //alert("Data: " + JSON.stringify(data));
+            //console.log("Data: " + JSON.stringify(data));
             const id = data.data;
             const numVideosAndPictures = numPictures + numVideos;
             let numFinished = 0;
@@ -105,7 +105,7 @@ class PostFunctions {
                 PostFunctions.delete(fromID, id);
                 failureHandler(error);
             }
-            //alert(id);
+            //console.log(id);
             if (numVideosAndPictures === 0) {
                 successHandler(data);
             }

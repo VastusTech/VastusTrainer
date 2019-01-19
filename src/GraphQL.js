@@ -569,7 +569,7 @@ class GraphQL {
         else {
             console.log("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             if (ifDebug) {
-                alert("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
+                console.log("Sending ql = " + query.query + "\nWith variables = " + JSON.stringify(query.variables));
             }
             API.graphql(graphqlOperation(query.query, query.variables)).then((data) => {
                 console.log("GraphQL operation succeeded!");
@@ -582,7 +582,7 @@ class GraphQL {
                 // console.log("Returned!");
                 console.log("Returned: " + JSON.stringify(data.data[queryFunctionName]));
                 if (ifDebug) {
-                    alert("Returned: " + JSON.stringify(data.data[queryFunctionName]));
+                    console.log("Returned: " + JSON.stringify(data.data[queryFunctionName]));
                 }
                 // console.log(JSON.stringify(queryCache));
                 if (putQuery) {

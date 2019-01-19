@@ -120,7 +120,7 @@ class Profile extends React.PureComponent {
     }
 
     setPicture(event) {
-        //alert("This is calling regular set picture");
+        //console.log("This is calling regular set picture");
         if (this.props.user.id) {
             const path = "/ClientFiles/" + this.props.user.id + "/profileImage";
             //console.log("Calling storage put");
@@ -133,9 +133,9 @@ class Profile extends React.PureComponent {
                     (data) => {
                         //console.log("successfully editted client");
                         //console.log(JSON.stringify(data));
-                        alert("About to force fetc user attributes");
+                        console.log("About to force fetc user attributes");
                         this.props.forceFetchUserAttributes(["profileImagePath", "profilePicture"]);
-                        alert("Got past force fetch call");
+                        console.log("Got past force fetch call");
                         this.setState({isLoading: true});
                     }, (error) => {
                         console.log("Failed edit client attribute");
@@ -150,9 +150,9 @@ class Profile extends React.PureComponent {
     }
 
     setGalleryPicture(event) {
-        //alert("This is calling set gallery picture");
+        //console.log("This is calling set gallery picture");
         if (this.props.user.id) {
-            //alert(this.state.galleryNum);
+            //console.log(this.state.galleryNum);
             const path = "/ClientFiles/" + this.props.user.id + "/galleryImages" + this.state.galleryNum;
             //console.log("Calling storage put");
             //console.log("File = " + JSON.stringify(event.target.files[0]));
@@ -189,7 +189,7 @@ class Profile extends React.PureComponent {
     }
 
     setURLS(paths) {
-        //alert("Setting URLS");
+        //console.log("Setting URLS");
         if(paths) {
             for (let i = 0; i < paths.length; i++) {
                 if (this.state.galleryURLS) {
@@ -197,7 +197,7 @@ class Profile extends React.PureComponent {
                         let tempGal = this.state.galleryURLS;
                         tempGal[i] = url;
                         this.setState({galleryURLS: tempGal});
-                        //alert(JSON.stringify(this.state.galleryURLS));
+                        //console.log(JSON.stringify(this.state.galleryURLS));
                     }).catch((error) => {
                         console.error("ERROR IN GETTING VIDEO FOR COMMENT");
                         console.error(error);
@@ -232,12 +232,12 @@ class Profile extends React.PureComponent {
 
     imageGallery = () => {
         if(this.props.user.profileImagePaths) {
-            //alert(JSON.stringify(this.props.user.profileImagePaths));
+            //console.log(JSON.stringify(this.props.user.profileImagePaths));
             this.update();
         }
-        //alert(JSON.stringify(this.state.galleryURLS));
+        //console.log(JSON.stringify(this.state.galleryURLS));
         if(this.state.galleryURLS.length > 0) {
-            //alert(JSON.stringify(this.state.galleryURLS));
+            //console.log(JSON.stringify(this.state.galleryURLS));
             return _.times(this.state.galleryURLS.length, i => (
                 <div>
                     <Image src={this.state.galleryURLS[i]} align='center' style={{height: 500,

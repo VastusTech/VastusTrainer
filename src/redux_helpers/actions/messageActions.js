@@ -12,12 +12,12 @@ export function queryNextMessagesFromBoard(board, limit, dataHandler, failureHan
         let ifFirst = getStore().message.boardIfFirsts[board];
         if (ifFirst !== false) { ifFirst = true; }
         let nextToken = getStore().message.boardNextTokens[board];
-        // alert("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
+        // console.log("IF FIRST = " + ifFirst + ", NEXT TOKEN = " + nextToken);
         if (ifFirst || nextToken) {
             // Then you do the query
             QL.queryMessages(QL.constructMessageQuery(board, ["from", "name", "message", "type", "board", "id", "time_created"], null, limit, nextToken), (data) => {
                 if (data) {
-                    // alert(JSON.stringify(data));
+                    // console.log(JSON.stringify(data));
                     if (!data.items) { data.items = []; }
                     addURLToMessages(data.items, (messages) => {
                         dispatch(addQueryToBoard(board, messages, data.nextToken));

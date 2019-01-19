@@ -72,9 +72,9 @@ export function daysLeft(dateTime) {
     let one_day=1000*60*60*24;                       // Convert both dates to milliseconds
     let date1_ms = dateTime.getTime();
     let date2_ms = now.getTime();                   // Calculate the difference in milliseconds
-    // alert("1: " + date1_ms + ", 2: " + date2_ms);
+    // console.log("1: " + date1_ms + ", 2: " + date2_ms);
     let difference_ms = date1_ms - date2_ms;        // Convert back to days and return
-    // alert("difference = " + difference_ms);
+    // console.log("difference = " + difference_ms);
     return Math.round(difference_ms/one_day);
 }
 function convertTime(time) {

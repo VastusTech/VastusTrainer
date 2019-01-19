@@ -141,7 +141,7 @@ class ChallengeDetailCard extends Component {
             //console.log(this.getPostAttribute("by"));
             let client = this.props.cache.clients[this.getPostAttribute("by")];
             if (client) {
-                //alert("Found Client in Challenge");
+                //console.log("Found Client in Challenge");
                 if (attribute.substr(attribute.length - 6) === "Length") {
                     attribute = attribute.substr(0, attribute.length - 6);
                     if (client[attribute] && client[attribute].length) {
@@ -167,7 +167,7 @@ class ChallengeDetailCard extends Component {
                 console.log("Setting URLS: " + this.state.galleryURLS);
                 this.setState({urlsSet: true});
             }*/
-            //alert(this.getClientAttribute("profilePicture"));
+            //console.log(this.getClientAttribute("profilePicture"));
             return(
                 <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${this.getClientAttribute("profilePicture")})`, width: '50px', height: '50px'}}></div>
             );
@@ -374,7 +374,7 @@ class ChallengeDetailCard extends Component {
                         <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.getPostAttribute("by")}/>
                     </Button>
                 </Card.Header>*/}
-                {/*alert(this.getPostAttribute("by"))*/}
+                {/*console.log(this.getPostAttribute("by"))*/}
                 <ChallengeCard challengeID={this.getPostAttribute("about")}/>
             </Card>
         );

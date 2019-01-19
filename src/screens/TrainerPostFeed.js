@@ -71,15 +71,15 @@ class TrainerPostFeed extends Component<Props> {
             this.props.fetchTrainer(newProps.trainerID, ["posts"], (trainer) => {
                 this.setState({isLoading: false});
                     if (trainer && trainer.posts && trainer.posts.length) {
-                        //alert(trainer.posts[0]);
+                        //console.log(trainer.posts[0]);
                         for (let i = 0; i < trainer.posts.length; i++) {
-                            //alert("Trainer posts: " + trainer.posts[i]);
+                            //console.log("Trainer posts: " + trainer.posts[i]);
                             this.props.fetchPost(trainer.posts[i], ["by", "about", "time_created", "access", "description", "postType", "picturePaths", "videoPaths"], (post) => {
                                 let hiddenPosts = this.state.hiddenPostIDs;
                                 hiddenPosts[i] = post.id;
-                                //alert(hiddenPosts);
+                                //console.log(hiddenPosts);
                                 this.setState({hiddenPostIDs: hiddenPosts});
-                                //alert("state: " + JSON.stringify(this.state.hiddenPostIDs));
+                                //console.log("state: " + JSON.stringify(this.state.hiddenPostIDs));
                             });
                         }
                     }
@@ -119,8 +119,8 @@ class TrainerPostFeed extends Component<Props> {
         //     console.log(JSON.stringify(events[0].id));
         // console.log("EVENTS TO PRINT: ");
         // console.log(JSON.stringify(events));
-        //alert("rows should be running");
-        //alert(JSON.stringify(this.state.hiddenPostIDs));
+        //console.log("rows should be running");
+        //console.log(JSON.stringify(this.state.hiddenPostIDs));
         return _.times(this.state.hiddenPostIDs.length, i => (
             <Fragment key={i}>
                 <PostCard postID={this.state.hiddenPostIDs[i]}/>

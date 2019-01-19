@@ -65,8 +65,8 @@ class ClientModal extends Component<Props> {
 
     componentDidMount() {
         this.componentWillReceiveProps(this.props);
-        //alert(JSON.stringify(this.props));
-        //alert("Fetching client on mount");
+        //console.log(JSON.stringify(this.props));
+        //console.log("Fetching client on mount");
         //this.props.fetchClient(this.props.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "profilePicture", "friendRequests"]);
     }
 
@@ -74,7 +74,7 @@ class ClientModal extends Component<Props> {
         if (newProps.clientID) {
             if (this.state.clientID !== newProps.clientID) {
                 // console.log("Setting new state to " + newProps.clientID);
-                //alert("Fetching client will receive");
+                //console.log("Fetching client will receive");
                 this.resetState(newProps.clientID);
                 this.props.fetchClient(newProps.clientID, ["id", "username", "gender", "birthday", "name", "friends", "challengesWon", "scheduledEvents", "profileImagePath", "profileImagePaths", "profilePicture", "friendRequests"]);
                 this.state.clientID = newProps.clientID;
@@ -312,10 +312,10 @@ class ClientModal extends Component<Props> {
 
     shareClient() {
         this.setState({shareLoading: true});
-        //alert(this.props.user.id + " and " + this.getClientAttribute("description") + " and " + this.getClientAttribute("access"));
+        //console.log(this.props.user.id + " and " + this.getClientAttribute("description") + " and " + this.getClientAttribute("access"));
         PostFunctions.createShareItemPost(this.props.user.id, this.props.user.id, "", "public", "Client", this.getClientAttribute("id"), null, null, (returnValue) => {
-            alert("Successfully Created Post!");
-            alert(JSON.stringify(returnValue));
+            console.log("Successfully Created Post!");
+            console.log(JSON.stringify(returnValue));
             this.setState({shareLoading: false});
             this.setState({showSuccessLabel: true});
         }, (error) => {

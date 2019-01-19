@@ -20,12 +20,12 @@ export function updateAuth() {
                 dispatch(setUser(user));
                 dispatch(authLogIn());
                 dispatch(addHandlerToNotifications((message) => {
-                    alert("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                    console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
                 }));
                 dispatch(setIsNotLoading());
             }, (error) => {
-                alert(JSON.stringify(error));
-                alert(error.code);
+                console.log(JSON.stringify(error));
+                console.log(error.code);
                 console.log("REDUX: Could not fetch the client");
                 dispatch(setError(error));
                 dispatch(setIsNotLoading());
@@ -50,7 +50,7 @@ export function logIn(username, password) {
                     dispatch(setUser(user));
                 }
                 dispatch(addHandlerToNotifications((message) => {
-                    alert("Received ABLY notification!!!!!\n" + JSON.stringify(message));
+                    console.log("Received ABLY notification!!!!!\n" + JSON.stringify(message));
                 }));
                 dispatch(setIsNotLoading());
             }, (error) => {

@@ -321,8 +321,8 @@ class SearchBarProp extends Component {
                             // TODO Insertsort this? By what basis though?
                             while (formattedResult.title && resultTitles.includes(formattedResult.title)) {
                                 const len = formattedResult.title.length;
-                                // alert(JSON.stringify(resultTitles));
-                                // alert(formattedResult.title + "~ -3: " + formattedResult.title[len - 3] + ", -1: " + formattedResult.title[len - 1]);
+                                // console.log(JSON.stringify(resultTitles));
+                                // console.log(formattedResult.title + "~ -3: " + formattedResult.title[len - 3] + ", -1: " + formattedResult.title[len - 1]);
                                 if (formattedResult.title[len - 3] === "(" && formattedResult.title[len - 1] === ")") {
                                     let num = parseInt(formattedResult.title[len - 2]);
                                     num++;
@@ -333,7 +333,7 @@ class SearchBarProp extends Component {
                                     formattedResult.title += " (2)";
                                 }
                             }
-                            // alert(formattedResult.title + " is not in " + JSON.stringify(resultTitles));
+                            // console.log(formattedResult.title + " is not in " + JSON.stringify(resultTitles));
                             formattedResults.push(formattedResult);
                             resultTitles.push(formattedResult.title);
                         }
@@ -341,7 +341,7 @@ class SearchBarProp extends Component {
                 }
             }
         }
-        // alert(formattedResults.length);
+        // console.log(formattedResults.length);
         return formattedResults;
     }
 

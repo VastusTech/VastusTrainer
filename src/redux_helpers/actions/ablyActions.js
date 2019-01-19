@@ -73,10 +73,10 @@ function subscribeToChannel(channelName, dispatch, getStore) {
     const channel = Ably.channels.get(channelName);
     channel.subscribe(getMessageHandler(channelName, getStore), (err) => {
         if (err) {
-            alert("Failed to subscribe to the channel. Error = " + JSON.stringify(err));
+            console.log("Failed to subscribe to the channel. Error = " + JSON.stringify(err));
         }
         else {
-            // alert("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
+            // console.log("SUCCESSFULLY SUBSCRIBED TO CHANNEL = " + channelName);
         }
     });
 }

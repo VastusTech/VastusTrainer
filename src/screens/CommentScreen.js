@@ -49,7 +49,7 @@ class CommentScreen extends Component<Props> {
             this.state.board = newProps.board;
             this.props.setHandlerToBoard(newProps.board, (message) => {
                 // If you get a message, then that means that it is definitely a Message?
-                // alert("What to do with this?\n\n" + JSON.stringify(message));
+                // console.log("What to do with this?\n\n" + JSON.stringify(message));
 
                 this.props.addMessageFromNotification(newProps.board, message.data);
             });
@@ -62,9 +62,9 @@ class CommentScreen extends Component<Props> {
     }
 
     queryMessages() {
-        // alert("Can we query?");
+        // console.log("Can we query?");
         if (this.state.canFetch) {
-            // alert("QUerying next messages from the board!");
+            // console.log("QUerying next messages from the board!");
             this.setState({isLoading: true});
             this.props.queryNextMessagesFromBoard(this.state.board, this.state.fetchLimit, (items) => {
                 if (items) {

@@ -131,7 +131,7 @@ class PostDetailCard extends Component {
         //console.log("Handling deleting the event");
         this.setState({isLoading: true});
         PostFunctions.delete(this.props.user.id, this.getPostAttribute("id"), (data) => {
-            alert("Data information: " + JSON.stringify(data));
+            console.log("Data information: " + JSON.stringify(data));
             //this.forceUpdate(data.id);
             this.props.forceFetchPost(this.getPostAttribute("id"), ["time_created", "by", "description", "about", "access", "postType", "picturePaths", "videoPaths"]);
             // console.log(JSON.stringify(data));
@@ -165,13 +165,13 @@ class PostDetailCard extends Component {
 
     getDisplayMedia() {
         // TODO How to properly display videos and pictures?
-        //alert("Displaying Media");
+        //console.log("Displaying Media");
         const pictures = this.getPostAttribute("picturePaths");
         const videos = this.getPostAttribute("videoPaths");
-        //alert(pictures + " and " + videos);
+        //console.log(pictures + " and " + videos);
         if ((videos && videos.length > 0) || (pictures && pictures.length > 0)) {
             if (!this.state.videoURL && videos) {
-                //alert("getting video URL");
+                //console.log("getting video URL");
                 const video = videos[0];
                 Storage.get(video).then((url) => {
                     this.setState({videoURL: url});
@@ -180,7 +180,7 @@ class PostDetailCard extends Component {
                 });
             }
             else if(!this.state.pictureURL && pictures) {
-                //alert("getting picture URL");
+                //console.log("getting picture URL");
                 const picture = pictures[0];
                 Storage.get(picture).then((url) => {
                     this.setState({pictureURL: url});
@@ -189,7 +189,7 @@ class PostDetailCard extends Component {
                 })
             }
             else if(this.state.videoURL && !this.state.pictureURL) {
-                //alert(this.state.videoURL);
+                //console.log(this.state.videoURL);
                 return (
                     <Player inline={true}>
                         <source src={this.state.videoURL} type="video/mp4"/>
@@ -197,13 +197,13 @@ class PostDetailCard extends Component {
                 );
             }
             else if(!this.state.videoURL && this.state.pictureURL) {
-                //alert(this.state.pictureURL);
+                //console.log(this.state.pictureURL);
                 return (
                     <Image src={this.state.pictureURL}/>
                 );
             }
             else if((this.state.videoURL && this.state.pictureURL)) {
-                //alert(this.state.pictureURL + "and" + this.state.videoURL);
+                //console.log(this.state.pictureURL + "and" + this.state.videoURL);
                 return (
                     <div>
                         {/*this.state.videoURL*/}

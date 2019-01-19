@@ -171,7 +171,7 @@ class CreatePostProp extends Component {
 
     displayCurrentVideo() {
         if (this.state.tempVideoURLs && this.state.tempVideoURLs.length > 0) {
-            //alert("Running cur video");
+            //console.log("Running cur video");
             return(
                 <Player>
                     <source src={this.state.tempVideoURLs[0]} type="video/mp4"/>
@@ -183,7 +183,7 @@ class CreatePostProp extends Component {
 
     displayCurrentImage() {
         if (this.state.tempPictureURLs && this.state.tempPictureURLs.length > 0) {
-            //alert("Running cur image");
+            //console.log("Running cur image");
             return(
                 <Image src={this.state.tempPictureURLs[0]} />
             );
@@ -198,16 +198,16 @@ class CreatePostProp extends Component {
         // TODO Check to see if valid inputs!
         if (this.state.description) {
             PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPictures(), this.getVideos(), (returnValue) => {
-                //alert("Successfully Created Post!");
-                alert(JSON.stringify(returnValue));
+                //console.log("Successfully Created Post!");
+                console.log(JSON.stringify(returnValue));
                 this.setState({isSubmitLoading: false});
                 this.setState({showSuccessLabel: true});
             }, (error) => {
                 console.error(error);
             });
             //     PostFunctions.createNormalPost(this.props.user.id, this.props.user.id, this.state.description, this.state.access, this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
-            //         alert("Successfully Created Post!");
-            //         alert(JSON.stringify(returnValue));
+            //         console.log("Successfully Created Post!");
+            //         console.log(JSON.stringify(returnValue));
             //         const id = returnValue.data;
             //         let numPicturesLoaded = 0;
             //         let picturesLength = this.state.pictures.length;
@@ -215,13 +215,13 @@ class CreatePostProp extends Component {
             //             const picturePath = id + "/pictures/" + i;
             //             Storage.put(picturePath, this.state.pictures[i], { contentType: "video/*;image/*" }).then((result) => {
             //                 numPicturesLoaded++;
-            //                 alert(result);
+            //                 console.log(result);
             //                 if (numPicturesLoaded >= picturesLength) {
             //                     this.setState({videosLoading: false});
             //                 }
             //             }).catch((error) => {
             //                 numPicturesLoaded++;
-            //                 alert(error);
+            //                 console.log(error);
             //                 if (numPicturesLoaded >= picturesLength) {
             //                     this.setState({videosLoading: false});
             //                 }
@@ -232,13 +232,13 @@ class CreatePostProp extends Component {
             //         for (let i = 0; i < videosLength; i++) {
             //             Storage.put(id + "/videos/" + i, this.state.videos[i], { contentType: "video/*;image/*" }).then((result) => {
             //                 numVideosLoaded++;
-            //                 alert(result);
+            //                 console.log(result);
             //                 if (numVideosLoaded >= videosLength) {
             //                     this.setState({videosLoading: false});
             //                 }
             //             }).catch((error) => {
             //                 numVideosLoaded++;
-            //                 alert(error);
+            //                 console.log(error);
             //                 if (numVideosLoaded >= videosLength) {
             //                     this.setState({videosLoading: false});
             //                 }

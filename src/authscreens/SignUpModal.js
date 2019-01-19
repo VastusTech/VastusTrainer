@@ -59,7 +59,7 @@ class SignUpModal extends Component {
                 this.props.setError(new Error("Password must be longer than 8 characters, must need a number, a lower case letter, and an upper case letter"));
             }
             else {
-                //alert("No field restrictions");
+                //console.log("No field restrictions");
                 return true;
             }
         }

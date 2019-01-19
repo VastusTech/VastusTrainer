@@ -90,10 +90,10 @@ class PostFeedProp extends Component {
 
      */
     queryPosts() {
-        // alert("BEFORE: " + this.state.sentRequest);
+        // console.log("BEFORE: " + this.state.sentRequest);
         if (!this.state.sentRequest) {
             this.state.sentRequest = true;
-            // alert("AFTER: " + this.state.sentRequest);
+            // console.log("AFTER: " + this.state.sentRequest);
             if (!this.state.ifFinished) {
                 this.setState({isLoading: true});
                 const filter = QL.generateFilter({
@@ -113,7 +113,7 @@ class PostFeedProp extends Component {
                     }
                 );
                 // QL.queryPosts(["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"],
-                // alert("QUerying posts!");
+                // console.log("QUerying posts!");
                 this.props.fetchPostQuery(["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"],
                     filter, this.state.postFeedLength, this.state.nextToken, (data) => {
                         if (!data.nextToken) {
@@ -122,11 +122,11 @@ class PostFeedProp extends Component {
                         if (data.items) {
                             // TODO We can see private events
                             // consoleLog("got items");
-                            // alert("Received " + data.items.length + " posts!");
+                            // console.log("Received " + data.items.length + " posts!");
                             const newlyQueriedPosts = [];
                             for (let i = 0; i < data.items.length; i++) {
                                 const post = data.items[i];
-                                //alert(JSON.stringify("")
+                                //console.log(JSON.stringify("")
                                 const aboutItemType = getItemTypeFromID(post.about);
                                 if (aboutItemType === "Client") {
                                     this.props.fetchClient(data.items[i].about, ["id", "profileImagePath", "name"]);
@@ -135,7 +135,7 @@ class PostFeedProp extends Component {
                                 } else if (aboutItemType === "Event") {
 
                                 } else if (aboutItemType === "Challenge") {
-                                    // alert("Fetching challenge for post in post feed");
+                                    // console.log("Fetching challenge for post in post feed");
                                     this.props.fetchChallenge(data.items[i].about, ["title", "endTime", "tags", "time_created", "capacity", "members", "prize", "goal", "owner", "restriction", "submissions"]);
                                 } else if (aboutItemType === "Post") {
                                     this.props.fetchPost(data.items[i].about, ["about", "by", "description", "picturePaths", "videoPaths"]);
@@ -198,7 +198,7 @@ class PostFeedProp extends Component {
             // consoleLog(JSON.stringify(Posts));
             return _.times(Posts.length, i => (
                 <Fragment key={i + 1}>
-                    {/*alert(JSON.stringify(Posts[i].id))*/}
+                    {/*console.log(JSON.stringify(Posts[i].id))*/}
                     <PostCard postID={Posts[i].id}/>
                 </Fragment>
             ));

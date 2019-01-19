@@ -59,7 +59,7 @@ class NotificationFeed extends React.PureComponent {
                     props.fetchTrainer(invite.from, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
                 } else if (fromItemType === "Gym") {
                     // TODO FETCH THIS?
-                    alert("not implemented!");
+                    console.log("not implemented!");
                 } else {
                     console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
                 }
@@ -71,14 +71,14 @@ class NotificationFeed extends React.PureComponent {
                     props.fetchTrainer(invite.to, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
                 } else if (toItemType === "Gym") {
                     // TODO FETCH THIS?
-                    alert("not implemented!");
+                    console.log("not implemented!");
                 } else if (toItemType === "Event") {
                     props.fetchEvent(invite.to, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
                 } else if (toItemType === "Challenge") {
                     props.fetchChallenge(invite.to, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty"]);
                 } else if (toItemType === "Group") {
                     // TODO FETCH THIS?
-                    alert("not implemented!");
+                    console.log("not implemented!");
                 } else {
                     console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
                 }
@@ -90,14 +90,14 @@ class NotificationFeed extends React.PureComponent {
                     props.fetchTrainer(invite.about, ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture", "profileImagePaths"]);
                 } else if (aboutItemType === "Gym") {
                     // TODO FETCH THIS?
-                    alert("not implemented!");
+                    console.log("not implemented!");
                 } else if (aboutItemType === "Event") {
                     props.fetchEvent(invite.about, ["id", "title", "time", "time_created", "owner", "members", "capacity", "difficulty", "restriction"]);
                 } else if (aboutItemType === "Challenge") {
                     props.fetchChallenge(invite.about, ["id", "title", "endTime", "time_created", "owner", "members", "capacity", "difficulty", "restriction"]);
                 } else if (aboutItemType === "Group") {
                     // TODO FETCH THIS?
-                    alert("not implemented!");
+                    console.log("not implemented!");
                 } else {
                     console.error("ITEM TYPE NOT RECOGNIZED FOR INVITE?");
                 }

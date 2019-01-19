@@ -138,7 +138,7 @@ class InviteToChallengeModalProp extends Component {
     rows(userID, friendID, challenges, challengeInviteHandler, isInviteLoading, daysLeft) {
         const rowProps = [];
         for (let i = 0; i < challenges.length; i++) {
-            //alert("see me");
+            //console.log("see me");
             if (challenges.hasOwnProperty(i) === true && daysLeft(challenges[i]) >= 0) {
                 rowProps.push(
                     <Fragment key={i+1}>
