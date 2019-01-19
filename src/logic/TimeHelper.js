@@ -77,6 +77,10 @@ export function daysLeft(dateTime) {
     // console.log("difference = " + difference_ms);
     return Math.round(difference_ms/one_day);
 }
+export function timeLeft(dateTime) {
+    const now = new Date();
+    return dateTime.getTime() - now.getTime();
+}
 function convertTime(time) {
     if (parseInt(time, 10) > 12) {
         return "0" + (parseInt(time, 10) - 12) + time.substr(2, 3) + "pm";
