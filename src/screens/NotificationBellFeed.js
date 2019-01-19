@@ -39,7 +39,6 @@ class NotificationFeed extends React.PureComponent {
     }
 
     componentWillReceiveProps(newProps, nextContext) {
-        alert("c w r p");
         this.update(newProps);
     }
 
@@ -132,7 +131,6 @@ class NotificationFeed extends React.PureComponent {
         };
 
         if (!this.state.sentRequest) {
-            alert("Sending request...");
             this.state.sentRequest = true;
             props.fetchUserAttributes(["receivedInvites", "ownedEvents", "ownedChallenges", "ownedGroups"], (data) => {
                 if (data) {
