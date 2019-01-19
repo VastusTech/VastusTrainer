@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from "react";
-import { Modal, Message, Button, Card, Icon } from "semantic-ui-react";
-import ClientCard from "../components/ClientCard";
+import React, { Component } from "react";
+import { Modal, Message, Button, Grid, Icon } from "semantic-ui-react";
 import { Storage } from 'aws-amplify';
 import { Player } from "video-react";
 import { connect } from "react-redux";
@@ -15,7 +14,7 @@ type Props = {
 /**
  * Takes in open, onClose, and challengeID
  */
-class CreateSubmissionModal extends Component {
+class CreateSubmissionModal extends Component<Props> {
     state = {
         challengeID: null,
         isSubmitLoading: false,
@@ -25,13 +24,14 @@ class CreateSubmissionModal extends Component {
         videos: [],
         tempPictureURLs: [],
         tempVideoURLs: [],
+        notifySubmission: false
     };
 
     constructor(props) {
         super(props);
         this.handleSubmitButton = this.handleSubmitButton.bind(this);
         this.setVideo = this.setVideo.bind(this);
-        this.displayCurrentVideo = this.displayCurrentVideo.bind(this);
+        this.displayVideo = this.displayVideo.bind(this);
     }
 
     componentDidMount() {
@@ -55,7 +55,16 @@ class CreateSubmissionModal extends Component {
     }
 
     createSubmission(finishHandler) {
-        PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPictures(), this.getVideos(), finishHandler, (error) => {
+        const pictures = {};
+        const videos = {};
+        for (let i = 0; i < this.state.pictures.length; i++) {
+            pictures["pictures/" + i] = this.state.pictures[i];
+        }
+        for (let i = 0; i < this.state.videos.length; i++) {
+            videos["videos/" + i] = this.state.videos[i];
+        }
+        alert(JSON.stringify(pictures) + " vids: " + JSON.stringify(videos));
+        PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", pictures, videos, finishHandler, (error) => {
             console.error(error);
         });
         // PostFunctions.createSubmission(this.props.user.id, this.props.user.id, this.state.challengeID, "Submission", this.getPicturePaths(), this.getVideoPaths(), (returnValue) => {
@@ -111,24 +120,30 @@ class CreateSubmissionModal extends Component {
         // });
     }
 
-    getPictures() {
-        const pictures = {};
+    getPicturePaths() {
+        const picturePaths = [];
+        console.log("Pictures: " + this.state.pictures.length);
         for (let i = 0; i < this.state.pictures.length; i++) {
-            pictures["pictures/" + i] = this.state.pictures[i];
+            const path = "pictures/" + i;
+            picturePaths.push(path);
+            console.log("Added: " + path);
         }
-        if (this.state.pictures.length > 0) {
-            return pictures;
+        if (picturePaths.length > 0) {
+            return picturePaths;
         }
         return null;
     }
 
-    getVideos() {
-        const videos = {};
+    getVideoPaths() {
+        const videoPaths = [];
+        console.log("Videos: " + this.state.videos.length);
         for (let i = 0; i < this.state.videos.length; i++) {
-            videos["videos/" + i] = this.state.videos[i];
+            const path = "videos/" + i;
+            videoPaths.push(path);
+            console.log("Added: " + path);
         }
-        if (this.state.videos.length > 0) {
-            return videos;
+        if (videoPaths.length > 0) {
+            return videoPaths;
         }
         return null;
     }
@@ -138,15 +153,15 @@ class CreateSubmissionModal extends Component {
         this.state.videos.push(event.target.files[0]);
         const path = "/" + this.props.user.id + "/temp/videos/" + index;
         Storage.put(path, event.target.files[0], { contentType: "video/*;image/*" })
-        .then(() => {
-            Storage.get(path).then((url) => {
-                this.state.tempVideoURLs.push(url);
-                this.setState({});
+            .then(() => {
+                Storage.get(path).then((url) => {
+                    this.state.tempVideoURLs.push(url);
+                    this.setState({});
+                }).catch((error) => {
+                    console.error(error);
+                })
             }).catch((error) => {
-                console.error(error);
-            })
-        }).catch((error) => {
-                console.error(error);
+            console.error(error);
         });
         this.setState({});
     }
@@ -154,16 +169,31 @@ class CreateSubmissionModal extends Component {
     handleSubmitButton() {
         this.setState({isSubmitLoading: true});
         this.createSubmission(() => {
-            this.setState({isSubmitLoading: false});
+            this.setState({isSubmitLoading: false, notifySubmission: true});
         });
     }
 
-    displayCurrentVideo() {
+    displaySubmission() {
+        if(this.state.notifySubmission) {
+            return (
+                <Message positive>
+                    <Message.Header>Success!</Message.Header>
+                    <p>
+                        You submitted a video to the challenge!
+                    </p>
+                </Message>
+            );
+        }
+    }
+
+    displayVideo() {
         if (this.state.tempVideoURLs && this.state.tempVideoURLs.length > 0) {
             return(
-                <Player>
-                    <source src={this.state.tempVideoURLs[0]} type="video/mp4"/>
-                </Player>
+                <div>
+                    <Player>
+                        <source src={this.state.tempVideoURLs[0]} type="video/mp4"/>
+                    </Player>
+                </div>
             );
         }
         return null;
@@ -184,8 +214,8 @@ class CreateSubmissionModal extends Component {
             <Modal centered open={this.props.open} onClose={this.props.onClose.bind(this)} closeIcon>
                 <Modal.Header className="u-bg--bg">Create A Submission</Modal.Header>
                 <Modal.Content className="u-bg--bg">
-                    {this.displayCurrentVideo()}
-                    <Fragment>
+                    {this.displayVideo()}
+                    <Grid centered>
                         <div className="uploadImage u-flex u-flex-align--center u-margin-top--2">
                             <div>
                                 <Button primary fluid as="label" htmlFor="proPicUpload" className="u-bg--primaryGradient">
@@ -195,8 +225,9 @@ class CreateSubmissionModal extends Component {
                                 <input type="file" accept="video/*;capture=camcorder" id="proPicUpload" hidden={true} onChange={this.setVideo}/>
                             </div>
                         </div>
-                    </Fragment>
+                    </Grid>
                 </Modal.Content>
+                <div>{this.displaySubmission()}</div>
                 <Button primary fluid loading={this.state.isSubmitLoading} disabled={this.state.isSubmitLoading} onClick={this.handleSubmitButton}>Submit</Button>
             </Modal>
         );
