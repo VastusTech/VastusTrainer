@@ -1,19 +1,20 @@
 import React, {Component, Fragment} from 'react'
-import {Icon, Message, Label, Header} from 'semantic-ui-react';
+import {Icon, Message} from 'semantic-ui-react';
 import ChallengeCard from "./ChallengeCard";
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
 import { inspect } from 'util';
 import {fetchChallenge} from "../redux_helpers/actions/cacheActions";
-import {daysLeft, parseISOString} from "../logic/TimeHelper";
+import {parseISOString, timeLeft} from "../logic/TimeHelper";
 
 class NextChallengeProp extends Component {
     state = {
         isLoading: true,
         isFetching: false,
         sentRequest: false,
-        nearestChallenge: null,
-        nearestDaysLeft: null,
+        challenges: [],
+        // nearestChallenge: null,
+        // nearestTimeLeft: null,
         error: null
     };
 
@@ -50,16 +51,30 @@ class NextChallengeProp extends Component {
             this.state.sentRequest = true;
             this.props.fetchUserAttributes(["challenges"], (user) => {
                 if (user.challenges) {
+                    const challenges = [];
+                    let numChallenges = 0;
+                    let numTotal = user.challenges.length;
                     for (let i = 0; i < user.challenges.length; i++) {
-                        this.props.fetchChallenge(user.challenges[i], ["id", "tags", "title", "goal", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "difficulty", "access", "restriction"], (challenge) => {
+                        // console.log("Fetching challenge for next challenge");
+                        this.props.fetchChallenge(user.challenges[i], ["id", "tags", "title", "goal", "endTime", "time_created", "owner", "ifCompleted", "members", "capacity", "difficulty", "access", "restriction", "submissions"], (challenge) => {
                             if (challenge && challenge.endTime) {
-                                const challengeDaysLeft = daysLeft(parseISOString(challenge.endTime));
-                                if (challengeDaysLeft >= 0) {
-                                    if ((!this.state.nearestChallenge) || (challenge.endTime && challengeDaysLeft < this.state.nearestDaysLeft)) {
-                                        this.state.nearestDaysLeft = challengeDaysLeft;
-                                        this.state.nearestChallenge = challenge;
-                                    }
+                                const challengeTimeLeft = timeLeft(parseISOString(challenge.endTime));
+                                if (challengeTimeLeft >= 0) {
+                                    challenges.push({
+                                        challenge,
+                                        timeLeft: challengeTimeLeft
+                                    });
                                 }
+                                // if (challengeTimeLeft >= 0) {
+                                //     if ((!this.state.nearestChallenge) || (challenge.endTime && challengeTimeLeft < this.state.nearestTimeLeft)) {
+                                //         this.state.nearestTimeLeft = challengeTimeLeft;
+                                //         this.state.nearestChallenge = challenge;
+                                //     }
+                                // }
+                            }
+                            numChallenges++;
+                            if (numChallenges >= numTotal) {
+                                this.setState({challenges: challenges});
                             }
                         });
                     }
@@ -83,11 +98,15 @@ class NextChallengeProp extends Component {
                 </Message>
             )
         }
-        if (this.state.nearestChallenge) {
+        if (this.state.challenges && this.state.challenges.length > 0) {
+            let challenges = [...this.state.challenges];
+            challenges.sort((a, b) => {
+                return a.timeLeft - b.timeLeft;
+            });
             return (
                 <Fragment key={0}>
                     <Message>
-                        <ChallengeCard challengeID={this.state.nearestChallenge.id}/>
+                        <ChallengeCard challengeID={challenges[0].challenge.id}/>
                     </Message>
                 </Fragment>
             );
