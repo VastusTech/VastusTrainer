@@ -1,7 +1,6 @@
-import React, {Component, Fragment} from 'react'
+import React, {Fragment} from 'react'
 import _ from 'lodash'
-import {Dimmer, Loader, Grid, Message} from 'semantic-ui-react'
-// import { Operation } from "aws-amplify";
+import {Dimmer, Loader, Message} from 'semantic-ui-react'
 import NotificationCard from "../components/NotificationCard";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
 import {connect} from 'react-redux';
