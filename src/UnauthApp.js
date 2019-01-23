@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Amplify, { Auth, Analytics } from 'aws-amplify';
 import SignInPage from './authscreens/SignInPage';
+import OpeningScreen from './authscreens/OpeningScreen';
 
 class UnauthApp extends Component {
     // This defines the passed function for use
     authenticate = (user) => {};
 
     constructor(props) {
+        alert("1. OpenScreen and go to sign in");
         super(props);
         // this.authenticate = this.props.authenticate.bind(this);
     }
@@ -37,7 +39,10 @@ class UnauthApp extends Component {
     render() {
         // Maybe this would be to have a sort of advertisement for our website?
         return (
-            <SignInPage/>
+            <div>
+                <OpeningScreen/>
+                <SignInPage/>
+            </div>
         );
     }
 }

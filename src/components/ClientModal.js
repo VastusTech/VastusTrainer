@@ -13,6 +13,8 @@ import InviteFunctions from "../databaseFunctions/InviteFunctions";
 import UserFunctions from "../databaseFunctions/UserFunctions";
 import { Storage } from 'aws-amplify';
 import PostFunctions from "../databaseFunctions/PostFunctions";
+import MessageBoard from "./messaging/MessageBoard";
+import MessageHandler from "../api/MessageHandler";
 
 type Props = {
     open: boolean,
@@ -410,6 +412,9 @@ class ClientModal extends Component<Props> {
                     />
                     {this.getCorrectFriendActionButton()}
                 </Modal.Actions>
+                <Modal trigger={<Button primary fluid><Icon name="wechat" /> Chat </Button>}>
+                    <MessageBoard board={MessageHandler.getBoard([this.getClientAttribute("id"), this.props.user.id])}/>
+                </Modal>
                 <Modal.Content>
                     {this.createSuccessLabel()}
                 </Modal.Content>

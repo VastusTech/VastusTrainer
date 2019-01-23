@@ -21,6 +21,8 @@ import TrainerFunctions from "../databaseFunctions/TrainerFunctions";
 import {calculateAge} from "../logic/TimeHelper";
 import TrainerPostFeed from "../screens/TrainerPostFeed";
 import EventList from "./EventList";
+import MessageBoard from "./messaging/MessageBoard";
+import MessageHandler from "../api/MessageHandler";
 
 // AWSSetup();
 
@@ -292,6 +294,11 @@ class TrainerModal extends React.PureComponent<Props> {
                                     <Modal.Content>
                                         <EventList eventIDs={this.props.user.scheduledEvents}/>
                                     </Modal.Content>
+                                </Modal>
+                            </List.Item>
+                            <List.Item>
+                                <Modal trigger={<Button primary fluid><Icon name="wechat" /> Trainer Chat</Button>}>
+                                    <MessageBoard board={MessageHandler.getBoard([this.getTrainerAttribute("id"), this.props.user.id])}/>
                                 </Modal>
                             </List.Item>
                         </List>
