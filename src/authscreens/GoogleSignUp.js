@@ -8,7 +8,7 @@ import {googleSignIn} from "../redux_helpers/actions/authActions";
 /*
 So for Google, it will only be a Google Sign up! Then you should sign in with the normal password and stuff
  */
-class GoogleSignUp extends React.Component {
+/*class GoogleSignUp extends React.Component {
     constructor(props) {
         super(props);
         this.signIn = this.signIn.bind(this);
@@ -94,4 +94,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GoogleSignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(GoogleSignUp);*/

@@ -108,7 +108,6 @@ class SignInPage extends Component {
                                 <List.Item>
                                     <ForgotPasswordModal/>
                                 </List.Item>
-                                <GoogleSignUp/>
                             </List>
                         </Segment>
                     </Grid.Column>
