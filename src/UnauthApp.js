@@ -9,7 +9,7 @@ class UnauthApp extends Component {
     authenticate = (user) => {};
 
     constructor(props) {
-        alert("1. OpenScreen and go to sign in");
+        //alert("1. OpenScreen and go to sign in");
         super(props);
         // this.authenticate = this.props.authenticate.bind(this);
     }

@@ -83,7 +83,7 @@ export default (props: {message: any, userID: string}) => {
         if (ifSelf) {
             // Self text
             return (
-                <Grid class="ui computer vertically reversed equal width grid">
+                <Grid>
                     <Grid.Column floated='right' width={10}>
                         <div>
                             <Label pointing='right' size='large' color='purple'>
@@ -98,7 +98,7 @@ export default (props: {message: any, userID: string}) => {
         else {
             // Other text
             return (
-                <Grid class="ui computer vertically reversed equal width grid">
+                <Grid style={{marginLeft: '10px'}}>
                     <Grid.Column floated='left' width={10}>
                         <div>
                             <strong>{name}</strong>
