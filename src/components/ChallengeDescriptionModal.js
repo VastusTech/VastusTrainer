@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import {Icon, Modal, Button, Header, List, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader, Segment } from 'semantic-ui-react';
+//import {Icon, Modal, Button, Header, List, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader, Segment } from 'semantic-ui-react';
 import ClientModal from "./ClientModal";
 // import Lambda from '../Lambda';
 // import EventMemberList from "../screens/EventMemberList";
@@ -19,6 +19,23 @@ import ChallengeFunctions from "../databaseFunctions/ChallengeFunctions";
 import CreateSubmissionModal from "../screens/CreateSubmissionModal";
 import SubmissionsScreen from "../screens/SubmissionsScreen";
 import {getItemTypeFromID} from "../logic/ItemType";
+
+//import React, { Component, Fragment } from 'react';
+import {Icon, Modal, Button, Divider, Grid, Message, Image, Tab, Dimmer, Label, Loader } from 'semantic-ui-react';
+//import ClientModal from "./ClientModal";
+//import { connect } from 'react-redux';
+//import {fetchClient, fetchTrainer, forceFetchChallenge, fetchChallenge, clearChallengeQuery} from "../redux_helpers/actions/cacheActions";
+//import { clearBoard } from "../redux_helpers/actions/messageActions";
+//import CompleteChallengeModal from "../manager/CompleteChallengeModal";
+//import {forceFetchUserAttributes} from "../redux_helpers/actions/userActions";
+//import CommentScreen from "../messaging/MessageBoard";
+//import UserFunctions from "../../database_functions/UserFunctions";
+//import InviteFunctions from "../../database_functions/InviteFunctions";
+//import ChallengeFunctions from "../../database_functions/ChallengeFunctions";
+//import CreateSubmissionModal from "./CreateSubmissionModal";
+//import SubmissionsScreen from "../lists/SubmissionsScreen";
+//import {getItemTypeFromID} from "../logic/ItemType";
+import DatabaseObjectList from "./DatabaseObjectList";
 
 type Props = {
     open: boolean,
@@ -113,16 +130,25 @@ class ChallengeDescriptionModal extends Component<Props> {
     componentWillReceiveProps(newProps) {
         if (newProps.challengeID !== this.state.challengeID) {
             // console.log("resetting state to " + newProps.challengeID);
+            this.state.challengeID = newProps.challengeID;
             this.resetState(newProps.challengeID);
         }
 
         const members = this.getChallengeAttribute("members");
         const owner = this.getChallengeAttribute("owner");
-        if (!this.props.open && newProps.open && newProps.eventID && members && members.length > 0) {
+        if (!this.props.open && newProps.open && members && members.length > 0) {
             for (let i = 0; i < members.length; i++) {
-                this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
-                    this.setState({});
-                });
+                const itemType = getItemTypeFromID(members[i]);
+                if (itemType === "Client") {
+                    this.props.fetchClient(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
+                        this.setState({});
+                    });
+                }
+                else if (itemType === "Trainer") {
+                    this.props.fetchTrainer(members[i], ["id", "name", "gender", "birthday", "profileImagePath", "profilePicture"], () => {
+                        this.setState({});
+                    });
+                }
                 if(owner) {
                     if (owner.substr(0, 2) === "TR") {
                         if(!this.state.fetchedTrainer) {
@@ -473,6 +499,7 @@ class ChallengeDescriptionModal extends Component<Props> {
             //console.log("Members: " + this.getChallengeAttribute("members") + "Joined?:  " + this.state.isJoined);
         }
 
+
         //console.log("Challenge Info: " + JSON.stringify(this.state.event));
         return(
             <div>
@@ -487,33 +514,34 @@ class ChallengeDescriptionModal extends Component<Props> {
                     </Modal.Header>
                     <Modal.Content align='center'>
                         <Grid>
-                            <Grid.Column floated='left' width={6}>
-                                <Grid.Row>
+                            <Grid.Row centered>
+                                <Icon.Group size='large'>
+                                    <Icon name='bullseye' />
+                                </Icon.Group> {this.getChallengeAttribute("goal")}
+                            </Grid.Row>
+                            <Grid.Row centered>
+                                <div>
                                     <Icon.Group size='large'>
-                                        <Icon name='bullseye' />
-                                    </Icon.Group> {this.getChallengeAttribute("goal")}
-                                </Grid.Row>
+                                        <Icon name='trophy' />
+                                    </Icon.Group> {this.getChallengeAttribute("prize")}
+                                </div>
+                            </Grid.Row>
+                            <Grid.Column floated='left' width={6}>
                                 <Grid.Row>
                                     <Icon name='user'/><Button className="u-button--flat" onClick={this.openClientModal}>{this.getOwnerName()}</Button>
                                 </Grid.Row>
                             </Grid.Column>
                             <Grid.Column floated='right' width={6}>
                                 <Grid.Row>
-                                    <div>
-                                        <Icon.Group size='large'>
-                                            <Icon name='trophy' />
-                                        </Icon.Group> {this.getChallengeAttribute("prize")}
-                                    </div>
-                                </Grid.Row>
-                                <Grid.Row>
                                     <Icon name='users' /><Modal trigger={<Button primary className="u-button--flat u-padding-left--1">Members</Button>} closeIcon>
                                     <Modal.Content>
-                                        <ChallengeMemberList challengeID={this.state.challengeID} />
+                                        <DatabaseObjectList ids={this.getChallengeAttribute("members")} noObjectsMessage={"No members yet!"}/>
                                     </Modal.Content>
                                 </Modal>
                                 </Grid.Row>
                             </Grid.Column>
                         </Grid>
+                        <Divider/>
                         <Modal.Description>
                             <ClientModal open={this.state.clientModalOpen} onClose={this.closeClientModal} clientID={this.getChallengeAttribute("owner")}/>
                             <CompleteChallengeModal open={this.state.completeModalOpen} onClose={this.closeCompleteModal} challengeID={this.getChallengeAttribute("id")}/>
@@ -522,14 +550,14 @@ class ChallengeDescriptionModal extends Component<Props> {
                         </Modal.Description>
                         <div>{this.displayError()}{this.challengeDeleted()}</div>
                         {/*
-                        <Modal trigger={<Button primary id="ui center aligned"><Icon name="comment outline"/></Button>}>
-                            <Grid>
-                                <div id="ui center align">
+                            <Modal trigger={<Button primary id="ui center aligned"><Icon name="comment outline"/></Button>}>
+                                <Grid>
+                                    <div id="ui center align">
 
-                                </div>
-                            </Grid>
-                        </Modal>
-                        */}
+                                    </div>
+                                </Grid>
+                            </Modal>
+                            */}
                     </Modal.Content>
                 </Modal>
                 {this.challengeDeleted()}
@@ -546,6 +574,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchClient: (id, variablesList) => {
+            dispatch(fetchClient(id, variablesList));
+        },
+        fetchTrainer: (id, variablesList) => {
             dispatch(fetchClient(id, variablesList));
         },
         forceFetchUserAttributes: (attributeList) => {
@@ -567,3 +598,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChallengeDescriptionModal);
+

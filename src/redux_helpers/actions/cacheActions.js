@@ -456,6 +456,9 @@ export function overwriteFetchQuery(itemType, queryString, nextToken, dataHandle
         if (failureHandler) { failureHandler(error);}
     });
 }
+export function fetchItem(itemType, id, variableList, dataHandler, failureHandler) {
+    return getFetchItemFunction(itemType)(id, variableList, dataHandler, failureHandler);
+}
 export function fetchClient(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler, failureHandler);
 }
@@ -491,6 +494,9 @@ export function fetchComment(id, variablesList, dataHandler, failureHandler) {
 }
 export function fetchSponsor(id, variablesList, dataHandler, failureHandler) {
     return fetch(id, variablesList, "sponsors", "getSponsor", "FETCH_SPONSOR", dataHandler, failureHandler);
+}
+export function forceFetchItem(itemType, id, variablesList, dataHandler, failureHandler) {
+    return getForceFetchItemFunction(itemType)(id, variablesList, dataHandler, failureHandler);
 }
 export function forceFetchClient(id, variablesList, dataHandler, failureHandler) {
     return forceFetch(id, variablesList, "clients", "getClient", "FETCH_CLIENT", dataHandler, failureHandler);
@@ -1031,6 +1037,11 @@ export function getPutItemFunction(itemType) {
 export function getFetchItemFunction(itemType) {
     return switchReturnItemType(itemType, fetchClient, fetchTrainer, fetchGym, fetchWorkout, fetchReview, fetchEvent,
         fetchChallenge, fetchInvite, fetchPost, fetchGroup, fetchComment, fetchSponsor, null, "Retrieve fetch item function not implemented");
+}
+function getForceFetchItemFunction(itemType) {
+    return switchReturnItemType(itemType, forceFetchClient, forceFetchTrainer, forceFetchGym, forceFetchWorkout, forceFetchReview,
+        forceFetchEvent, forceFetchChallenge, forceFetchInvite, forceFetchPost, forceFetchGroup, forceFetchComment, forceFetchSponsor,
+        null, "Retrieve force fetch item function not implemented for item type");
 }
 export function getFetchQueryFunction(itemType) {
     return switchReturnItemType(itemType, fetchClientQuery, fetchTrainerQuery, fetchGymQuery, fetchWorkoutQuery,
