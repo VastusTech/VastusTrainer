@@ -1,13 +1,13 @@
 import React, {Component, Fragment} from "react";
 import { connect } from "react-redux";
 import {Popup, List, Header, Divider, Segment, Grid, Form, Button} from "semantic-ui-react";
-import {switchReturnItemType} from "../logic/ItemType";
-import ClientCard from "../components/ClientCard";
-import TrainerCard from "../components/TrainerCard";
-import EventCard from "../components/EventCard";
-import ChallengeCard from "../components/ChallengeCard";
-import PostCard from "../components/PostCard";
-import {disableSearchBar, enableSearchBar} from "../redux_helpers/actions/searchActions";
+import {switchReturnItemType} from "../vastuscomponents/logic/ItemType";
+import ClientCard from "../vastuscomponents/components/cards/ClientCard";
+import TrainerCard from "../vastuscomponents/components/cards/TrainerCard";
+import EventCard from "../vastuscomponents/components/cards/EventCard";
+import ChallengeCard from "../vastuscomponents/components/cards/ChallengeCard";
+import PostCard from "../vastuscomponents/components/cards/PostCard";
+import {disableSearchBar, enableSearchBar} from "../vastuscomponents/redux_actions/searchActions";
 
 // This is going to be for every search functionality we really want.
 // We'll have a filter section and a search bar

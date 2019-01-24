@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import Semantic, { Modal, Button, Form, Message, Dimmer, Loader, Popup, Divider } from 'semantic-ui-react';
-// import Amplify, { Auth } from 'aws-amplify';
-// import Lambda from '../Lambda';
-// import appConfig from '../AppConfig';
+import { Modal, Button, Form, Message, Dimmer, Loader, Popup, Divider } from 'semantic-ui-react';
 import {closeSignUpModal, confirmSignUp, openSignUpModal, signUp} from "../redux_helpers/actions/authActions";
 import { connect } from "react-redux";
-import {clearError, setError} from "../redux_helpers/actions/infoActions";
-
-// appConfig();
+import {clearError, setError} from "../vastuscomponents/redux_actions/infoActions";
 
 class SignUpModal extends Component {
     constructor(props) {

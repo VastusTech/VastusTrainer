@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import Tabs from './screens/Tabs.js';
 import {Menu, Container, Sticky} from "semantic-ui-react";
-import { Auth } from 'aws-amplify';
-import SearchBarProp from "./components/SearchBar";
+import SearchBarProp from "./vastuscomponents/components/props/SearchBar";
 import { connect } from "react-redux";
 import {logOut} from "./redux_helpers/actions/authActions";
-import QL from "./GraphQL";
-// import {  } from "./redux_helpers/actions/userActions";
 
 /**
 * Auth App

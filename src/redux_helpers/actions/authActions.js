@@ -1,10 +1,9 @@
 import { Auth } from "aws-amplify";
-import {setError, setIsLoading, setIsNotLoading} from "./infoActions";
+import {setError, setIsLoading, setIsNotLoading} from "../../vastuscomponents/redux_actions/infoActions";
 import {fetchUser, clearUser, setUser, forceSetUser} from "./userActions";
-import QL from "../../GraphQL";
-// import Lambda from "../../Lambda";
-import TrainerFunctions from "../../databaseFunctions/TrainerFunctions";
-import {addHandlerToNotifications, removeAllHandlers} from "./ablyActions";
+import QL from "../../vastuscomponents/api/GraphQL";
+import TrainerFunctions from "../../vastuscomponents/database_functions/TrainerFunctions";
+import {addHandlerToNotifications, removeAllHandlers} from "../../vastuscomponents/redux_actions/ablyActions";
 
 export function updateAuth() {
     return (dispatch) => {

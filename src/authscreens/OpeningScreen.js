@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import {logOut} from "../redux_helpers/actions/authActions";
 import SignInPage from './SignInPage';
 import ForgotPasswordModal from "./ForgotPasswordModal";
-import Logo from '../img/the_logo.svg';
+import Logo from '../vastuscomponents/img/the_logo.svg';
 
 const transition = 'browse';
 

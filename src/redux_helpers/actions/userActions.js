@@ -1,7 +1,7 @@
 // import QL from '../../GraphQL';
 // import { Storage } from "aws-amplify";
-import {setError, clearError, setIsLoading, setIsNotLoading} from './infoActions';
-import { fetchTrainer, forceFetchTrainer } from "./cacheActions";
+import {setError, clearError, setIsLoading, setIsNotLoading} from '../../vastuscomponents/redux_actions/infoActions';
+import { fetchTrainer, forceFetchTrainer } from "../../vastuscomponents/redux_actions/cacheActions";
 // import defaultProfilePicture from "../../img/roundProfile.png";
 
 // TODO Cache the user into the clients so that we actually are getting from there

@@ -11,8 +11,6 @@ import AWSConfig from './AppConfig';
 
 // const myServiceWorker = await ServiceWorker.register("/service-worker.js", "/");
 
-AWSConfig();
-
 function requestNotificationPermission() {
     // Some browsers don't support Notification yet. I'm looking at you iOS Safari
     // if ("Notification" in window) {
