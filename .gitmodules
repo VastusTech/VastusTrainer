@@ -1,0 +1,3 @@
+[submodule "src/vastuscomponents"]
+	path = src/vastuscomponents
+	url = https://gitlab.com/VastusVenture/vastuscomponents.git
