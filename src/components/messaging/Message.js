@@ -8,6 +8,8 @@ export default (props: {message: any, userID: string}) => {
     const from = props.message.from;
     const name = props.message.name;
     const message = props.message.message;
+    const messageURL = props.message.messageURL;
+    const profilePicture = props.message.profilePicture;
     const type = props.message.type;
     const ifSelf = from === props.userID;
     if (type) {
@@ -19,7 +21,7 @@ export default (props: {message: any, userID: string}) => {
                     <Grid class="ui computer vertically reversed equal width grid">
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
-                                 style={{backgroundImage: `url(${message})`}}>
+                                 style={{backgroundImage: `url(${messageURL})`}}>
                                 <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
                                     <Icon name="upload" className='u-margin-right--0' size="large" inverted/>
                                 </Label>
@@ -27,6 +29,9 @@ export default (props: {message: any, userID: string}) => {
                                        onChange={this.setPicture}/>
                             </div>
                         </Label>
+                        <Grid.Column width={6}>
+                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        </Grid.Column>
                     </Grid>
                 );
             }
@@ -34,9 +39,12 @@ export default (props: {message: any, userID: string}) => {
                 // Other picture
                 return (
                     <Grid class="ui computer vertically reversed equal width grid">
+                        <Grid.Column width={6}>
+                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        </Grid.Column>
                         <Label className='ui left fluid' pointing='left'>
                             <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4"
-                                 style={{backgroundImage: `url(${message})`}}>
+                                 style={{backgroundImage: `url(${messageURL})`}}>
                                 <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
                                     <Icon name="upload" className='u-margin-right--0' size="large" inverted/>
                                 </Label>
@@ -55,9 +63,12 @@ export default (props: {message: any, userID: string}) => {
                     <Grid class="ui computer vertically reversed equal width grid">
                         <Label className='ui right fluid' pointing='right' color='purple'>
                             <Player>
-                                <source src={message} type="video/mp4"/>
+                                <source src={messageURL} type="video/mp4"/>
                             </Player>
                         </Label>
+                        <Grid.Column width={6}>
+                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        </Grid.Column>
                     </Grid>
                 );
             }
@@ -65,9 +76,12 @@ export default (props: {message: any, userID: string}) => {
                 // Other video
                 return (
                     <Grid class="ui computer vertically reversed equal width grid">
+                        <Grid.Column width={6}>
+                            <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                        </Grid.Column>
                         <Label className='ui left fluid' pointing='left'>
                             <Player>
-                                <source src={message} type="video/mp4"/>
+                                <source src={messageURL} type="video/mp4"/>
                             </Player>
                         </Label>
                     </Grid>
@@ -92,6 +106,9 @@ export default (props: {message: any, userID: string}) => {
                             <strong>{name}</strong>
                         </div>
                     </Grid.Column>
+                    <Grid.Column width={1}>
+                        <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                    </Grid.Column>
                 </Grid>
             );
         }
@@ -99,6 +116,9 @@ export default (props: {message: any, userID: string}) => {
             // Other text
             return (
                 <Grid style={{marginLeft: '10px'}}>
+                    <Grid.Column width={1}>
+                        <div avatar align="center" className="ui u-avatar tiny" style={{backgroundImage: `url(${profilePicture})`, width: '50px', height: '50px'}}></div>
+                    </Grid.Column>
                     <Grid.Column floated='left' width={10}>
                         <div>
                             <strong>{name}</strong>

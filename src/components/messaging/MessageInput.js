@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import {Button, Input, Icon} from "semantic-ui-react";
 import connect from "react-redux/es/connect/connect";
-import MessageFunctions from "../../databaseFunctions/MessageFunctions";
+import MessageFunctions from "../../database_functions/MessageFunctions";
 import {addMessageToBoard} from "../../redux_helpers/actions/messageActions";
 
 type Props = {
@@ -49,7 +49,7 @@ class MessageInput extends Component<Props> {
         // Make sure name and comment boxes are filled
         if (message) {
             this.setState({sendLoading: true});
-            MessageFunctions.createTextMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board, message, () => {
+            MessageFunctions.createTextMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.props.user.profileImagePath, this.state.board, message, () => {
                 console.log("Successfully sent message!");
                 this.setState({sendLoading: false});
             }, (error) => {
@@ -64,7 +64,7 @@ class MessageInput extends Component<Props> {
 
     addPicture(picture) {
         this.setState({sendLoading: true});
-        MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
+        MessageFunctions.createPictureMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.props.user.profileImagePath, this.state.board,
             picture, "picture", () => {
                 this.setState({sendLoading: false});
                 console.log("Successfully created picture message!");
@@ -76,7 +76,7 @@ class MessageInput extends Component<Props> {
 
     addVideo(video) {
         this.setState({sendLoading: true});
-        MessageFunctions.createVideoMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.state.board,
+        MessageFunctions.createVideoMessage(this.props.user.id, this.props.user.id, this.props.user.name, this.props.user.profileImagePath, this.state.board,
             video, "video", () => {
                 this.setState({sendLoading: false});
                 console.log("Successfully created video message!");
