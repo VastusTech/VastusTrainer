@@ -5,6 +5,9 @@ import ChallengeList from "../../vastuscomponents/components/lists/ChallengeList
 import {convertToISOString} from "../../vastuscomponents/logic/TimeHelper";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux_helpers/actions/userActions";
 import { connect } from "react-redux";
+import calendarStyle from '../../Calendar.css';
+import CSSModules from 'react-css-modules';
+import propTypes from 'prop-types'
 
 class Calendar extends React.Component {
   
@@ -306,7 +309,7 @@ class Calendar extends React.Component {
     
     
     
-      <div className="calendar_view">
+      <div className="calendar_view" style={calendarStyle}>
         {this.renderHeader()}
         {this.renderDays()}
         {this.renderCells()}
@@ -322,6 +325,12 @@ const mapStateToProps = (state) => ({
     cache: state.cache
 });
 
+calendarStyle.propTypes = {
+    title: propTypes.string.isRequired,
+    id: propTypes.number.isRequired,
+    remove: propTypes.func.isRquired
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchUserAttributes: (variablesList, dataHandler) => {
@@ -333,4 +342,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Calendar);
+export default CSSModules(connect(mapStateToProps, mapDispatchToProps)(Calendar), calendarStyle);
