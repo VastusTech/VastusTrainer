@@ -97,19 +97,25 @@ class PostFeedProp extends Component {
             if (!this.state.ifFinished) {
                 this.setState({isLoading: true});
                 const filter = QL.generateFilter({
-                        or: [{
-                            postType: {
-                                eq: "$postType1"
-                            }
+                        and: [{
+                            or: [{
+                                postType: {
+                                    eq: "$postType1"
+                                }
+                            }, {
+                                postType: {
+                                    eq: "$postType2"
+                                }
+                            }]
                         }, {
-                            postType: {
-                                eq: "$postType2"
+                            access: {
+                                eq: "$access"
                             }
                         }]
-                    }
-                    , {
+                    }, {
                         postType1: "Challenge",
-                        postType2: "newChallenge"
+                        postType2: "newChallenge",
+                        access: "public"
                     }
                 );
                 // QL.queryPosts(["id", "time_created", "by", "item_type", "postType", "about", "description", "videoPaths", "picturePaths"],
