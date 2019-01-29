@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Modal, Button, Grid, Form, Message, Dimmer, Loader } from 'semantic-ui-react';
-import Amplify, { Auth } from 'aws-amplify';
 import {
     closeForgotPasswordModal,
     confirmForgotPassword,
@@ -8,7 +7,7 @@ import {
     openSignUpModal
 } from "../redux_helpers/actions/authActions";
 import { connect } from "react-redux";
-import {setError} from "../redux_helpers/actions/infoActions";
+import {setError} from "../vastuscomponents/redux_actions/infoActions";
 
 class ForgotPasswordModal extends Component {
     authState = {

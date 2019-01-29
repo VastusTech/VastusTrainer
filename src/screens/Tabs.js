@@ -1,14 +1,14 @@
 import { Fragment } from 'react';
 import {Tab, Menu, Icon, Header, Feed } from "semantic-ui-react";
-import NotificationFeed from "./NotificationBellFeed";
-import ProfileProp from "./Profile";
+import NotificationFeed from "./notifications_tab/NotificationBellFeed";
+import ProfileTab from "./profile_tab/ProfileTab";
 import React from "react";
 import LeaderBoard from "./Leaderboard";
-import NotificationBellProp from "../components/NotificationBell";
+import NotificationBellProp from "./notifications_tab/NotificationBell";
 // import ChallengeFeed from "./ChallengeFeed";
-import PostFeed from "./PostFeed";
-import Calendar from "./Calendar";
-import OrganizationalScreen from "./OrganizationalScreen";
+import PostFeed from "./main_tab/PostFeed";
+import Calendar from "./manager_tab/Calendar";
+import OrganizationalScreen from "./manager_tab/OrganizationalScreen";
 // import SearchScreen from "./SearchScreen";
 
 /**
@@ -35,7 +35,7 @@ export default () => (
                         <Icon name='user circle outline' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <ProfileProp/>
+                    <ProfileTab/>
                 </Tab.Pane>
             },
             /*{

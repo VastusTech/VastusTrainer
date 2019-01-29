@@ -67,7 +67,7 @@ c-23 0 -43 19 -43 42v214h64zM64 427v64h43v-64h64v-43h-64v-64h-43v64h-64v43h64z" 
     <glyph glyph-name="add_alarm" unicode="add_alarm" 
 d="M277 320v-64h64v-43h-64v-64h-42v64h-64v43h64v64h42zM256 85c83 0 149 67 149 150s-66 149 -149 149s-149 -66 -149 -149s66 -150 149 -150zM256 427c106 0 192 -86 192 -192s-86 -192 -192 -192s-192 86 -192 192s86 192 192 192zM469 390l-27 -33l-98 83l27 32z
 M168 440l-98 -82l-27 32l98 82z" />
-    <glyph glyph-name="add_alert" unicode="add_alert" 
+    <glyph glyph-name="add_console.log" unicode="add_console.log"
 d="M341 234v43h-64v64h-42v-64h-64v-43h64v-64h42v64h64zM403 153l45 -45v-23h-384v23l45 45v124c0 69 48 128 113 143v15c0 19 15 34 34 34s34 -15 34 -34v-15c65 -15 113 -74 113 -143v-124zM214 64h84c0 -23 -19 -43 -42 -43s-42 20 -42 43z" />
     <glyph glyph-name="add_box" unicode="add_box" 
 d="M363 235v42h-86v86h-42v-86h-86v-42h86v-86h42v86h86zM405 448c23 0 43 -20 43 -43v-298c0 -23 -20 -43 -43 -43h-298c-24 0 -43 20 -43 43v298c0 23 19 43 43 43h298z" />
@@ -203,7 +203,7 @@ l-116 115c-21 -26 -33 -58 -33 -94c0 -83 66 -149 149 -149s149 66 149 149c0 75 -56
 d="M405 179l-76 77l76 77l-30 30l-76 -77l-77 77l-30 -30l77 -77l-77 -77l30 -30l77 77l76 -77zM469 448c23 0 43 -20 43 -43v-298c0 -23 -20 -43 -43 -43h-320c-15 0 -26 8 -34 19l-115 173l115 173c8 11 19 19 34 19h320z" />
     <glyph glyph-name="backup" unicode="backup" 
 d="M299 235h64l-107 106l-107 -106h64v-86h86v86zM413 298c55 -4 99 -50 99 -106c0 -59 -48 -107 -107 -107h-277c-71 0 -128 57 -128 128c0 66 50 120 114 127c27 51 80 87 142 87c78 0 142 -55 157 -129z" />
-    <glyph glyph-name="battery_alert" unicode="battery_alert" 
+    <glyph glyph-name="battery_console.log" unicode="battery_console.log"
 d="M277 213v107h-42v-107h42zM277 128v43h-42v-43h42zM334 427c16 0 29 -13 29 -29v-327c0 -16 -13 -28 -29 -28h-156c-16 0 -29 12 -29 28v327c0 16 13 29 29 29h35v42h86v-42h35z" />
     <glyph glyph-name="battery_charging_full" unicode="battery_charging_full" 
 d="M235 85l85 160h-43v118l-85 -160h43v-118zM334 427c16 0 29 -13 29 -29v-327c0 -16 -13 -28 -29 -28h-156c-16 0 -29 12 -29 28v327c0 16 13 29 29 29h35v42h86v-42h35z" />
@@ -1900,7 +1900,7 @@ c0 11 10 22 21 22v32c0 30 23 53 53 53s54 -23 54 -53v-32z" />
 d="M70 481c122.302 -122.698 245.474 -244.526 367 -368l-27 -27l-71 71l-83 -103l-248 309c5 4 32 26 78 47l-43 44zM504 363l-116 -145l-221 220c27 6 57 10 89 10c143 0 238 -78 248 -85z" />
     <glyph glyph-name="sim_card" unicode="sim_card" 
 d="M363 192v85h-43v-85h43zM277 235v42h-42v-42h42zM277 107v85h-42v-85h42zM192 192v85h-43v-85h43zM363 107v42h-43v-42h43zM192 107v42h-43v-42h43zM426 427l1 -342c0 -23 -20 -42 -43 -42h-256c-23 0 -43 19 -43 42v256l128 128h171c23 0 42 -19 42 -42z" />
-    <glyph glyph-name="sim_card_alert" unicode="sim_card_alert" 
+    <glyph glyph-name="sim_card_console.log" unicode="sim_card_console.log"
 d="M277 235v106h-42v-106h42zM277 149v43h-42v-43h42zM384 469c23 0 43 -19 43 -42v-342c0 -23 -20 -42 -43 -42h-256c-23 0 -43 19 -43 42l1 256l127 128h171z" />
     <glyph glyph-name="skip_next" unicode="skip_next" 
 d="M341 384h43v-256h-43v256zM128 128v256l181 -128z" />

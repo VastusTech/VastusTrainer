@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import Semantic, { Modal, Button, Form, Message, Dimmer, Loader, Popup, Divider } from 'semantic-ui-react';
-// import Amplify, { Auth } from 'aws-amplify';
-// import Lambda from '../Lambda';
-// import appConfig from '../AppConfig';
+import { Modal, Button, Form, Message, Dimmer, Loader, Popup, Divider } from 'semantic-ui-react';
 import {closeSignUpModal, confirmSignUp, openSignUpModal, signUp} from "../redux_helpers/actions/authActions";
 import { connect } from "react-redux";
-import {clearError, setError} from "../redux_helpers/actions/infoActions";
-
-// appConfig();
+import {clearError, setError} from "../vastuscomponents/redux_actions/infoActions";
 
 class SignUpModal extends Component {
     constructor(props) {
@@ -59,7 +54,7 @@ class SignUpModal extends Component {
                 this.props.setError(new Error("Password must be longer than 8 characters, must need a number, a lower case letter, and an upper case letter"));
             }
             else {
-                //alert("No field restrictions");
+                //console.log("No field restrictions");
                 return true;
             }
         }

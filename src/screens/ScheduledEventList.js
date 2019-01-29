@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import {List, Message} from 'semantic-ui-react';
-import EventCard from "../components/EventCard";
-import QL from "../GraphQL";
+import EventCard from "../vastuscomponents/components/cards/EventCard";
 import { connect } from "react-redux";
 import {fetchUserAttributes} from "../redux_helpers/actions/userActions";
-import { inspect } from 'util';
-import {fetchEvent} from "../redux_helpers/actions/cacheActions";
+import {fetchEvent} from "../vastuscomponents/redux_actions/cacheActions";
 
 class ScheduledEventsList extends Component {
     state = {
