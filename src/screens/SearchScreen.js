@@ -98,6 +98,8 @@ class SearchScreen extends Component {
                     null,
                     null,
                     null,
+                    null,
+                    null,
                     "Result type not implemented!")}
                 </List.Item>
             );

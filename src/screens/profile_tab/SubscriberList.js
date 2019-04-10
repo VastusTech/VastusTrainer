@@ -3,7 +3,7 @@ import { Button, List, Message, Image } from 'semantic-ui-react';
 import { connect } from "react-redux";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux_helpers/actions/userActions";
 import { inspect } from 'util';
-import {fetchClient} from "../../vastuscomponents/redux_actions/cacheActions";
+import {fetchClient} from "../../vastuscomponents/redux_convenience/cacheItemTypeActions";
 import ClientCard from "../../vastuscomponents/components/cards/ClientCard";
 
 class SubscriberListProp extends Component {

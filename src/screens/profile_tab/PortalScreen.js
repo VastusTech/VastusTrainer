@@ -2,14 +2,14 @@ import React, {  } from 'react'
 // import { Player } from 'video-react';
 import {Button, Card, Modal, Dimmer, Loader, List, Icon, Label, Divider } from 'semantic-ui-react'
 import { Storage } from 'aws-amplify';
-import ChallengeList from "../vastuscomponents/components/cards/ChallengeList";
+import ChallengeList from "../../vastuscomponents/components/lists/ChallengeList";
 import {fetchUserAttributes, forceFetchUserAttributes} from "../../redux_helpers/actions/userActions";
 import { connect } from "react-redux";
 import ClientFunctions from "../../vastuscomponents/database_functions/ClientFunctions";
 import {calculateAge} from "../../vastuscomponents/logic/TimeHelper";
 import TrainerPostFeed from "./TrainerPostFeed";
 
-window.LOG_LEVEL='DEBUG';
+// window.LOG_LEVEL='DEBUG';
 
 type Props = {
     open: boolean,

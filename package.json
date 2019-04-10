@@ -7,7 +7,9 @@
     "aws-amplify": "^1.1.12",
     "aws-amplify-react": "^2.1.6",
     "better-console": "^1.0.1",
+    "braintree-web": "^3.42.0",
     "date-fns": "^1.30.1",
+    "fuse.js": "^3.4.4",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^6.0.0",
     "gulp-chmod": "^2.0.0",
@@ -30,13 +32,15 @@
     "gulp-watch": "^5.0.1",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
-    "react": "^16.6.3",
+    "react": "next",
+    "react-avatar-editor": "^11.0.6",
     "react-css-modules": "^4.7.9",
-    "react-dom": "^16.6.3",
+    "react-dom": "next",
     "react-inverted-scrollview": "^1.0.7",
     "react-recaptcha-google": "^1.1.1",
-    "react-redux": "^6.0.0",
+    "react-redux": "5.1.0",
     "react-scripts": "^2.1.3",
+    "react-socks": "^1.0.1",
     "react-swipe": "^6.0.3",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
@@ -62,5 +66,11 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.8.0",
+    "redux-mock-store": "^1.5.3"
+  }
 }
