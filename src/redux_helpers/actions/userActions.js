@@ -1,7 +1,13 @@
 // import QL from '../../GraphQL';
 // import { Storage } from "aws-amplify";
 import {setError, clearError, setIsLoading, setIsNotLoading} from '../../vastuscomponents/redux_actions/infoActions';
-import { fetchTrainer, forceFetchTrainer } from "../../vastuscomponents/redux_actions/cacheActions";
+import {fetchTrainer, forceFetchTrainer, subscribeFetchTrainer} from "../../vastuscomponents/redux_convenience/cacheItemTypeActions";
+import {getItemTypeFromID} from "../../vastuscomponents/logic/ItemType";
+import {
+    addToItemAttribute, removeFromItemAttribute,
+    setItemAttribute,
+    setItemAttributeIndex
+} from "../../vastuscomponents/redux_actions/cacheActions";
 // import defaultProfilePicture from "../../img/roundProfile.png";
 
 // TODO Cache the user into the clients so that we actually are getting from there
@@ -52,7 +58,66 @@ export function fetchUserAttributes(variablesList, dataHandler) {
         }
     }
 }
-
+export function subscribeFetchUserAttributes(variablesList, dataHandler) {
+    return (dispatch, getStore) => {
+        const userID = getStore().user.id;
+        if (userID) {
+            dispatch(subscribeFetchTrainer(userID, variablesList, (client) => {
+                dispatch(setUser(client));
+                dispatch(setIsNotLoading());
+                if (dataHandler) { dataHandler(getStore().user); }
+            }));
+        }
+    }
+}
+export function setUserAttribute(attributeName, attributeValue) {
+    return (dispatch, getStore) => {
+        const userID = getStore().user.id;
+        if (userID) {
+            dispatch(setItemAttribute(userID, attributeName, attributeValue));
+            dispatch(updateUserFromCache());
+            dispatch(setIsNotLoading());
+        }
+    }
+}
+export function setUserAttributeAtIndex(attributeName, index, attributeValue) {
+    return (dispatch, getStore) => {
+        const userID = getStore().user.id;
+        if (userID) {
+            dispatch(setItemAttributeIndex(userID, attributeName, index, attributeValue));
+            dispatch(updateUserFromCache());
+            dispatch(setIsNotLoading());
+        }
+    }
+}
+export function addToUserAttribute(attributeName, attributeValue) {
+    return (dispatch, getStore) => {
+        const userID = getStore().user.id;
+        if (userID) {
+            dispatch(addToItemAttribute(userID, attributeName, attributeValue));
+            dispatch(updateUserFromCache());
+            dispatch(setIsNotLoading());
+        }
+    }
+}
+export function removeFromUserAttribute(attributeName, attributeValue) {
+    return (dispatch, getStore) => {
+        const userID = getStore().user.id;
+        if (userID) {
+            dispatch(removeFromItemAttribute(userID, attributeName, attributeValue));
+            dispatch(updateUserFromCache());
+            dispatch(setIsNotLoading());
+        }
+    }
+}
+export function updateUserFromCache() {
+    return (dispatch, getStore) => {
+        const userID = getStore().user.id;
+        if (userID) {
+            dispatch(setUser(getStore().cache.clients[userID]));
+        }
+    }
+}
 export function clearUser() {
     return {
         type: 'CLEAR_USER'

@@ -1,14 +1,15 @@
 import { Fragment } from 'react';
 import {Tab, Menu, Icon, Header, Feed } from "semantic-ui-react";
-import NotificationFeed from "./notifications_tab/NotificationBellFeed";
+import NotificationFeed from "./notification_bell/NotificationBellFeed";
 import ProfileTab from "./profile_tab/ProfileTab";
 import React from "react";
-import LeaderBoard from "./Leaderboard";
-import NotificationBellProp from "./notifications_tab/NotificationBell";
-// import ChallengeFeed from "./ChallengeFeed";
-import PostFeed from "./main_tab/PostFeed";
+import NotificationBellProp from "../vastuscomponents/components/info/NotificationBell";
+import MainTab from "./main_tab/MainTab";
 import Calendar from "./manager_tab/Calendar";
 import OrganizationalScreen from "./manager_tab/OrganizationalScreen";
+import ManagerTab from "./manager_tab/ManagerTab";
+import MessageIcon from "../vastuscomponents/components/messaging/MessageIcon";
+import MessageTab from "./messaging_tab/MessageTab";
 // import SearchScreen from "./SearchScreen";
 
 /**
@@ -26,7 +27,7 @@ export default () => (
                     </Menu.Item>),
                 render: () =>
                     <Tab.Pane basic attached={false}>
-                        <PostFeed/>
+                        <MainTab/>
                     </Tab.Pane>
             },
             {
@@ -53,18 +54,17 @@ export default () => (
                         <Icon name='calendar' size='large' />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
-                    <Calendar />
+                    <ManagerTab />
                 </Tab.Pane>
             },
             {
                 menuItem: (
                     <Menu.Item key={3}>
-                        <NotificationBellProp/>
+                        <MessageIcon />
                     </Menu.Item>),
                 render: () => <Tab.Pane basic attached={false}>
                     <Fragment>
-                        <Header inverted textAlign={'center'}>Notification Feed</Header>
-                        <NotificationFeed/>
+                        <MessageTab/>
                     </Fragment>
                 </Tab.Pane>
             },

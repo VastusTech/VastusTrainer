@@ -14,7 +14,7 @@ import {logOut} from "../../redux_helpers/actions/authActions";
 
 // Storage.configure({level: 'public'});
 
-window.LOG_LEVEL='DEBUG';
+// window.LOG_LEVEL='DEBUG';
 
 /**
 * ProfileTab
@@ -98,9 +98,9 @@ class ProfileTab extends React.PureComponent {
             // console.log("ID is not set inside profile... This means a problem has occurred");
         }
 
-        if (!this.props.info.isLoading && !this.state.sentRequest && !(user.id && user.name && user.username && user.birthday && user.profilePicture)) {
+        if (!this.props.info.isLoading && !this.state.sentRequest && !(user.id && user.name && user.username && user.birthday && user.profileImage)) {
             this.state.sentRequest = true;
-            this.props.fetchUserAttributes(["name", "username", "birthday", "profileImagePath", "challengesWon", "profilePicture", "friends", "challenges", "ownedChallenges", "completedChallenges"]);
+            this.props.fetchUserAttributes(["name", "username", "birthday", "profileImagePath", "challengesWon", "profileImage", "friends", "challenges", "ownedChallenges", "completedChallenges"]);
         }
         else {
             this.setState({isLoading: false});
@@ -122,7 +122,7 @@ class ProfileTab extends React.PureComponent {
                         //console.log("successfully editted client");
                         //console.log(JSON.stringify(data));
                         console.log("About to force fetc user attributes");
-                        this.props.forceFetchUserAttributes(["profileImagePath", "profilePicture"]);
+                        this.props.forceFetchUserAttributes(["profileImagePath"]);
                         console.log("Got past force fetch call");
                         this.setState({isLoading: true});
                     }, (error) => {
@@ -196,10 +196,10 @@ class ProfileTab extends React.PureComponent {
     }
 
     profilePicture() {
-        if (this.props.user.profilePicture) {
+        if (this.props.user.profileImage) {
             return (
                 <div>
-                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profilePicture})`}}>
+                    <div className="u-avatar u-avatar--large u-margin-x--auto u-margin-top--neg4" style={{backgroundImage: `url(${this.props.user.profileImage})`}}>
                     </div>
                     <Label as="label" htmlFor="proPicUpload" circular className="u-bg--primaryGradient">
                         <Icon name="upload" className='u-margin-right--0' size="large" inverted />

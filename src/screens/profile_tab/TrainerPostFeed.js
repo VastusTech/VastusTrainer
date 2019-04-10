@@ -10,7 +10,7 @@ import {
     putClientQuery,
     putPost,
     putPostQuery
-} from "../../vastuscomponents/redux_actions/cacheActions";
+} from "../../vastuscomponents/redux_convenience/cacheItemTypeActions";
 import {fetchUserAttributes} from "../../redux_helpers/actions/userActions";
 import CreatePostProp from "../../vastuscomponents/components/manager/CreatePost";
 
